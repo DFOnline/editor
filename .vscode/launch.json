@@ -1,0 +1,17 @@
+{
+    "port": 3000,
+    "configurations": [
+        {
+            "command": "npm run dev --host",
+            "name": "Start Dev Server",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run build; npm run serve",
+            "name": "Build and Serve",
+            "request": "launch",
+            "type": "node-terminal"
+        }
+    ]
+}
