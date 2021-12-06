@@ -1,0 +1,1 @@
+require('fs').writeFileSync("./db.json",JSON.stringify(require('./db.json')));
