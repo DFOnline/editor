@@ -1,10 +1,9 @@
-import pako from "pako"
-
 let code = {"blocks":[]};
 
 window.onload = () => {
-    document.body.innerHTML = 'a'
-    code = JSON.parse(decode(sessionStorage.import))
+    startup();
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    code = JSON.parse(decode(sessionStorage.import));
     rendBlocks();
 }
 
@@ -44,22 +43,19 @@ function rendBlocks(){
     })
 }
 
-// function decode(data : string){
-//     return String.fromCharCode.apply(
-//         null,
-//         new Uint16Array(
-//             (
-//                 pako.inflate(
-//                     atob(data).split('').map(
-//                         x => x.charCodeAt(0)
-//                     )
-//                 )
-//             )
-//         )
-//     );
-// }
 
-function decode(data : string) : string{
-    console.log(data)
-    return String(pako.inflate(data))
-}
+
+function decode(base64data : string){
+    var compressData = atob(base64data);
+    var uint = compressData.split('').map(function(e) {
+        return e.charCodeAt(0);
+    });
+    var binData = new Uint8Array(uint);
+    var data = pako.inflate(binData);
+    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+  }
+function encode(codedata : string){
+    var data = pako.gzip(codedata);
+    var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    return btoa(data2);
+  }

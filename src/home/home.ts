@@ -1,5 +1,5 @@
-'use strict';
 let starts = [];
+const user = localStorage.user ? JSON.parse(localStorage.user) : undefined
 
 function importmenu(){
     var div = document.createElement('div')
@@ -12,7 +12,7 @@ function importmenu(){
     var importfield = document.createElement('input')
     importfield.type = "text"
     importfield.placeholder = "Template Data";
-    importfield.onkeyup = () => {document.getElementById('activateimport').click()}
+    importfield.onkeyup = () => {(document.getElementById('activateimport') as HTMLButtonElement).click()}
     importfield.id = "importfield"
     imports.appendChild(importfield)
 
@@ -20,7 +20,7 @@ function importmenu(){
     activateimport.innerText = "Go!"
     activateimport.style.marginLeft = "5px"
     activateimport.id = "activateimport";
-    activateimport.onclick = () => {sessionStorage.import = document.getElementById('importfield').value; location.href = "./edit"}
+    activateimport.onclick = () => {sessionStorage.import = (document.getElementById('importfield') as HTMLInputElement).value; location.href = "/edit/"}
     imports.appendChild(activateimport)
     div.appendChild(imports)
     if(cuopen){
@@ -44,22 +44,21 @@ function loginMenu(){
         codeSlot.type = 'text';
         codeSlot.placeholder = 'Code';
         codeSlot.id = "codeslot"
-        codeSlot.onkeyup = event => {if(event.key == 'Enter'){document.getElementById('login').click()}}
+        codeSlot.onkeyup = event => {if(event.key == 'Enter'){(document.getElementById('login') as HTMLButtonElement).click()}}
         div.appendChild(codeSlot);
         var loginButton = document.createElement('button');
         loginButton.innerText = "Login";
         loginButton.id = "login"
-        loginButton.onclick = () => login(document.getElementById('codeslot').value);
+        loginButton.onclick = () => login((document.getElementById('codeslot') as HTMLInputElement).value);
         div.appendChild(loginButton);
         menu("Login",div);
     }
 }
 
-function startup(){
-    console.log(user)
+window.onload = () => {
+    var userBox = (document.getElementById('user') as HTMLInputElement);
     if(user){
-        var userBox = document.getElementById('user');
-        userBox.innerHTML = user.name
+        userBox.innerHTML = user.name;
         userBox.onclick = () => {
             var menuDiv = document.createElement('div');
             var updateButton = document.createElement('button');
@@ -72,17 +71,20 @@ function startup(){
             menuDiv.appendChild(logoutButton);
             menu(user.name,menuDiv);
         }
+    } else {
+        userBox.onclick = loginMenu;
     }
 }
 
 codeutilities.onmessage = event => {
     var data = JSON.parse(event.data)
     if(data.type === "template"){
+        var importField = (document.getElementById('importfield') as HTMLInputElement);
         try{
-            document.getElementById('importfield').value = JSON.parse(data.received).code
+            importField.value = JSON.parse(data.received).code
         }catch{
             importmenu()
-            document.getElementById('importfield').value = JSON.parse(data.received).code
+            importField.value = JSON.parse(data.received).code
         }
     }
 }

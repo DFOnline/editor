@@ -6,9 +6,11 @@ export default {
     outDir: path.resolve(__dirname, './docs'),
     rollupOptions: {
       input: {
-        index: path.resolve(__dirname, './src/home/home.html'),
-        edit: path.resolve(__dirname, './src/edit/edit.html'),
-        copy: path.resolve(__dirname, './src/copy.html')
+        index: path.resolve(__dirname, './src/index.html'),
+        home: path.resolve(__dirname, './src/home/index.html'),
+        edit: path.resolve(__dirname, './src/edit/index.html'),
+        copy: path.resolve(__dirname, './src/copy.html'),
+        comment: path.resolve(__dirname, './src/edit/comment.html')
       }
     }
   }

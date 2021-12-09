@@ -1,6 +1,5 @@
 'use strict';
-const user = localStorage.user ? JSON.parse(localStorage.user) : undefined
-let cuopen
+let cuopen : boolean
 
 function snackbar(message : string){
     var bar = document.createElement('span')
@@ -11,7 +10,7 @@ function snackbar(message : string){
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
 }
 
-function menu(title : string,content = document.createElement('span')){
+function menu(title : string,content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
     bg.onclick = event => {if((event.target as HTMLElement).classList.contains('background')){(event.target as HTMLElement).remove()}}
@@ -40,7 +39,7 @@ function login(auth : string){
     .catch(() => snackbar('Failed to log in.'));
 }
 
-onload = () => {
+function startup(){
     let urlParams = new URLSearchParams(location.search)
     var urlMessage = urlParams.get('message');
     if(urlMessage){
