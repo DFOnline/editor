@@ -8,6 +8,8 @@
         <script src="../main/pako.js" type="module"></script>
         <script src="../main/main.ts" type="module"></script>
         <script type="module">
+            document.getElementById('send').onclick = generateTheComment;
+
             function generateTheComment(){
                 var data = document.getElementsByClassName('comment');
                 var code = {"blocks":[{"id":"block","block":"control","args":{"items":[]},"action":"","target":"","inverted":""}]};
@@ -42,7 +44,7 @@
                         <input type="text" id="target" class="comment" placeholder="my comment">
                         <input type="text" id="inverted" class="comment" placeholder="block!">
                         <div>
-                            <button style="margin-top: 5px;" onclick="generateTheComment()">Send to CodeUtilities</button>
+                            <button style="margin-top: 5px;" id="send">Send to CodeUtilities</button>
                         </div>
                     </div>
                 </div>
