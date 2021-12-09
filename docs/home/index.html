@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>DFOnline</title>
+        <link rel="shortcut icon" type="image/jpg" href="/assets/favicon.bc903b0a.png"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="cache-control" content="no-cache">
+        
+        
+        <link rel="js" type="text/json" href="db.json">
+        <script src="../main/main.ts"></script>
+        <script src="./home.ts"></script>
+      <link rel="stylesheet" href="/assets/home.f9fbc209.css">
+      <link rel="stylesheet" href="/assets/main.654b547a.css">
+    </head>
+    <div id='header'>
+        <h1>DFOnline</h1>
+        <h1 id="user">Login</h1>
+    </div>
+    <div id="panel">
+        <div id="templates">
+            <div class="template">
+                <img src="media/add.png" alt="Icon">
+                <h2>New Template</h2>
+                <p>Start creating a template.</p>
+                <button id="start" class="bigbutton">Start</button>
+                <button id="import" class="bigbutton" onclick="importmenu()">Import</button>
+            </div>
+            <div class="template">
+                <img src="media/enderchest.png"  alt="Icon">
+                <h2>Not actually a template</h2>
+                <p>A description, neither this or the last one is a template.</p>
+                <button id="edit" class="bigbutton">Edit</button>
+            </div>
+        </div>
+    </div>
+    <div id="snackbars"></div>
+    <div id="menus">
+        <noscript class="background" style="display: block;">
+            <div>
+                <h1>Is JavaScript not enabled?</h1>
+                <p>This website depends on JavaScript</p>
+            </div>
+        </noscript>
+    </div>
+</html>
