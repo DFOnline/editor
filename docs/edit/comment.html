@@ -4,28 +4,14 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="./edit.ts"></script>
-        <script src="../main/pako.js"></script>
-        <script src="../main/main.ts"></script>
-        <script>
-            function generateTheComment(){
-                var data = document.getElementsByClassName('comment');
-                var code = {"blocks":[{"id":"block","block":"control","args":{"items":[]},"action":"","target":"","inverted":""}]};
-                for(let element of data){
-                    code['blocks'][0][element.id] = element.value;
-                };
-                codeutilities.send(
-                JSON.stringify(
-                        {"type":"template","source":"DFOnline Comment Generator","data":
-                            JSON.stringify({"name":"§6Comment","data":encode(JSON.stringify(code))})
-                        }
-                    )
-                );
-            }
-        </script>
+        
+        
+        
+        
         
         <title>DF Comment Maker</title>
-      <link rel="stylesheet" href="/assets/main.654b547a.css">
+      <script type="module" crossorigin src="../assets/comment.955eee05.js"></script>
+      <link rel="stylesheet" href="../assets/main.654b547a.css">
     </head>
     <body>
         <div id="menus">
