@@ -4,11 +4,13 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="./edit.ts" type="module"></script>
-        <script src="../main/pako.js" type="module"></script>
         <script src="../main/main.ts" type="module"></script>
+        <script src="../main/pako.js" type="module"></script>
+        <script src="./edit.ts" type="module"></script>
         <script type="module">
-            document.getElementById('send').onclick = generateTheComment;
+            window.onload = () => {
+                document.getElementById('send').onclick = generateTheComment;
+            }
 
             function generateTheComment(){
                 var data = document.getElementsByClassName('comment');
@@ -44,7 +46,7 @@
                         <input type="text" id="target" class="comment" placeholder="my comment">
                         <input type="text" id="inverted" class="comment" placeholder="block!">
                         <div>
-                            <button style="margin-top: 5px;" id="send">Send to CodeUtilities</button>
+                            <button style="margin-top: 5px;" id='send'>Send to CodeUtilities</button>
                         </div>
                     </div>
                 </div>

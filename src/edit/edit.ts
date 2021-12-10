@@ -1,12 +1,5 @@
 let code = {"blocks":[]};
 
-window.onload = () => {
-    startup();
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-    code = JSON.parse(decode(sessionStorage.import));
-    rendBlocks();
-}
-
 function rendBlocks(){
     var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
     var messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-."];
