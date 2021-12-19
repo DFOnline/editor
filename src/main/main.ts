@@ -1,5 +1,6 @@
-'use strict';
-let cuopen : boolean
+import { inflate, gzip } from "pako";
+
+let cuopen = false;
 
 function snackbar(message : string){
     var bar = document.createElement('span')
@@ -50,3 +51,20 @@ function startup(){
 const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item')
 codeutilities.onopen = () => {snackbar('Connected to codeutilties'); cuopen = true;}
 codeutilities.onerror = () => {snackbar('Failed to connect to codeutilties'); cuopen = false;}
+
+function decode(base64data : string){
+    var compressData = atob(base64data);
+    var uint = compressData.split('').map(function(e) {
+        return e.charCodeAt(0);
+    });
+    var binData = new Uint8Array(uint);
+    var data = inflate(binData);
+    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+}
+function encode(codedata : string){
+    var data = gzip(codedata);
+    var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    return btoa(data2);
+}
+
+export {codeutilities, cuopen, startup, login, menu, snackbar, encode, decode};
