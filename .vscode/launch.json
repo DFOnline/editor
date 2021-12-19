@@ -8,7 +8,7 @@
             "type": "node-terminal"
         },
         {
-            "command": "parcel build 'src/**/*.html' --dist-dir ./docs; exit",
+            "command": "parcel build 'src/**/*.html' --dist-dir ./docs --public-url './'; exit",
             "name": "Build",
             "request": "launch",
             "type": "node-terminal"
