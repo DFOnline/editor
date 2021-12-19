@@ -2,10 +2,17 @@
     "port": 3000,
     "configurations": [
         {
-            "command": "parcel \"src/*(/)*.html\" --dist-dir /docs",
+            "command": "parcel \"src/*(/)*.html\" --dist-dir ./docs",
             "name": "Start Dev Server",
             "request": "launch",
             "type": "node-terminal"
         },
+        {
+            "command": "parcel build \"src/*(/)*.html\" --dist-dir ./docs",
+            "name": "Build",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        
     ]
 }
