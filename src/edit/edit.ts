@@ -35,20 +35,3 @@ function rendBlocks(){
         }
     })
 }
-
-
-
-function decode(base64data : string){
-    var compressData = atob(base64data);
-    var uint = compressData.split('').map(function(e) {
-        return e.charCodeAt(0);
-    });
-    var binData = new Uint8Array(uint);
-    var data = pako.inflate(binData);
-    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
-  }
-function encode(codedata : string){
-    var data = pako.gzip(codedata);
-    var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
-    return btoa(data2);
-  }
