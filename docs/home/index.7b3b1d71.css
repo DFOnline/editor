@@ -1,0 +1,42 @@
+#templates{
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+}
+.template {
+    background-color: #222;
+    min-width: 230px;
+    max-width: 230px;
+    height: 400px;
+    margin: 20px;
+    padding: 1%;
+    padding-top: 2%;
+    text-align: center;
+}
+.template>img {
+    width: 80%;
+}
+
+#user {
+    position: absolute;
+    right: 2vw;
+}
+#user:hover {
+    text-decoration: underline;
+    user-select: none;
+}
+
+.template > button {width: 90%;}
+.template > #start, .template > #import {color: black; margin-top: auto; align-self: flex-end; margin-bottom: 5px;}
+.template > #start {background-color: yellow; color: black;}
+.template > #import {background-color: limegreen; color: black;}
+
+@media only screen and (max-width: 600px) {
+    #templates {display: grid; overflow: hidden;}
+    .template {width: 90%; height: fit-content; max-width: none; margin: none;}
+    .template > img {width: 40%; margin-top: 5%;}
+    .template > h2 {font-size: 10vw;}
+    .template > p {font-size: 5vw;}
+    .template > button {width: 90%; margin-bottom: 20px;}
+}
+/*# sourceMappingURL=index.7b3b1d71.css.map */
