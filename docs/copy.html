@@ -36,14 +36,6 @@
             } 
         
 </style>
-        <script>let search;
-function startup(values) {
-    search = values;
-    document.getElementById('text').innerText = values.get('text');
-    if (values.get('type') === 'code') document.getElementById('code').style.display = "block";
-}
-
-</script>
     </head>
     <body>
         <div id="text">
@@ -56,5 +48,5 @@ function startup(values) {
             <button class="bigbutton" style="display: none;" id="code" onclick="login(search.get('text')); this.disabled = true;">Login</button>
         </div>
         <div id="snackbars"></div>
-    </body>
+    <script src="/copy.a020e92c.js"></script></body>
 </html>

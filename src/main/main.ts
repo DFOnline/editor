@@ -24,6 +24,7 @@ function menu(title : string,content : HTMLElement = document.createElement('spa
     (document.getElementById('menus') as HTMLDivElement).appendChild(bg);
 }
 
+const user : {name: string,auth: string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
 function login(auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
         method: "POST",
@@ -46,6 +47,7 @@ function startup(){
     if(urlMessage){
         snackbar(urlMessage)
     }
+    return {urlParams}
 }
 
 const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item')
@@ -67,4 +69,4 @@ function encode(codedata : string){
     return btoa(data2);
 }
 
-export {codeutilities, cuopen, startup, login, menu, snackbar, encode, decode};
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode};
