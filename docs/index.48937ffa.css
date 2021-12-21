@@ -1,0 +1,65 @@
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes expand {
+  0% {
+    width: 50vh;
+  }
+  100% {
+    width: 100vh;
+  }
+}
+html, body {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+}
+html > div, body > div {
+  margin: auto;
+  display: none;
+  opacity: 0;
+}
+#animate {
+  width: 50vh;
+  height: 50vh;
+  background-image: url(enderchest.3fedc146.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left;
+  font-size: 5vh;
+}
+#animate > h1 {
+  margin: auto;
+  margin-right: 0;
+  opacity: 0;
+}
+#animate > h1.show {
+  animation: fadein 0.2s forwards cubic-bezier(0.57, 0.18, 0.76, 0.92);
+}
+#animate.show {
+  display: flex;
+  animation: fadein 0.3s forwards 0.1s ease;
+}
+#animate.show.expand {
+  opacity: 1;
+  animation: expand 0.5s forwards 0.1s cubic-bezier(0.25, 0.43, 0, 1);
+}
+#loaded {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+/*# sourceMappingURL=index.48937ffa.css.map */
