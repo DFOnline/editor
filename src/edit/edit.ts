@@ -1,4 +1,5 @@
-import { startup, decode } from "../main/main"
+import { startup, decode } from "../main/main";
+import { codeblocks } from "./db.json";
 let code = {"blocks":[]};
 
 window.onload = () => {

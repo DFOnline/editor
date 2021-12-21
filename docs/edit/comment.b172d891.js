@@ -463,6 +463,17 @@ var _main = require("../main/main");
 window.onload = ()=>{
     document.getElementById('send').onclick = generateTheComment;
 };
+window.onkeydown = (event)=>{
+    if (event.key === "Enter") document.getElementById('send').click();
+    if (event.key === "ArrowDown") {
+        nextElement(1);
+        return false;
+    }
+    if (event.key === "ArrowUp") {
+        nextElement(-1);
+        return false;
+    }
+};
 function generateTheComment() {
     var code = {
         "blocks": [
@@ -489,6 +500,16 @@ function generateTheComment() {
             "data": _main.encode(JSON.stringify(code))
         })
     }));
+}
+function nextElement(move = 1) {
+    var elements = [
+        ...document.querySelectorAll('.comment')
+    ];
+    var current = elements.findIndex((x)=>x === document.activeElement
+    );
+    var newIndex = (current + move) % elements.length;
+    newIndex = newIndex < 0 ? elements.length - 1 : newIndex;
+    elements[newIndex].focus();
 }
 
 },{"../main/main":"j37UV"}]},["dZa0f","f6MCZ"], "f6MCZ", "parcelRequire22ef")
