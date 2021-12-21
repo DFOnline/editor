@@ -2,8 +2,9 @@
     display: flex;
 }
 
-.block {width: 300px; height: 300px; display: flex;}
-.block * {width: 150px; height: 150px; background-size: contain; background-position: bottom; background-repeat: no-repeat; display: grid;}
+
+.block {width: max-content; max-width: 300px; min-width: 150px; height: 300px; display: flex;}
+.block * {min-width: 150px; max-width: 300px; height: 150px; background-size: contain; background-position: bottom; background-repeat: no-repeat; display: grid;}
 
 .chest {background-image: url(../media/blocks/chest.png);}
 .air {background-image: none;}
@@ -13,5 +14,17 @@
 .sign {background-image: url(../media/blocks/sign.png); width: 150px; height: 75px; background-size: cover; display: block;}
 .sign span {margin: auto; display: block; height: min-content; font-size: small;}
 
-.player_action {background-image: url(../media/blocks/player_action.png);}
 .event {background-image: url(../media/blocks/event.png);}
+.player_action {background-image: url(../media/blocks/player_action.png);}
+.if_player {background-image: url(../media/blocks/if_player.png);}
+.process {background-image: url(../media/blocks/process.png);}
+.start_process {background-image: url(../media/blocks/start_process.png);}
+.func {background-image: url(../media/blocks/func.png);}
+.call_func {background-image: url(../media/blocks/call_func.png);}
+.entity_event {background-image: url(../media/blocks/entity_event.png);}
+.entity_action {background-image: url(../media/blocks/entity_action.png);}
+.if_entity {background-image: url(../media/blocks/if_entity.png);}
+
+.piston {background-image: url(../media/blocks/piston.png);}
+.piston.repeat {background-image: url(../media/blocks/pistonSticky.png);}
+.piston.close {transform: scaleX(-1); width: 300px; background-position: left; display: flex;}

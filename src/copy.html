@@ -35,16 +35,6 @@
                 margin: auto;
             } 
         </style>
-        <script>
-            let search
-            function startup(values){
-                search = values;
-                document.getElementById('text').innerText = values.get('text');
-                if(values.get('type') === 'code'){
-                    document.getElementById('code').style.display = "block";
-                }
-            }
-        </script>
     </head>
     <body>
         <div id="text">

@@ -2,23 +2,66 @@
     display: flex;
 }
 
-.block {width: 300px; height: 300px; display: flex;}
 
-.block * {width: 150px; height: 150px; background-size: contain; background-position: bottom; background-repeat: no-repeat; display: grid;}
+.block {width: max-content; max-width: 300px; min-width: 150px; height: 300px; display: flex;}
+
+
+.block * {min-width: 150px; max-width: 300px; height: 150px; background-size: contain; background-position: bottom; background-repeat: no-repeat; display: grid;}
+
 
 .chest {background-image: url(../chest.9ae40fca.png);}
 
+
 .air {background-image: none;}
+
 
 .stone {height: 300px; background-image: url(../stone.22857926.png);}
 
+
 .mat {display: grid; place-items: center;}
+
 
 .sign {background-image: url(../sign.2b643fda.png); width: 150px; height: 75px; background-size: cover; display: block;}
 
+
 .sign span {margin: auto; display: block; height: min-content; font-size: small;}
+
+
+.event {background-image: url(../event.bf160abe.png);}
+
 
 .player_action {background-image: url(../player_action.4d25990b.png);}
 
-.event {background-image: url(../event.bf160abe.png);}
+
+.if_player {background-image: url(../if_player.60698a6d.png);}
+
+
+.process {background-image: url(../process.bb8a3104.png);}
+
+
+.start_process {background-image: url(../start_process.3f0b1ac0.png);}
+
+
+.func {background-image: url(../func.8b2a41a1.png);}
+
+
+.call_func {background-image: url(../call_func.00521aad.png);}
+
+
+.entity_event {background-image: url(../entity_event.fc4890b4.png);}
+
+
+.entity_action {background-image: url(../entity_action.325e3ff5.png);}
+
+
+.if_entity {background-image: url(../if_entity.beb97600.png);}
+
+
+.piston {background-image: url(../piston.fe2b96be.png);}
+
+
+.piston.repeat {background-image: url(../pistonSticky.f53a3368.png);}
+
+
+.piston.close {transform: scaleX(-1); width: 300px; background-position: left; display: flex;}
 /*# sourceMappingURL=index.758519a6.css.map */

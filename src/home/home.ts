@@ -1,7 +1,6 @@
-let starts = [];
-const user = localStorage.user ? JSON.parse(localStorage.user) : undefined
+import { startup, menu, login, cuopen, codeutilities, user } from "../main/main"
 
-function importmenu(){
+function importMenu(){
     var div = document.createElement('div')
 
     var toptext = document.createElement('p')
@@ -9,19 +8,19 @@ function importmenu(){
     div.appendChild(toptext)
 
     var imports = document.createElement('div')
-    var importfield = document.createElement('input')
-    importfield.type = "text"
-    importfield.placeholder = "Template Data";
-    importfield.onkeyup = () => {(document.getElementById('activateimport') as HTMLButtonElement).click()}
-    importfield.id = "importfield"
-    imports.appendChild(importfield)
+    var importField = document.createElement('input')
+    importField.type = "text"
+    importField.placeholder = "Template Data";
+    importField.onkeyup = () => {(document.getElementById('activateimport') as HTMLButtonElement).click()}
+    importField.id = "importfield"
+    imports.appendChild(importField)
 
-    var activateimport = document.createElement('button')
-    activateimport.innerText = "Go!"
-    activateimport.style.marginLeft = "5px"
-    activateimport.id = "activateimport";
-    activateimport.onclick = () => {sessionStorage.import = (document.getElementById('importfield') as HTMLInputElement).value; location.href = "/edit/"}
-    imports.appendChild(activateimport)
+    var activateImport = document.createElement('button')
+    activateImport.innerText = "Go!"
+    activateImport.style.marginLeft = "5px"
+    activateImport.id = "activateimport";
+    activateImport.onclick = () => {sessionStorage.setItem('import',importField.value); location.href = `/edit/`}
+    imports.appendChild(activateImport)
     div.appendChild(imports)
     if(cuopen){
         var cuad = document.createElement('p')
@@ -56,6 +55,7 @@ function loginMenu(){
 }
 
 window.onload = () => {
+    startup()
     var userBox = (document.getElementById('user') as HTMLInputElement);
     if(user){
         userBox.innerHTML = user.name;
@@ -74,6 +74,8 @@ window.onload = () => {
     } else {
         userBox.onclick = loginMenu;
     }
+    var importButton = document.getElementById('import') as HTMLButtonElement;
+    importButton.onclick = importMenu;
 }
 
 codeutilities.onmessage = event => {
@@ -83,7 +85,7 @@ codeutilities.onmessage = event => {
         try{
             importField.value = JSON.parse(data.received).code
         }catch{
-            importmenu()
+            importMenu()
             importField.value = JSON.parse(data.received).code
         }
     }
