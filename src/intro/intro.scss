@@ -1,0 +1,63 @@
+@keyframes fadein {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+@keyframes expand {
+    0% {width: 50vh;}
+    100% {width: 100vh;}
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    > div {
+        margin: auto;
+        display: none;
+        opacity: 0;
+    }
+}
+
+
+
+#animate {
+    width: 50vh;
+    height: 50vh;
+    background-image: url(../media/enderchest.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
+    font-size: 5vh;
+
+    > h1 {
+        margin: auto;
+        margin-right: 0;
+        opacity: 0;
+        &.show{
+            animation: fadein 0.2s forwards cubic-bezier(.57,.18,.76,.92);
+        }
+    }
+
+    &.show {
+        display: flex;
+        animation: fadein 0.3s forwards 0.1s ease;
+        &.expand {
+            opacity: 1;
+            animation: expand 0.5s forwards 0.1s cubic-bezier(.25,.43,0,1);
+        }
+    }
+}
+
+#loaded {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}

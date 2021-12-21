@@ -39,4 +39,4 @@ function nextElement(move = 1){
     var newIndex = (current + move) % elements.length;
     newIndex = newIndex < 0 ? elements.length - 1 : newIndex;
     elements[newIndex].focus();
-  }
+}
