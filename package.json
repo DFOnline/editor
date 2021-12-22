@@ -1,9 +1,6 @@
 {
   "name": "dfonline",
   "version": "0.0.0",
-  "scripts": {
-    "test": ""
-  },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.1",
     "parcel": "^2.0.1",
