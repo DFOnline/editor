@@ -3,11 +3,18 @@
     100% {opacity: 1;}
 }
 @keyframes expand {
-    0% {width: 50vh;}
-    100% {width: 100vh;}
+    0% {width: min(50vh,50vw);;}
+    100% {width: min(100vh,100vw);;}
+}
+
+@font-face {
+    font-family: Rounded;
+    src: url('./Typo_Round_Bold_Demo.otf') format("opentype");
 }
 
 html, body {
+    font-family: Rounded;
+    user-select: none;
     width: 100vw;
     height: 100vh;
     background-color: black;
@@ -15,7 +22,6 @@ html, body {
     margin: 0;
     display: flex;
     color: white;
-    font-family: 'Courier New', Courier, monospace;
     > div {
         margin: auto;
         display: none;
@@ -26,29 +32,29 @@ html, body {
 
 
 #animate {
-    width: 50vh;
-    height: 50vh;
+    width: min(50vh,50vw);
+    height: min(50vh,50vw);
     background-image: url(../media/enderchest.png);
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: left;
-    font-size: 5vh;
+    background-position: top left;
+    font-size: min(5vh,5vw);
 
     > h1 {
         margin: auto;
         margin-right: 0;
         opacity: 0;
         &.show{
-            animation: fadein 0.2s forwards cubic-bezier(.57,.18,.76,.92);
+            animation: fadein 0.2s forwards 0.15s cubic-bezier(.57,.18,.76,.92);
         }
     }
 
     &.show {
         display: flex;
-        animation: fadein 0.3s forwards 0.1s ease;
+        animation: fadein 0.3s forwards 0.5s ease;
         &.expand {
             opacity: 1;
-            animation: expand 0.5s forwards 0.1s cubic-bezier(.25,.43,0,1);
+            animation: expand 0.5s forwards 0.2s cubic-bezier(.25,.43,0,1);
         }
     }
 }

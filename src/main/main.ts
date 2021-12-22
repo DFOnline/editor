@@ -14,7 +14,17 @@ function snackbar(message : string){
 function menu(title : string,content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
-    bg.onclick = event => {if((event.target as HTMLElement).classList.contains('background')){(event.target as HTMLElement).remove()}}
+    bg.onclick = event => {
+        var hit = event.target as HTMLElement
+        if(hit.classList.contains('background')){
+            if(!hit.classList.contains('fade')){
+                hit.classList.add('fade')
+                hit.onanimationend = () => {
+                    hit.remove()
+                }
+            }
+        }
+    }
     var screen = document.createElement('div');
     var obj = document.createElement('h1');
     obj.innerText = title;
@@ -24,18 +34,19 @@ function menu(title : string,content : HTMLElement = document.createElement('spa
     (document.getElementById('menus') as HTMLDivElement).appendChild(bg);
 }
 
-const user : {name: string,auth: string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
-function login(auth : string){
+const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
+function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            "auth":auth
+            name,
+            auth
         })
     })
     .then(res => res.json())
-    .then(json => {
-        localStorage.user = JSON.stringify({"auth":auth,"name":json.name});
+    .then((json : {auth: string, name: string, token: string}) => {
+        localStorage.user = JSON.stringify({auth,name,token:json.token});
         location.href = "./?message=Successfully logged you in!";
     })
     .catch(() => snackbar('Failed to log in.'));

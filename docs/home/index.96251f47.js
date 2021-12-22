@@ -495,25 +495,34 @@ function loginMenu() {
     var div = document.createElement('div');
     if (!sessionStorage.user) {
         var howTo = document.createElement('p');
-        howTo.innerText = `On diamondfire, type /join 44357.
-        Go to slot 9 and click it, find My DFOnline code and click it.
-        In chat it should give you a link. Open it and copy the given code.
-        Come back here and paste it in. You should be logged in.`;
+        howTo.innerHTML = `<ul><li>On diamondfire, type /join 44357.</li>
+        <li>Go to slot 9 and click it, find My DFOnline code and click it.</li>
+        <li>In chat it should give you a link. Open it and copy the given code.</li>
+        <li>Come back here and paste it in. You should be logged in.</li></ul>`;
         div.appendChild(howTo);
+        var authBox = document.createElement('div');
+        authBox.style.display = 'grid';
+        var nameSlot = document.createElement('input');
+        nameSlot.type = 'text';
+        nameSlot.placeholder = 'Username';
+        nameSlot.onkeyup = (event)=>{
+            if (event.key === "Enter") codeSlot.focus();
+        };
+        authBox.appendChild(nameSlot);
         var codeSlot = document.createElement('input');
         codeSlot.type = 'text';
         codeSlot.placeholder = 'Code';
-        codeSlot.id = "codeslot";
         codeSlot.onkeyup = (event)=>{
-            if (event.key == 'Enter') document.getElementById('login').click();
+            if (event.key === 'Enter') loginButton.click();
         };
-        div.appendChild(codeSlot);
+        authBox.appendChild(codeSlot);
         var loginButton = document.createElement('button');
         loginButton.innerText = "Login";
         loginButton.id = "login";
-        loginButton.onclick = ()=>_main.login(document.getElementById('codeslot').value)
+        loginButton.onclick = ()=>_main.login(nameSlot.value, codeSlot.value)
         ;
-        div.appendChild(loginButton);
+        authBox.appendChild(loginButton);
+        div.append(authBox);
         _main.menu("Login", div);
     }
 }
@@ -526,7 +535,7 @@ window.onload = ()=>{
             var menuDiv = document.createElement('div');
             var updateButton = document.createElement('button');
             updateButton.innerText = "Relog";
-            updateButton.onclick = ()=>_main.login(_main.user.auth)
+            updateButton.onclick = ()=>_main.login(_main.user.name, _main.user.auth)
             ;
             menuDiv.appendChild(updateButton);
             var logoutButton = document.createElement('button');
@@ -595,7 +604,15 @@ function menu(title, content = document.createElement('span')) {
     var bg = document.createElement('div');
     bg.classList.add('background');
     bg.onclick = (event)=>{
-        if (event.target.classList.contains('background')) event.target.remove();
+        var hit = event.target;
+        if (hit.classList.contains('background')) {
+            if (!hit.classList.contains('fade')) {
+                hit.classList.add('fade');
+                hit.onanimationend = ()=>{
+                    hit.remove();
+                };
+            }
+        }
     };
     var screen = document.createElement('div');
     var obj = document.createElement('h1');
@@ -606,20 +623,22 @@ function menu(title, content = document.createElement('span')) {
     document.getElementById('menus').appendChild(bg);
 }
 const user = localStorage.user ? JSON.parse(localStorage.user) : undefined;
-function login(auth) {
+function login(name, auth) {
     fetch('https://WebBot.georgerng.repl.co/auth/login', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "auth": auth
+            name,
+            auth
         })
     }).then((res)=>res.json()
     ).then((json)=>{
         localStorage.user = JSON.stringify({
-            "auth": auth,
-            "name": json.name
+            auth,
+            name,
+            token: json.token
         });
         location.href = "./?message=Successfully logged you in!";
     }).catch(()=>snackbar('Failed to log in.')
