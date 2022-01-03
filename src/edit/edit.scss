@@ -1,3 +1,8 @@
+@font-face{
+    font-family:"minecraft-ten-regular";
+    src:url("./MinecraftRegular-Bmg3.otf") format("opentype");
+}
+
 #codeBlocks {
     display: flex;
     .block {
@@ -28,6 +33,8 @@
             &.control {background-image: url(../media/blocks/control.png);}
             &.select_obj {background-image: url(../media/blocks/select_obj.png);}
             &.else {background-image: url(../media/blocks/else.png);}
+            &.loader { background-image: url(../media/blocks/loader.png);}
+            &.call_loader { background-image: url(../media/blocks/call_loader.png);}
             &.piston {
                 background-image: url(../media/blocks/piston.png);
                 &.repeat {background-image: url(../media/blocks/pistonSticky.png);}
@@ -38,6 +45,8 @@
         .chest {background-image: url(../media/blocks/chest.png);}
         .stone {height: 300px; background-image: url(../media/blocks/stone.png);}
         .sign {
+            font-family:"minecraft-ten-regular";
+            font-weight: lighter;
             background-image: url(../media/blocks/sign.png);
             width: 150px;
             height: 75px;
