@@ -44,7 +44,7 @@
 }
 /* main */
 html, body {
-  background-color: #010101;
+  background-color: #121212;
   color: white;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -52,12 +52,15 @@ html, body {
   min-width: 100%;
   min-height: 100vh;
   padding: 0px;
+  width: fit-content;
+  height: fit-content;
 }
 
 button, input {
   border-color: #736b5e;
   color: #e8e6e3;
   background-color: #181a1b;
+  cursor: pointer;
 }
 
 /* buttons */
@@ -85,7 +88,7 @@ button, input {
 
 /* header */
 #header {
-  background-color: #1d1d1d;
+  background-color: #252525;
   margin: 0;
   width: 100;
   margin-top: 0;
@@ -105,8 +108,9 @@ button, input {
   display: grid;
 }
 #snackbars > span {
-  width: 20%;
-  background-color: #444;
+  box-shadow: #000 6px 6px 6px;
+  width: min(20%, 90vw);
+  background-color: #616161;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
@@ -160,22 +164,19 @@ button, input {
   background-color: #333;
 }
 
-@media only screen and (max-width: 600px) {
-  #snackbars > span {
-    width: 90%;
-  }
-}
 #templates {
   width: 100%;
   display: flex;
   flex-flow: row wrap;
 }
 #templates .template {
+  box-shadow: black 3px 3px 2px;
   border-radius: 5px;
-  background-color: #1d1d1d;
+  background-color: #252525;
   min-width: 230px;
   max-width: 230px;
-  height: 400px;
+  min-height: fit-content;
+  width: 500px;
   margin: 20px;
   padding: 1%;
   padding-top: 2%;
@@ -183,6 +184,24 @@ button, input {
 }
 #templates .template > img {
   width: 80%;
+}
+#templates .template > button {
+  width: 90%;
+  background-color: #343533;
+}
+#templates .template > #start, #templates .template .template > #import {
+  color: #343533;
+  margin-top: auto;
+  align-self: flex-end;
+  margin-bottom: 5px;
+}
+#templates .template > #start {
+  background-color: yellow;
+  color: #343533;
+}
+#templates .template > #import {
+  background-color: limegreen;
+  color: #343533;
 }
 
 #user {
@@ -194,55 +213,28 @@ button, input {
   user-select: none;
 }
 
-.template > button {
-  width: 90%;
-  background-color: #333;
-}
-
-.template > #start, .template > #import {
-  color: #333;
-  margin-top: auto;
-  align-self: flex-end;
-  margin-bottom: 5px;
-}
-
-.template > #start {
-  background-color: yellow;
-  color: #333;
-}
-
-.template > #import {
-  background-color: limegreen;
-  color: #333;
-}
-
 @media only screen and (max-width: 600px) {
   #templates {
     display: grid;
     overflow: hidden;
   }
-
-  .template {
+  #templates .template {
     width: 90%;
     height: fit-content;
     max-width: none;
     margin: none;
   }
-
-  .template > img {
+  #templates .template > img {
     width: 40%;
     margin-top: 5%;
   }
-
-  .template > h2 {
+  #templates .template > h2 {
     font-size: 10vw;
   }
-
-  .template > p {
+  #templates .template > p {
     font-size: 5vw;
   }
-
-  .template > button {
+  #templates .template > button {
     width: 90%;
     margin-bottom: 20px;
   }
