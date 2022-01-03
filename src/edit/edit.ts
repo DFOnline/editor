@@ -20,9 +20,11 @@ const NAMES = {
     "else": "ELSE",
     "process": "PROCESS",
     "repeat": "REPEAT",
-    "if_game": "IF GAME"
+    "if_game": "IF GAME",
+    'loader': 'LOADER',
+    'call_loader': 'BEGIN LOADER'
 }
-type blockMaterial = "player_action" | "if_player" | "start_process" | "call_func" | "control" | "set_var" | "entity_event" | "event" | "func" | "if_entity" | "entity_action" | "if_var" | "select_obj" | "game_action" | "else" | "process" | "repeat" | "if_game";
+type blockMaterial = "player_action" | "if_player" | "start_process" | "call_func" | "control" | "set_var" | "entity_event" | "event" | "func" | "if_entity" | "entity_action" | "if_var" | "select_obj" | "game_action" | "else" | "process" | "repeat" | "if_game" | 'loader' | 'call_loader';
 interface DFblock {id: "block" | "bracket" | "killable", 'block': blockMaterial, direct: "open" | "close", type: "norm" | "repeat", action: string, data: string, target : string, subAction : string, inverted : "NOT" | "" | undefined}
 
 window.onload = () => {
@@ -61,7 +63,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
         var topper = document.createElement('div');
         var blockElement = document.createElement('div');
         if(block.id === "block"){
-            topper.classList.add(['player_action','if_player','process','start_process','func','entity_action','if_entity','repeat','set_var','if_var','control','select_obj'].includes(block.block) ? 'chest' : 'air');
+            topper.classList.add(['player_action','if_player','process','start_process','func','entity_action','if_entity','repeat','set_var','if_var','control','select_obj',"loader","call_loader"].includes(block.block) ? 'chest' : 'air');
             blockElement.classList.add(block.block, 'mat');
             if(block.block !== "else"){
                 var sign = document.createElement('div');
