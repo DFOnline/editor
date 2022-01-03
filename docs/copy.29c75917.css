@@ -44,7 +44,7 @@
 }
 /* main */
 html, body {
-  background-color: #010101;
+  background-color: #121212;
   color: white;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -52,12 +52,15 @@ html, body {
   min-width: 100%;
   min-height: 100vh;
   padding: 0px;
+  width: fit-content;
+  height: fit-content;
 }
 
 button, input {
   border-color: #736b5e;
   color: #e8e6e3;
   background-color: #181a1b;
+  cursor: pointer;
 }
 
 /* buttons */
@@ -85,7 +88,7 @@ button, input {
 
 /* header */
 #header {
-  background-color: #1d1d1d;
+  background-color: #252525;
   margin: 0;
   width: 100;
   margin-top: 0;
@@ -105,8 +108,9 @@ button, input {
   display: grid;
 }
 #snackbars > span {
-  width: 20%;
-  background-color: #444;
+  box-shadow: #000 6px 6px 6px;
+  width: min(20%, 90vw);
+  background-color: #616161;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
@@ -158,11 +162,5 @@ button, input {
   margin: auto;
   width: fit-content;
   background-color: #333;
-}
-
-@media only screen and (max-width: 600px) {
-  #snackbars > span {
-    width: 90%;
-  }
 }
 /*# sourceMappingURL=copy.29c75917.css.map */

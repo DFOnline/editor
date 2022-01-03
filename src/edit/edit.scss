@@ -1,0 +1,75 @@
+#codeBlocks {
+    display: flex;
+    .block {
+        position: relative;
+        width: max-content;
+        max-width: 300px;
+        min-width: 150px;
+        height: 300px;
+        display: flex;
+        .mat {
+            display: grid;
+            place-items: center;
+            &.event {background-image: url(../media/blocks/event.png);}
+            &.player_action {background-image: url(../media/blocks/player_action.png);}
+            &.if_player {background-image: url(../media/blocks/if_player.png);}
+            &.process {background-image: url(../media/blocks/process.png);}
+            &.start_process {background-image: url(../media/blocks/start_process.png);}
+            &.func {background-image: url(../media/blocks/func.png);}
+            &.call_func {background-image: url(../media/blocks/call_func.png);}
+            &.entity_event {background-image: url(../media/blocks/entity_event.png);}
+            &.entity_action {background-image: url(../media/blocks/entity_action.png);}
+            &.if_entity {background-image: url(../media/blocks/if_entity.png);}
+            &.if_var {background-image: url(../media/blocks/if_var.png);}
+            &.set_var {background-image: url(../media/blocks/set_var.png);}
+            &.if_game {background-image: url(../media/blocks/if_game.png);}
+            &.game_action {background-image: url(../media/blocks/game_action.png);}
+            &.repeat {background-image: url(../media/blocks/repeat.png);}
+            &.control {background-image: url(../media/blocks/control.png);}
+            &.select_obj {background-image: url(../media/blocks/select_obj.png);}
+            &.else {background-image: url(../media/blocks/else.png);}
+            &.piston {
+                background-image: url(../media/blocks/piston.png);
+                &.repeat {background-image: url(../media/blocks/pistonSticky.png);}
+                &.close {transform: scaleX(-1); width: 300px; background-position: left; display: flex;}
+            }
+        }
+        .air {background-image: none;}
+        .chest {background-image: url(../media/blocks/chest.png);}
+        .stone {height: 300px; background-image: url(../media/blocks/stone.png);}
+        .sign {
+            background-image: url(../media/blocks/sign.png);
+            width: 150px;
+            height: 75px;
+            background-size: cover;
+            display: block;
+            span {
+                text-align: center;
+                display: block;
+                height: min-content;
+                font-size: 14px;
+                color: black;
+                min-height: 18px;
+                user-select: none;
+            }
+        }
+        transition: 0.2s top;
+        top: 0px;
+        // &:hover {
+        //    top: -3px;
+        // }
+    }
+}
+.block * {
+    min-width: 150px;
+    max-width: 300px;
+    height: 150px;
+    background-size: contain;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    display: grid;
+}
+
+html,body {
+    overflow-y: hidden;
+}

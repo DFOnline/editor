@@ -469,18 +469,20 @@ function importMenu() {
     var importField = document.createElement('input');
     importField.type = "text";
     importField.placeholder = "Template Data";
-    importField.onkeyup = ()=>{
-        document.getElementById('activateimport').click();
+    importField.onkeyup = (event)=>{
+        if (event.key === "Enter") activateImport.click();
     };
     importField.id = "importfield";
     imports.appendChild(importField);
     var activateImport = document.createElement('button');
     activateImport.innerText = "Go!";
     activateImport.style.marginLeft = "5px";
-    activateImport.id = "activateimport";
     activateImport.onclick = ()=>{
-        sessionStorage.setItem('import', importField.value);
-        location.href = `/edit/`;
+        var data = importField.value.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/);
+        if (data !== null) {
+            sessionStorage.setItem('import', data[0]);
+            location.href = `/edit/`;
+        }
     };
     imports.appendChild(activateImport);
     div.appendChild(imports);

@@ -1,7 +1,9 @@
-$level3: #444;
-$level2: #333;
-$level1: #1d1d1d;
-$level0: #010101;
+$level3: #616161;
+$level2: #343533;
+$level1: #252525;
+$level0: #121212;
+
+$color1: #00ffff;
 
 /* animations */
 @keyframes snackbarout {
@@ -35,11 +37,14 @@ html,body {
     min-width: 100%;
     min-height: 100vh;
     padding: 0px;
+    width: fit-content;
+    height: fit-content;
 }
 button,input {
     border-color: #736b5e;
     color: #e8e6e3;
     background-color: #181a1b;
+    cursor: pointer;
 }
 
 /* buttons */
@@ -86,7 +91,8 @@ button,input {
     width: 100%;
     display: grid;
     & > span {
-        width: 20%;
+        box-shadow: #000 6px 6px 6px;
+        width: min(20%,90vw);
         background-color: $level3;
         padding: 5px;
         border-radius: 5px;
@@ -140,8 +146,4 @@ button,input {
             background-color: #333;
         }
     }
-}
-
-@media only screen and (max-width: 600px) {
-    #snackbars > span {width: 90%;}
 }
