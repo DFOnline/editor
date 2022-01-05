@@ -1,38 +1,24 @@
 import { startup, decode } from "../main/main";
+import { ActionDump, CodeBlockTypeName } from "./actiondump";
+import type { Template, Block } from "./template";
 
-let dragging: {"type":'block'|undefined, "value":any|undefined} = {"type":undefined,"value":undefined}
-let code: {"blocks":DFblock[]} = {"blocks":[]};
-const NAMES = {
-    "player_action": "PLAYER ACTION",
-    "if_player": "IF PLAYER",
-    "start_process": "START PROCESS",
-    "call_func": "CALL FUNCTION",
-    "control": "CONTROL",
-    "set_var": "SET VARIABLE",
-    "entity_event": "ENTITY EVENT",
-    "event": "PLAYER EVENT",
-    "func": "FUNCTION",
-    "if_entity": "IF ENTITY",
-    "entity_action": "ENTITY ACTION",
-    "if_var": "IF VARIABLE",
-    "select_obj": "SELECT OBJECT",
-    "game_action": "GAME ACTION",
-    "else": "ELSE",
-    "process": "PROCESS",
-    "repeat": "REPEAT",
-    "if_game": "IF GAME",
-    'loader': 'LOADER',
-    'call_loader': 'BEGIN LOADER'
-}
-type blockMaterial = "player_action" | "if_player" | "start_process" | "call_func" | "control" | "set_var" | "entity_event" | "event" | "func" | "if_entity" | "entity_action" | "if_var" | "select_obj" | "game_action" | "else" | "process" | "repeat" | "if_game" | 'loader' | 'call_loader';
-interface DFblock {id: "block" | "bracket" | "killable", 'block': blockMaterial, direct: "open" | "close", type: "norm" | "repeat", action: string, data: string, target : string, subAction : string, inverted : "NOT" | "" | undefined}
+let ActDB : ActionDump
+fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
+            .then(response => response.json()) // some code probably from mdn docs.
+            .then(data => { // unready required init
+                ActDB = data;
+                // console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
+                rendBlocks();
+            })
+let dragging: {"type": 'block' | undefined, "value": any | undefined} = {"type": undefined,"value": undefined}
+let code: Template
 
 window.onload = () => {
     startup()
     if(sessionStorage.getItem('import')){
         code = JSON.parse(decode(sessionStorage.getItem('import')))
     }
-    rendBlocks();
+    rendBlocks()
 }
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
     var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
@@ -50,7 +36,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 
             var HTMLblock = backup(e.target as HTMLElement); // the block html element
             var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
-            var data = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<DFblock>; // get the block
+            var data = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // get the block
             code.blocks[dragging.value]['id'] = 'killable'; // mark thing for deletion
             var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
             code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
@@ -69,7 +55,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
                 var sign = document.createElement('div');
                 sign.classList.add('sign');
                 var name = document.createElement('span');
-                name.innerText = NAMES[block.block];
+                name.innerText = CodeBlockTypeName[block.block];
                 sign.append(name);
                 var action = document.createElement('span');
                 action.innerText = block.block === "call_func" || block.block === "func" || block.block === "process" || block.block === "start_process" ? block.data : block.action;
