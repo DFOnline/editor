@@ -1,4 +1,4 @@
-import { startup, decode } from "../main/main";
+import { startup, decode, menu } from "../main/main";
 import { ActionDump, CodeBlockTypeName } from "./actiondump";
 import type { Template, Block } from "./template";
 
@@ -52,7 +52,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 			var chest = ['player_action','if_player','process','start_process','func','entity_action','if_entity','repeat','set_var','if_var','control','select_obj'].includes(block.block);
 			topper.classList.add(chest ? 'chest' : 'air');
 			if(chest){
-				topper.onclick = console.log
+				topper.onclick = () => {chestMenu(i)}
 			}
 			blockElement.classList.add(block.block, 'mat');
 			if(block.block !== "else"){
@@ -93,6 +93,56 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		stack.append(blockElement);
 		codeSpace.append(blockDiv);
 	})
+}
+
+function chestMenu(id : number){
+	var menuDiv = document.createElement('div');
+	menuDiv.id = 'chest';
+	for (var x = 0; x < 27; x++) {
+		var slot = document.createElement('div');
+		slot.classList.add('slot');
+		var item = (code.blocks[id].args.items.find(i => i.slot == x));
+		var itemElement = document.createElement('img');
+		itemElement.src = "";
+		if(item){
+			console.log(item.item.id)
+			if(item.item.id === 'txt'){
+				itemElement.src = 'https://dfonline.dev/public/images/BOOK.png';
+			}
+			else if(item.item.id === 'num'){
+				itemElement.src = 'https://dfonline.dev/public/images/SLIME_BALL.png';
+			}
+			else if(item.item.id === 'loc'){
+				itemElement.src = 'https://dfonline.dev/public/images/PAPER.png';
+			}
+			else if (item.item.id === 'g_val'){
+				itemElement.src = 'https://dfonline.dev/public/images/NAME_TAG.png';
+			}
+			else if (item.item.id === 'part'){
+				itemElement.src = 'https://dfonline.dev/public/images/WHITE_DYE.png';
+			}
+			else if (item.item.id === 'pot'){
+				itemElement.src = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
+			}
+			else if (item.item.id === 'snd'){
+				itemElement.src = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
+			}
+			else if (item.item.id === 'var'){
+				itemElement.src = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
+			}
+			else if (item.item.id === 'vec'){
+				itemElement.src = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
+			}
+			else {
+				itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
+				itemElement.classList.add('fadepulse')
+			}
+		}
+		itemElement.classList.add('item')
+		slot.appendChild(itemElement);
+		menuDiv.append(slot);
+	}
+	menu('Chest',menuDiv);
 }
 
 /**
