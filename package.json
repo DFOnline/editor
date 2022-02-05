@@ -10,5 +10,9 @@
     "@types/node": "^16.11.11",
     "@types/pako": "^1.0.2",
     "ts-node": "^10.4.0"
+  },
+  "scripts": {
+    "test": "parcel 'src/**/*.html' --no-cache --dist-dir ./docs",
+    "build": "parcel build 'src/**/*.html' --dist-dir ./docs;"
   }
 }
