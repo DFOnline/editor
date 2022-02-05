@@ -1,3 +1,5 @@
+@use '../main/main.scss' as *;
+
 @font-face{
     font-family:"minecraft-ten-regular";
     src:url("./MinecraftRegular-Bmg3.otf") format("opentype");
@@ -78,6 +80,43 @@
     background-repeat: no-repeat;
     display: grid;
 }
+
+#chest {
+    background-color: $level1;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    padding: 2px;
+    border-radius: 6px;
+    .slot {
+        position: relative;
+        $margin: 5px;
+        background-color: $level3;
+        border-radius: 4px;
+        min-width: calc((100% / 9) - ($margin * 2));
+        width: calc((100% / 9) - ($margin * 2));
+        max-width: calc((100% / 9) - ($margin * 2));
+        max-height: calc((100% / 3) - ($margin * 2));
+        height: calc((100% / 3) - ($margin * 2));
+        min-height: calc((100% / 3) - ($margin * 2));
+        margin: $margin;
+        &:before{
+            content: "";
+            display: block;
+            padding-top: 100%;  /* initial ratio of 1:1*/
+        }
+    }
+    .item {
+        width:unset;
+        display: block;
+        position: absolute;
+        $add: -3%;
+        left: calc(($add / 2) * -1);
+        top: calc(($add / 2) * -1);
+        width: calc(100% + $add);
+    }
+}
+
 
 html,body {
     overflow-y: hidden;

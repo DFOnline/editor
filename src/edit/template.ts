@@ -4,6 +4,8 @@ export interface Template {
     blocks: Block[]
 }
 
+export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
+
 export type ID = "block" | "bracket" | "killable"
 export type Inverted = "" | "NOT"
 export type Target = "" | "AllPlayers" | "Victim" | "Shooter" | "Damager" | "Killer" | "Default" | "Selection"
@@ -16,21 +18,26 @@ export type BlockSubActionID = "if_entity" | "if_game" | "if_player" | "if_var";
 export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
 export interface Block {
-    id: ID;
+    id: ID
     block: BlockID
-    action?: string;
-    data?: string;
+    action?: string
+    data?: string
     target?: Target
-    subAction?: string;
-    inverted?: Inverted;
-    type?: BracketType;
-    direct?: Direction;
-    args: {items:Argument[]};
+    subAction?: string
+    inverted?: Inverted
+    type?: BracketType
+    direct?: Direction
+    args: {items:Argument[]}
 }
 
 export interface Argument {
-    item: Item
-    slot: number
+    item: Item;
+    slot: number;
 }
 
-export type Item = any
+export interface Item {
+    id: ItemType
+    data: {
+        name: string
+    }
+}
