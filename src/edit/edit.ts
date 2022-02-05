@@ -13,8 +13,10 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 let dragging: {"type": 'block' | undefined, "value": any | undefined} = {"type": undefined,"value": undefined}
 let code: Template
 
+let mouseInfo : HTMLDivElement;
+
 window.onload = () => {
-	startup()
+	mouseInfo = startup().mouseInfo
 	if(sessionStorage.getItem('import')){
 		code = JSON.parse(decode(sessionStorage.getItem('import')))
 	}
@@ -105,38 +107,52 @@ function chestMenu(id : number){
 		var itemElement = document.createElement('img');
 		itemElement.src = "";
 		if(item){
-			console.log(item.item.id)
-			if(item.item.id === 'txt'){
-				itemElement.src = 'https://dfonline.dev/public/images/BOOK.png';
+			slot.id = String(item.slot);
+			{ // the textures.
+				if(item.item.id === 'txt'){
+					itemElement.src = 'https://dfonline.dev/public/images/BOOK.png';
+				}
+				else if(item.item.id === 'num'){
+					itemElement.src = 'https://dfonline.dev/public/images/SLIME_BALL.png';
+				}
+				else if(item.item.id === 'loc'){
+					itemElement.src = 'https://dfonline.dev/public/images/PAPER.png';
+				}
+				else if (item.item.id === 'g_val'){
+					itemElement.src = 'https://dfonline.dev/public/images/NAME_TAG.png';
+				}
+				else if (item.item.id === 'part'){
+					itemElement.src = 'https://dfonline.dev/public/images/WHITE_DYE.png';
+				}
+				else if (item.item.id === 'pot'){
+					itemElement.src = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
+				}
+				else if (item.item.id === 'snd'){
+					itemElement.src = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
+				}
+				else if (item.item.id === 'var'){
+					itemElement.src = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
+				}
+				else if (item.item.id === 'vec'){
+					itemElement.src = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
+				}
+				else {
+					itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
+					itemElement.classList.add('fadepulse')
+				}
 			}
-			else if(item.item.id === 'num'){
-				itemElement.src = 'https://dfonline.dev/public/images/SLIME_BALL.png';
+			itemElement.onmousemove = (e) => {
+				debugger;
+				var item = code.blocks[id].args.items[Number((e.target as HTMLDivElement).id)]
+				mouseInfo.style.display = 'block';
+				mouseInfo.innerHTML = '';
+				if(item.item.id === 'num' || item.item.id === 'txt'){
+					var txt = document.createElement('span');
+					txt.innerText = item.item.data.name;
+					mouseInfo.appendChild(txt);
+				}
 			}
-			else if(item.item.id === 'loc'){
-				itemElement.src = 'https://dfonline.dev/public/images/PAPER.png';
-			}
-			else if (item.item.id === 'g_val'){
-				itemElement.src = 'https://dfonline.dev/public/images/NAME_TAG.png';
-			}
-			else if (item.item.id === 'part'){
-				itemElement.src = 'https://dfonline.dev/public/images/WHITE_DYE.png';
-			}
-			else if (item.item.id === 'pot'){
-				itemElement.src = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
-			}
-			else if (item.item.id === 'snd'){
-				itemElement.src = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
-			}
-			else if (item.item.id === 'var'){
-				itemElement.src = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
-			}
-			else if (item.item.id === 'vec'){
-				itemElement.src = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
-			}
-			else {
-				itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
-				itemElement.classList.add('fadepulse')
-			}
+			itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
 		}
 		itemElement.classList.add('item')
 		slot.appendChild(itemElement);
