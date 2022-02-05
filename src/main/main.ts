@@ -7,7 +7,7 @@ function snackbar(message : string){
     bar.innerText = message
     bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}}
     bar.onanimationend = event => (event.target as HTMLElement).remove();
-    (document.getElementById('snackbars') as HTMLElement).appendChild(bar);
+    document.getElementById('snackbars').appendChild(bar);
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
 }
 
@@ -54,17 +54,22 @@ function login(name : string, auth : string){
 }
 
 function startup(){
+    let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
+    document.body.onmousemove = e => {
+        mouseInfo.style.top = String(e.clientY + 10) + 'px';
+        mouseInfo.style.left = String(e.clientX + 10) + 'px';
+    }
     let urlParams = new URLSearchParams(location.search)
     var urlMessage = urlParams.get('message');
     if(urlMessage){
         snackbar(urlMessage)
     }
-    return {urlParams}
+    return {urlParams,mouseInfo}
 }
 
 const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
-codeutilities.onopen = () => {snackbar('Connected to codeutilties'); cuopen = true;}
-codeutilities.onerror = () => {snackbar('Failed to connect to codeutilties'); cuopen = false;}
+codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = true;}
+codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
 function decode(base64data : string){
     var compressData = atob(base64data);
@@ -80,5 +85,6 @@ function encode(codedata : string){
     var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
     return btoa(data2);
 }
+
 
 export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode};

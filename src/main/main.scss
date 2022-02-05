@@ -92,34 +92,6 @@ button,input {
     display: flex;
 }
 
-/* snackbar css */
-#snackbars {
-    position: fixed;
-    bottom: 3%;
-    z-index: 10;
-    width: 100%;
-    display: grid;
-    & > span {
-        box-shadow: #000 6px 6px 6px;
-        width: min(20%,90vw);
-        background-color: $level3;
-        padding: 5px;
-        border-radius: 5px;
-        text-align: center;
-        margin: auto;
-        word-wrap: break-word;
-        margin-top: 5px;
-        user-select: none;
-        position: relative;
-        &.snackbarout {
-            animation: snackbarout 0.5s 1;
-        }
-        &.snackbartime {
-            animation: fadeout 0.8s 1;
-        }
-    }
-}
-
 /* menus */
 #menus {
     position: fixed;
@@ -159,4 +131,44 @@ button,input {
             }
         }
     }
+}
+
+/* snackbar css */
+#snackbars {
+    position: fixed;
+    bottom: 3%;
+    z-index: 10;
+    width: 100%;
+    display: grid;
+    > span {
+        box-shadow: #000 6px 6px 6px;
+        width: min(20%,90vw);
+        min-width: min(500px,100vw);
+        background-color: $level3;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+        margin: auto;
+        word-wrap: break-word;
+        margin-top: 5px;
+        user-select: none;
+        position: relative;
+        &.snackbarout {
+            animation: snackbarout 0.5s 1;
+        }
+        &.snackbartime {
+            animation: fadeout 0.8s 1;
+        }
+    }
+}
+
+#mouseinfo {
+    position: fixed;
+    z-index: 11;
+    padding: 5px;
+    user-select: none;
+    border-radius: 5px;
+    background-color: $level3;
+    box-shadow: #000 3px 3px 3px;
+    display: none;
 }
