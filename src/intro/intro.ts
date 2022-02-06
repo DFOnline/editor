@@ -23,7 +23,7 @@ window.onload = async () => {
         text.classList.add('show');
         text.onanimationend = async () => {
             await sleep(700)
-            // location.href = '/home/';
+            location.href = '/home/';
         }
     }
 }
