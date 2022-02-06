@@ -18,10 +18,10 @@ html, body {
     width: 100vw;
     height: 100vh;
     background-color: black;
+    color: white;
     padding: 0;
     margin: 0;
     display: flex;
-    color: white;
     > div {
         margin: auto;
         display: none;
@@ -32,6 +32,7 @@ html, body {
 
 
 #animate {
+    display: flex;
     width: min(50vh,50vw);
     height: min(50vh,50vw);
     background-image: url(../media/enderchest.png);
@@ -56,6 +57,31 @@ html, body {
             opacity: 1;
             animation: expand 0.5s forwards 0.2s cubic-bezier(.25,.43,0,1);
         }
+    }
+}
+
+#badges {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    bottom: 5px;
+    display: flex;
+    $height: min(5vh,10vw);
+    height: $height;
+    width: min-content;
+    &.show {
+        animation: fadein 0.5s forwards 0.2s ease;
+    }
+    span {
+        margin: auto;
+        font-size: calc(min(5vh,10vw) - 1vw);
+    }
+    img {
+        margin: auto;
+        height: $height;
     }
 }
 
