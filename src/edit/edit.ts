@@ -1,6 +1,6 @@
 import { startup, decode, menu } from "../main/main";
 import { ActionDump, CodeBlockTypeName } from "./actiondump";
-import type { Template, Block } from "./template";
+import { Template, Block, VarScope, VarScopeName } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -142,15 +142,23 @@ function chestMenu(id : number){
 				}
 			}
 			itemElement.onmousemove = (e) => {
-				debugger;
-				var item = code.blocks[id].args.items[Number((e.target as HTMLDivElement).id)]
-				mouseInfo.style.display = 'block';
+				var item = code.blocks[id].args.items[Number((e.target as HTMLDivElement).parentElement.id)]
+				mouseInfo.style.display = 'grid';
 				mouseInfo.innerHTML = '';
-				if(item.item.id === 'num' || item.item.id === 'txt'){
+				if (item.item.id === 'num' || item.item.id === 'txt') {
 					var txt = document.createElement('span');
 					txt.innerText = item.item.data.name;
 					mouseInfo.appendChild(txt);
 				}
+				else if (item.item.id === 'var'){
+					var name = document.createElement('span');
+					name.innerText = item.item.data.name;
+					mouseInfo.append(name);
+					var scope = document.createElement('span');
+					scope.innerText = VarScopeName[item.item.data.scope];
+					mouseInfo.append(scope);
+				}
+				console.log(item.item);
 			}
 			itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
 		}
