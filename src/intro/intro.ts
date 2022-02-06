@@ -13,15 +13,17 @@
 // }
 
 window.onload = async () => {
-    var animate = document.querySelector('#animate') as HTMLDivElement;
+    var animate : HTMLDivElement = document.querySelector('#animate');
     animate.classList.add('show');
     animate.onanimationend = async () => {
-        animate.classList.add('expand')
-        var text = (document.querySelector('#animate > h1') as HTMLHeadingElement);
-        text.classList.add('show')
+        animate.classList.add('expand');
+        var badges : HTMLDivElement = document.querySelector('#badges');
+        badges.classList.add('show')
+        var text : HTMLDivElement = document.querySelector('#animate > h1');
+        text.classList.add('show');
         text.onanimationend = async () => {
             await sleep(700)
-            location.href = '/home/';
+            // location.href = '/home/';
         }
     }
 }
