@@ -1,6 +1,6 @@
-import { startup, decode, menu } from "../main/main";
+import { startup, decode, menu, minecraftColorHTML } from "../main/main";
 import { ActionDump, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, VarScope, VarScopeName } from "./template";
+import { Template, Block, VarScopeName } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -146,9 +146,9 @@ function chestMenu(id : number){
 				mouseInfo.style.display = 'grid';
 				mouseInfo.innerHTML = '';
 				if (item.item.id === 'num' || item.item.id === 'txt') {
-					var txt = document.createElement('span');
-					txt.innerText = item.item.data.name;
-					mouseInfo.appendChild(txt);
+					var txt = document.createElement('div')
+					minecraftColorHTML(item.item.data.name).forEach(x => txt.appendChild(x))
+					mouseInfo.append(txt);
 				}
 				else if (item.item.id === 'var'){
 					var name = document.createElement('span');
