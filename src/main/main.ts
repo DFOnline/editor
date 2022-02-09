@@ -86,5 +86,50 @@ function encode(codedata : string){
     return btoa(data2);
 }
 
+/**
+ * Converts text with & or § codes into colored HTML
+ * @param text The text to format.
+ * @param defaultColor The default color to use (just adds it to the start, requires the & or §).
+ * @param font The font to use, when unused it will just not change the font.
+ * @returns An array of span elements which use css to add the formatting.
+ */
+function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
+    var styleMap = {
+        '4': {css: 'color: #be0000;', reset: true},
+        'c': {css: 'color: #fe3f3f;', reset: true},
+        '6': {css: 'color: #d9a334;', reset: true},
+        'e': {css: 'color: #fefe3f;', reset: true},
+        '2': {css: 'color: #00be00;', reset: true},
+        'a': {css: 'color: #3ffe3f;', reset: true},
+        'b': {css: 'color: #3ffefe;', reset: true},
+        '3': {css: 'color: #00bebe;', reset: true},
+        '1': {css: 'color: #0000be;', reset: true},
+        '9': {css: 'color: #3f3ffe;', reset: true},
+        'd': {css: 'color: #fe3ffe;', reset: true},
+        '5': {css: 'color: #be00be;', reset: true},
+        'f': {css: 'color: #ffffff;', reset: true},
+        '7': {css: 'color: #bebebe;', reset: true},
+        '8': {css: 'color: #3f3f3f;', reset: true},
+        '0': {css: 'color: #000000;', reset: true},
+        'l': {css: 'font-weight: bold;', reset: false},
+        'n': {css: 'text-decoration: underline;', reset: false},
+        'o': {css: 'font-style: italic;', reset: false},
+        'm': {css: 'text-decoration: line-through;', reset: false},
+        'k': {css: '', reset: false},
+        'r': {css: 'color: #ffffff;', reset: true},
+    };
+    var last = styleMap['r'].css
+    return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-OR].*?(?=[&§][\dA-FK-OR])|[&§][\dA-FK-OR].*/gi).map((str : string) => {
+            var newStr = str.replace(/^[&§][\dA-FK-OR]/gi,'')
+            var element = document.createElement('span');
+            element.innerText = newStr;
+            var style = styleMap[str[1] as 'r'];
+            if(style.reset){last = style.css;}
+            else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
+            element.style.cssText = style.css + last;
+            return element;
+        }
+    )
+}
 
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode};
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML};
