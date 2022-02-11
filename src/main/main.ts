@@ -130,6 +130,7 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
             return element;
         }
     )
+        .filter(x => x.innerText !== '')
 }
 
 export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML};
