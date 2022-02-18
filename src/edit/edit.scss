@@ -117,6 +117,18 @@
     }
 }
 
+#copylink {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    margin: 10px;
+    color: #D5F0FF;
+    cursor: pointer;
+    user-select: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
 
 html,body {
     overflow-y: hidden;
