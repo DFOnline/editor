@@ -49,19 +49,28 @@ html,body {
     width: fit-content;
     height: fit-content;
 }
-button,input {
+input, button {
     border-color: #736b5e;
     color: #e8e6e3;
     background-color: #181a1b;
-    cursor: pointer;
     border: none;
     font-size: 16px;
     box-shadow: #0009 3px 3px 10px;
     padding: 5px;
 }
 
+button, input[type=submit], input[type=button] {
+    cursor: pointer;
+    padding-left: 15px;
+    padding-right: 15px;
+    transition: filter .2s ease;
+    &:hover {
+        filter: brightness(1.1);
+    }
+}
+
 /* buttons */
-.bigbutton{
+.bigbutton {
     background-color: #333;
     border: none;
     color: white;
@@ -87,7 +96,6 @@ button,input {
 #header {
     background-color: $level1;
     margin: 0;
-    width: 100vw;
     margin-top: 0;
     padding: 2vw;
     padding-top: 1vh;
@@ -174,6 +182,13 @@ button,input {
     user-select: none;
     border-radius: 5px;
     background-color: $level3;
-    box-shadow: #000 3px 3px 3px;
+    box-shadow: #0009 3px 3px 5px;
     display: none;
+}
+
+.code {
+    background-color: $level1;
+    border-radius: 5px;
+    padding: 2px;
+    user-select: text;
 }
