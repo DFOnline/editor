@@ -16,10 +16,13 @@ let code: Template
 let mouseInfo : HTMLDivElement;
 
 window.onload = () => {
+    document.getElementById("copylink").addEventListener('click', copyLink);
 	var start = startup();
 	mouseInfo = start.mouseInfo;
 	if(start.urlParams.has('template')){
 		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
+        location.href = ".";
+        return;
 	}
 	if(sessionStorage.getItem('import')){
 		code = JSON.parse(decode(sessionStorage.getItem('import')));
@@ -230,6 +233,14 @@ function chestMenu(id : number){
 		menuDiv.append(slot);
 	}
 	menu('Chest',menuDiv);
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(`https://dfonline.dev/edit/?template=${sessionStorage.getItem('import')}`);
+    document.getElementById("copylink").innerHTML = "📋 Copied!";
+    setTimeout(() => {
+            document.getElementById("copylink").innerHTML = "📋 Copy Link";
+    }, 1000);
 }
 
 /**
