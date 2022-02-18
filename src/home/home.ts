@@ -85,8 +85,10 @@ window.onload = () => {
     } else {
         userBox.onclick = loginMenu;
     }
-    var importButton = document.getElementById('import') as HTMLButtonElement;
+    const importButton = document.getElementById('import'): HTMLButtonElement;
+    const startButton = document.getElementById("start"): HTMLButtonElement;
     importButton.onclick = importMenu;
+    startButton.onclick = ()=>{sessionStorage.setItem('import',"H4sIAAAAAAAA/6tOyslPzi62io6tBQBDtMtoCwAAAA=="); location.href = `/edit/`}
 }
 
 codeutilities.onmessage = event => {
