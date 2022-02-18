@@ -1,21 +1,3 @@
-// {
-//     "port": 1234,
-//     "configurations": [
-//         {
-//             "command": "npm test",
-//             "name": "Start Dev Server",
-//             "request": "launch",
-//             "type": "node-terminal"
-//         },
-//         {
-//             "command": "npm run build",
-//             "name": "Build",
-//             "request": "launch",
-//             "type": "node-terminal"
-//         },
-//     ]
-// }
-
 {
     "configurations": [
         {
@@ -23,6 +5,12 @@
             "name": "Dev Server",
             "request": "launch",
             "type": "node-terminal"
-        }
+        },
+        {
+            "command": "npm run build",
+            "name": "Build",
+            "request": "launch",
+            "type": "node-terminal"
+        },
     ]
 }
