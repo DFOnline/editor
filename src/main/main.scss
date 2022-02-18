@@ -54,6 +54,10 @@ button,input {
     color: #e8e6e3;
     background-color: #181a1b;
     cursor: pointer;
+    border: none;
+    font-size: 16px;
+    box-shadow: #0009 3px 3px 10px;
+    padding: 5px;
 }
 
 /* buttons */
@@ -65,7 +69,7 @@ button,input {
     display: inline-block;
     padding: 10px 10px;
     font-size: 14px;
-    box-shadow: #000 2px 2px 2px;
+    box-shadow: #0009 2px 2px 10px;
     text-decoration: none;
     transition: 0.1s;
     border-radius: 5px / 2px;
@@ -83,12 +87,12 @@ button,input {
 #header {
     background-color: $level1;
     margin: 0;
-    width: 100;
+    width: 100vw;
     margin-top: 0;
     padding: 2vw;
     padding-top: 1vh;
     padding-bottom: 1vh;
-    box-shadow: #000 10;
+    box-shadow: #0009 10px 10px 30px;
     display: flex;
 }
 

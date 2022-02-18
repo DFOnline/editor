@@ -27,11 +27,11 @@
 
 #user {
     cursor: pointer;
+    user-select: none;
     position: absolute;
     right: 2vw;
     &:hover {
         text-decoration: underline;
-        user-select: none;
     }
 }
 
