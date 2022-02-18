@@ -198,6 +198,23 @@ function chestMenu(id : number){
 					zv.innerText = 'Z: ' + item.item.data.z.toPrecision(3).replace(/(?<=.\d)0$/,'');
 					mouseInfo.append(zv);
 				}
+				else if (item.item.id === 'pot'){
+					var titlepot = document.createElement('span');
+					titlepot.innerText = 'Potion Effect';
+					titlepot.style.color = '#ff557f';
+					mouseInfo.append(titlepot);
+					var typepot = document.createElement('span');
+					typepot.innerText = item.item.data.pot
+					mouseInfo.append(typepot);
+					mouseInfo.append(document.createElement('br'));
+					mouseInfo.append(document.createElement('br'));
+					var amp = document.createElement('span');
+					amp.innerText = 'Amplifier: ' + String(item.item.data.amp)
+					mouseInfo.append(amp);
+					var dur = document.createElement('span');
+					dur.innerText = 'Duration: ' + String(item.item.data.dur) + ' ticks';
+					mouseInfo.append(dur);
+				}
 				else {
 					var info = document.createElement('span');
 					info.innerText = "It seems this item type\nisn't implemented yet."
