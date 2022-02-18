@@ -5,7 +5,7 @@
     display: flex;
     flex-flow: row wrap;
     .template {
-        box-shadow: black 3px 3px 2px;
+        box-shadow: black 3px 3px 20px;
         border-radius: 5px;
         background-color: $level1;
         min-width: 230px;
@@ -26,11 +26,12 @@
 }
 
 #user {
+    cursor: pointer;
+    user-select: none;
     position: absolute;
     right: 2vw;
     &:hover {
         text-decoration: underline;
-        user-select: none;
     }
 }
 
