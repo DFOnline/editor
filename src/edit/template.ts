@@ -56,5 +56,8 @@ export interface Item {
         x?: number
         y?: number
         z?: number
+        pot?: string
+        dur?: number
+        amp?: number
     }
 }
