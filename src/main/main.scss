@@ -50,14 +50,17 @@ html,body {
     height: fit-content;
 }
 input, button {
-    border-color: #736b5e;
     color: #e8e6e3;
     background-color: #181a1b;
-    border: none;
+    border: #0001 1px solid;
+    border-radius: 2px;
     font-size: 16px;
     box-shadow: #0009 3px 3px 10px;
     padding: 5px;
+    margin: 2.5px 0 2.5px 0;
+    
 }
+
 
 button, input[type=submit], input[type=button] {
     cursor: pointer;
@@ -85,12 +88,37 @@ button, input[type=submit], input[type=button] {
     &:hover {
         transform: scaleX(1.05);
     }
-    &:disabled{
-        transform: initial;
-        filter: brightness(0.8);
-        cursor: not-allowed;
+}
+button {
+    transition: transform .1s ease-out, filter .2s ease;
+    &.bigbutton{
+        background-color: #333;
+        border: none;
+        color: white;
+        text-align: center;
+        display: inline-block;
+        padding: 10px 10px;
+        font-size: 14px;
+        box-shadow: #0009 2px 2px 10px;
+        text-decoration: none;
+        transition: 0.1s;
+        border-radius: 5px / 2px;
+        &:hover {
+            transform: scaleX(1.05);
+        }
+        &:disabled{
+            transform: initial;
+            filter: brightness(0.8);
+            cursor: not-allowed;
+        }
+    }
+    &:active {
+        transform: scale(0.97);
     }
 }
+
+/* buttons */
+
 
 /* header */
 #header {
