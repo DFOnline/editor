@@ -16,11 +16,15 @@ let code: Template
 let mouseInfo : HTMLDivElement;
 
 window.onload = () => {
-	mouseInfo = startup().mouseInfo
-	if(sessionStorage.getItem('import')){
-		code = JSON.parse(decode(sessionStorage.getItem('import')))
+	var start = startup();
+	mouseInfo = start.mouseInfo;
+	if(start.urlParams.has('template')){
+		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
 	}
-	rendBlocks()
+	if(sessionStorage.getItem('import')){
+		code = JSON.parse(decode(sessionStorage.getItem('import')));
+	}
+	rendBlocks();
 }
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
 	var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
