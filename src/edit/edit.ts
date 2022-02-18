@@ -158,6 +158,48 @@ function chestMenu(id : number){
 					scope.innerText = VarScopeName[item.item.data.scope];
 					mouseInfo.append(scope);
 				}
+				else if (item.item.id === 'loc'){
+					var title = document.createElement('span');
+					title.innerText = 'Location';
+					title.style.color = '#55ff55';
+					mouseInfo.append(title);
+					var x = document.createElement('span');
+					x.innerText = 'X: ' + item.item.data.loc.x.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(x);
+					var y = document.createElement('span');
+					y.innerText = 'Y: ' + item.item.data.loc.y.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(y);
+					var z = document.createElement('span');
+					z.innerText = 'Z: ' + item.item.data.loc.z.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(z);
+					var pitch = document.createElement('span');
+					pitch.innerText = 'p: ' + item.item.data.loc.pitch.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(pitch);
+					var yaw = document.createElement('span');
+					yaw.innerText = 'y: ' + item.item.data.loc.yaw.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(yaw);
+				}
+				else if (item.item.id === 'vec'){
+					var titlev = document.createElement('span');
+					titlev.innerText = 'Vector';
+					titlev.style.color = '#2affaa';
+					mouseInfo.append(titlev);
+					var xv = document.createElement('span');
+					xv.innerText = 'X: ' + item.item.data.x.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(xv);
+					var yv = document.createElement('span');
+					yv.innerText = 'Y: ' + item.item.data.y.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(yv);
+					var zv = document.createElement('span');
+					zv.innerText = 'Z: ' + item.item.data.z.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					mouseInfo.append(zv);
+				}
+				else {
+					var info = document.createElement('span');
+					info.innerText = "It seems this item type\nisn't implemented yet."
+					info.style.color = 'red';
+					mouseInfo.append(info);
+				}
 				console.log(item.item);
 			}
 			itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
