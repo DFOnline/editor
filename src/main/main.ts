@@ -144,13 +144,13 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
             element.innerText = newStr;
             var style = styleMap[str[1] as 'r'];
             if(style.reset){last = style.css;}
+            else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
         
             if(style.hasOwnProperty("obfuscated") && style.obfuscated) {
                 element.setAttribute("data-obfuscated", newStr);
                 element.innerText = nextObfuscatedText(newStr);
                 enableObfuscatedText();
             } 
-            else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
             element.style.cssText = style.css + last;
             return element;
         }
