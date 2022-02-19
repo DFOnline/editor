@@ -2,6 +2,10 @@ import { inflate, gzip } from "pako";
 
 let cuopen = false;
 
+/**
+ * Shows a popup like the one saying "Couldn't connect to codeutilties"
+ * @param message A message to show in the popup
+ */
 function snackbar(message : string){
     var bar = document.createElement('span')
     bar.innerText = message
@@ -11,6 +15,11 @@ function snackbar(message : string){
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
 }
 
+/**
+ * Opens a menu such as the one seen as the login, import and items menu.
+ * @param title The title of the menu
+ * @param content HTMLElement object of what the menu should contain
+ */
 function menu(title : string, content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
@@ -36,6 +45,11 @@ function menu(title : string, content : HTMLElement = document.createElement('sp
 }
 
 const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
+/**
+ * Login to DFOnline server with Username and Password.
+ * @param name Username
+ * @param auth Password
+ */
 function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
         method: "POST",
@@ -53,6 +67,10 @@ function login(name : string, auth : string){
     .catch(() => snackbar('Failed to log in.'));
 }
 
+/**
+ * A function which does the start up activity for all pages, and returns some data.
+ * @returns MouseInfo (HTMLElement, what I use for tooltips) urlParams (self generated data for the URL)
+ */
 function startup(){
     let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
     document.body.onmousemove = e => {
