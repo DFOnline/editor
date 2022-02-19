@@ -111,6 +111,7 @@ function encode(codedata : string){
  * @param font The font to use, when unused it will just not change the font.
  * @returns An array of span elements which use css to add the formatting.
  */
+
 function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
     var styleMap = {
         '0': {css: 'color: #000000;', reset: true},
@@ -133,7 +134,7 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
         'n': {css: 'text-decoration: underline;', reset: false},
         'o': {css: 'font-style: italic;', reset: false},
         'm': {css: 'text-decoration: line-through;', reset: false},
-        'k': {css: '', reset: false},
+        'k': {css: 'font-family: monospace;', reset: false, obfuscated: true},
         'r': {css: 'color: #ffffff;', reset: true},
     };
     var last = styleMap['r'].css
@@ -143,6 +144,12 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
             element.innerText = newStr;
             var style = styleMap[str[1] as 'r'];
             if(style.reset){last = style.css;}
+        
+            if(style.hasOwnProperty("obfuscated") && style.obfuscated) {
+                element.setAttribute("data-obfuscated", newStr);
+                element.innerText = nextObfuscatedText(newStr);
+                enableObfuscatedText();
+            } 
             else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
             element.style.cssText = style.css + last;
             return element;
@@ -150,6 +157,48 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
     )
         .filter(x => x.innerText !== '')
 }
+
+let obfuscatedTextIntervalID = -1;
+function enableObfuscatedText() {
+    if(obfuscatedTextIntervalID > -1)
+        return;
+    
+    obfuscatedTextIntervalID = setInterval(tickObfuscatedText, 75);
+    
+}
+
+function tickObfuscatedText() {
+    const elements = document.querySelectorAll("span[data-obfuscated]");
+    for(element of elements) {
+        let current = nextObfuscatedText(element.innerText);
+        if(current.toLowerCase() == element.getAttribute("data-obfuscated").toLowerCase()) {
+            console.log(current);
+            current = nextObfuscatedText(current);
+        }
+        
+        element.innerText = current;
+    }
+}
+
+function nextObfuscatedText(text : String) {
+    return text.split('').map(nextObfuscatedChar).join("");
+    
+    function nextObfuscatedChar(char : String) {
+    let current = once();
+    
+    while(bannedChars.includes(current))
+        current = once();
+    
+    return current;
+    
+    function once() {
+       return String.fromCharCode(char == " " ? " " : 33 + (Math.random() * 100));
+    }
+}
+}
+
+const bannedChars = ["\n", "\r"];
+
 
 /**
  * Edits a number to look like a df one, where there usually is a .0 after things.
