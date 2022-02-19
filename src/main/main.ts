@@ -151,4 +151,14 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
         .filter(x => x.innerText !== '')
 }
 
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML};
+/**
+ * Edits a number to look like a df one, where there usually is a .0 after things.
+ * @param num The number to work this on
+ * @param accuray How many digits
+ * @returns A number with edits applied
+ */
+function dfNumber(num : number | string,accuray = 3){
+    return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
+}
+
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML, dfNumber};
