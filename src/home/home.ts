@@ -1,4 +1,4 @@
-import { startup, menu, login, cuopen, codeutilities, user } from "../main/main"
+import { startup, menu, login, cuopen, codeutilities, user, snackbar } from "../main/main"
 
 function importMenu(){
     var div = document.createElement('div')
@@ -87,6 +87,7 @@ window.onload = () => {
     }
     var importButton = document.getElementById('import') as HTMLButtonElement;
     importButton.onclick = importMenu;
+    document.querySelector('button#start').addEventListener('click',() => snackbar('Cry about it'))
 }
 
 codeutilities.onmessage = event => {
