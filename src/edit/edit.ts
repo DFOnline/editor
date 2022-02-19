@@ -1,6 +1,6 @@
-import { startup, decode, menu, minecraftColorHTML } from "../main/main";
+import { startup, decode, menu, minecraftColorHTML, dfNumber } from "../main/main";
 import { ActionDump, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, VarScopeName } from "./template";
+import type { Template, Block } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -110,11 +110,12 @@ function chestMenu(id : number){
 	for (var x = 0; x < 27; x++) {
 		var slot = document.createElement('div');
 		slot.classList.add('slot');
-		var item = (code.blocks[id].args.items.find(i => i.slot == x));
+		const itemIndex = code.blocks[id].args.items.findIndex(i => i.slot == x)
+		var item = (code.blocks[id].args.items[itemIndex]);
 		var itemElement = document.createElement('img');
 		itemElement.src = "";
 		if(item){
-			slot.id = String(item.slot);
+			slot.id = String(itemIndex);
 			{ // the textures.
 				if(item.item.id === 'txt'){
 					itemElement.src = 'https://dfonline.dev/public/images/BOOK.png';
@@ -153,8 +154,8 @@ function chestMenu(id : number){
 				mouseInfo.style.display = 'grid';
 				mouseInfo.innerHTML = '';
 				if (item.item.id === 'num' || item.item.id === 'txt') {
-					var txt = document.createElement('div')
-					minecraftColorHTML(item.item.data.name).forEach(x => txt.appendChild(x))
+					var txt = document.createElement('div');
+					minecraftColorHTML(item.item.data.name,item.item.id === 'num' ? '§c' : undefined).forEach(x => txt.appendChild(x));
 					mouseInfo.append(txt);
 				}
 				else if (item.item.id === 'var'){
@@ -162,7 +163,18 @@ function chestMenu(id : number){
 					name.innerText = item.item.data.name;
 					mouseInfo.append(name);
 					var scope = document.createElement('span');
-					scope.innerText = VarScopeName[item.item.data.scope];
+					if(item.item.data.scope === 'local'){
+						scope.innerText = 'LOCAL';
+						scope.style.color = '#55ff55'
+					}
+					else if(item.item.data.scope === 'saved'){
+						scope.innerText = 'SAVE';
+						scope.style.color = '#ffff55';
+					}
+					else {
+						scope.innerText = 'GAME';
+						scope.style.color = '#aaaaaa';
+					}
 					mouseInfo.append(scope);
 				}
 				else if (item.item.id === 'loc'){
@@ -171,19 +183,19 @@ function chestMenu(id : number){
 					title.style.color = '#55ff55';
 					mouseInfo.append(title);
 					var x = document.createElement('span');
-					x.innerText = 'X: ' + item.item.data.loc.x.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					x.innerText = 'X: ' + dfNumber(item.item.data.loc.x);
 					mouseInfo.append(x);
 					var y = document.createElement('span');
-					y.innerText = 'Y: ' + item.item.data.loc.y.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					y.innerText = 'Y: ' + dfNumber(item.item.data.loc.y);
 					mouseInfo.append(y);
 					var z = document.createElement('span');
-					z.innerText = 'Z: ' + item.item.data.loc.z.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					z.innerText = 'Z: ' + dfNumber(item.item.data.loc.z);
 					mouseInfo.append(z);
 					var pitch = document.createElement('span');
-					pitch.innerText = 'p: ' + item.item.data.loc.pitch.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					pitch.innerText = 'p: ' + dfNumber(item.item.data.loc.pitch);
 					mouseInfo.append(pitch);
 					var yaw = document.createElement('span');
-					yaw.innerText = 'y: ' + item.item.data.loc.yaw.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					yaw.innerText = 'y: ' + dfNumber(item.item.data.loc.yaw);
 					mouseInfo.append(yaw);
 				}
 				else if (item.item.id === 'vec'){
@@ -192,13 +204,13 @@ function chestMenu(id : number){
 					titlev.style.color = '#2affaa';
 					mouseInfo.append(titlev);
 					var xv = document.createElement('span');
-					xv.innerText = 'X: ' + item.item.data.x.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					xv.innerText = 'X: ' + dfNumber(item.item.data.x);
 					mouseInfo.append(xv);
 					var yv = document.createElement('span');
-					yv.innerText = 'Y: ' + item.item.data.y.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					yv.innerText = 'Y: ' + dfNumber(item.item.data.y);
 					mouseInfo.append(yv);
 					var zv = document.createElement('span');
-					zv.innerText = 'Z: ' + item.item.data.z.toPrecision(3).replace(/(?<=.\d)0$/,'');
+					zv.innerText = 'Z: ' + dfNumber(item.item.data.z);
 					mouseInfo.append(zv);
 				}
 				else if (item.item.id === 'pot'){
@@ -217,6 +229,49 @@ function chestMenu(id : number){
 					var dur = document.createElement('span');
 					dur.innerText = 'Duration: ' + String(item.item.data.dur) + ' ticks';
 					mouseInfo.append(dur);
+				}
+				else if (item.item.id === 'snd'){
+					var titles = document.createElement('span');
+					titles.innerText = 'Sound';
+					titles.style.color = '#5555ff';
+					titles.style.textShadow = '1px 1px #000'; // the original sound color contrasts really badly.
+					mouseInfo.append(titles);
+					var sound = document.createElement('span');
+					sound.innerText = item.item.data.sound;
+					mouseInfo.append(sound);
+					var pitchs = document.createElement('span');
+					pitchs.innerText = 'Pitch: ' + String(dfNumber(item.item.data.pitch));
+					mouseInfo.append(pitchs)
+					var volume = document.createElement('span');
+					volume.innerText = 'Volume: ' + String(dfNumber(item.item.data.vol));
+					mouseInfo.append(volume);
+				}
+				else if (item.item.id === 'g_val'){
+					var gval = document.createElement('span');
+					gval.innerText = item.item.data.type;
+					mouseInfo.append(gval);
+					var selection = document.createElement('span');
+					selection.innerText = item.item.data.target;
+					if(item.item.data.target === 'Selection' || item.item.data.target === 'Default'){
+						selection.style.color = '#55FF55'
+					}
+					else if(item.item.data.target === 'Killer' || item.item.data.target === 'Damager'){
+						selection.style.color = '#FF5555'
+					}
+					else if(item.item.data.target === 'LastEntity' || item.item.data.target === 'Shooter'){
+						selection.style.color = '#FFFF55';
+						if(item.item.data.target === 'LastEntity'){
+							selection.innerHTML = 'Last-Spawned Entity';
+						}
+					}
+					else if(item.item.data.target === 'Victim'){
+						selection.style.color = '#5555FF';
+						selection.style.textShadow = '1px 1px #000';
+					}
+					else if(item.item.data.target === 'Projectile'){
+						selection.style.color = '#55FFFF';
+					}
+					mouseInfo.append(selection);
 				}
 				else {
 					var info = document.createElement('span');

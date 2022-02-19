@@ -175,12 +175,14 @@ button {
 
 /* snackbar css */
 #snackbars {
+    width: 100%;
+    pointer-events: none;
     position: fixed;
     bottom: 3%;
     z-index: 10;
-    width: 100%;
     display: grid;
     > span {
+        pointer-events: initial;
         box-shadow: #000 6px 6px 6px;
         width: min(20%,90vw);
         min-width: min(500px,100vw);
@@ -199,6 +201,7 @@ button {
         &.snackbartime {
             animation: fadeout 0.8s 1;
         }
+        cursor: pointer;
     }
 }
 

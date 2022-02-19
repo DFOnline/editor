@@ -6,11 +6,7 @@ export interface Template {
 
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = "saved" | "unsaved" | "local"
-export enum VarScopeName {
-    saved = "SAVE",
-    unsaved = "GAME",
-    local = "LOCAL"
-}
+export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
 
 export type ID = "block" | "bracket" | "killable"
 export type Inverted = "" | "NOT"
@@ -59,5 +55,10 @@ export interface Item {
         pot?: string
         dur?: number
         amp?: number
+        sound?: string
+        pitch?: number
+        vol?: number
+        type?: string
+        target?: g_valSelection
     }
 }
