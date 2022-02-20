@@ -55,7 +55,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		var topper = document.createElement('div');
 		var blockElement = document.createElement('div');
 		if(block.id === "block"){
-			var chest = ['player_action','if_player','process','start_process','func','entity_action','if_entity','repeat','set_var','if_var','control','select_obj'].includes(block.block);
+			var chest = ['player_action','if_player','process','start_process','func','entity_action','if_entity','repeat','set_var','if_var','control','select_obj','game_action'].includes(block.block);
 			topper.classList.add(chest ? 'chest' : 'air');
 			if(chest){
 				topper.onclick = () => {chestMenu(i)}
