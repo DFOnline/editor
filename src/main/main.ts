@@ -111,30 +111,29 @@ function encode(codedata : string){
  * @param font The font to use, when unused it will just not change the font.
  * @returns An array of span elements which use css to add the formatting.
  */
-
 function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
     var styleMap = {
-        '0': {css: 'color: #000000;', reset: true},
-        '1': {css: 'color: #0000aa;', reset: true},
-        '2': {css: 'color: #00aa00;', reset: true},
-        '3': {css: 'color: #00aaaa;', reset: true},
-        '4': {css: 'color: #aa0000;', reset: true},
-        '5': {css: 'color: #aa00aa;', reset: true},
-        '6': {css: 'color: #ffaa00;', reset: true},
-        '7': {css: 'color: #aaaaaa;', reset: true},
-        '8': {css: 'color: #555555;', reset: true},
-        '9': {css: 'color: #5555ff;', reset: true},
-        'a': {css: 'color: #55ff55;', reset: true},
-        'b': {css: 'color: #55ffff;', reset: true},
-        'c': {css: 'color: #ff5555;', reset: true},
-        'd': {css: 'color: #ff55ff;', reset: true},
-        'e': {css: 'color: #ffff55;', reset: true},
+        '4': {css: 'color: #be0000;', reset: true},
+        'c': {css: 'color: #fe3f3f;', reset: true},
+        '6': {css: 'color: #d9a334;', reset: true},
+        'e': {css: 'color: #fefe3f;', reset: true},
+        '2': {css: 'color: #00be00;', reset: true},
+        'a': {css: 'color: #3ffe3f;', reset: true},
+        'b': {css: 'color: #3ffefe;', reset: true},
+        '3': {css: 'color: #00bebe;', reset: true},
+        '1': {css: 'color: #0000be;', reset: true},
+        '9': {css: 'color: #3f3ffe;', reset: true},
+        'd': {css: 'color: #fe3ffe;', reset: true},
+        '5': {css: 'color: #be00be;', reset: true},
         'f': {css: 'color: #ffffff;', reset: true},
+        '7': {css: 'color: #bebebe;', reset: true},
+        '8': {css: 'color: #3f3f3f;', reset: true},
+        '0': {css: 'color: #000000;', reset: true},
         'l': {css: 'font-weight: bold;', reset: false},
         'n': {css: 'text-decoration: underline;', reset: false},
         'o': {css: 'font-style: italic;', reset: false},
         'm': {css: 'text-decoration: line-through;', reset: false},
-        'k': {css: 'font-family: monospace;', reset: false, obfuscated: true},
+        'k': {css: '', reset: false},
         'r': {css: 'color: #ffffff;', reset: true},
     };
     var last = styleMap['r'].css
@@ -145,60 +144,12 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
             var style = styleMap[str[1] as 'r'];
             if(style.reset){last = style.css;}
             else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
-        
-            if(style.hasOwnProperty("obfuscated") && style.obfuscated) {
-                element.setAttribute("data-obfuscated", newStr);
-                element.innerText = nextObfuscatedText(newStr);
-                enableObfuscatedText();
-            } 
             element.style.cssText = style.css + last;
             return element;
         }
     )
         .filter(x => x.innerText !== '')
 }
-
-let obfuscatedTextIntervalID = -1;
-function enableObfuscatedText() {
-    if(obfuscatedTextIntervalID > -1)
-        return;
-    
-    obfuscatedTextIntervalID = setInterval(tickObfuscatedText, 75);
-    
-}
-
-function tickObfuscatedText() {
-    const elements = document.querySelectorAll("span[data-obfuscated]");
-    for(element of elements) {
-        let current = nextObfuscatedText(element.innerText);
-        if(current.toLowerCase() == element.getAttribute("data-obfuscated").toLowerCase()) {
-            console.log(current);
-            current = nextObfuscatedText(current);
-        }
-        
-        element.innerText = current;
-    }
-}
-
-function nextObfuscatedText(text : String) {
-    return text.split('').map(nextObfuscatedChar).join("");
-    
-    function nextObfuscatedChar(char : String) {
-    let current = once();
-    
-    while(bannedChars.includes(current))
-        current = once();
-    
-    return current;
-    
-    function once() {
-       return String.fromCharCode(char == " " ? " " : 33 + (Math.random() * 100));
-    }
-}
-}
-
-const bannedChars = ["\n", "\r"];
-
 
 /**
  * Edits a number to look like a df one, where there usually is a .0 after things.
