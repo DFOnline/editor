@@ -38,7 +38,7 @@ function loginMenu(){
     var div = document.createElement('div');
     if(!sessionStorage.user){
         var howTo = document.createElement('p');
-        howTo.innerHTML = `<ul><li>On diamondfire, type <span class="code">/join 44357</span>.</li>
+        howTo.innerHTML = `<ul><li>On diamondfire, type /join 44357.</li>
         <li>Go to slot 9 and click it, find My DFOnline code and click it.</li>
         <li>In chat it should give you a link. Open it and copy the given code.</li>
         <li>Come back here and paste it in. You should be logged in.</li></ul>`

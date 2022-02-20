@@ -49,9 +49,11 @@ html,body {
     width: fit-content;
     height: fit-content;
 }
-input, button {
+button,input {
+    border-color: #736b5e;
     color: #e8e6e3;
     background-color: #181a1b;
+    cursor: pointer;
     border: #0001 1px solid;
     border-radius: 2px;
     font-size: 16px;
@@ -61,36 +63,8 @@ input, button {
     
 }
 
-
-button, input[type=submit], input[type=button] {
-    cursor: pointer;
-    padding-left: 15px;
-    padding-right: 15px;
-    transition: filter .2s ease;
-    &:hover {
-        filter: brightness(1.1);
-    }
-}
-
-/* buttons */
-.bigbutton {
-    background-color: #333;
-    border: none;
-    color: white;
-    text-align: center;
-    display: inline-block;
-    padding: 10px 10px;
-    font-size: 14px;
-    box-shadow: #0009 2px 2px 10px;
-    text-decoration: none;
-    transition: 0.1s;
-    border-radius: 5px / 2px;
-    &:hover {
-        transform: scaleX(1.05);
-    }
-}
 button {
-    transition: transform .1s ease-out, filter .2s ease;
+    transition: transform 0.1s ease-out;
     &.bigbutton{
         background-color: #333;
         border: none;
@@ -178,15 +152,15 @@ button {
     width: 100%;
     pointer-events: none;
     position: fixed;
-    bottom: 10px;
+    bottom: 3%;
     z-index: 10;
     display: grid;
     > span {
         pointer-events: initial;
-        box-shadow: #0009 6px 6px 10px;
+        box-shadow: #000 6px 6px 6px;
         width: min(20%,90vw);
         min-width: min(500px,100vw);
-        background-color: $level1;
+        background-color: $level3;
         padding: 5px;
         border-radius: 5px;
         text-align: center;
@@ -213,13 +187,6 @@ button {
     user-select: none;
     border-radius: 5px;
     background-color: $level3;
-    box-shadow: #0009 3px 3px 5px;
+    box-shadow: #000 3px 3px 3px;
     display: none;
-}
-
-.code {
-    background-color: $level1;
-    border-radius: 5px;
-    padding: 2px;
-    user-select: text;
 }
