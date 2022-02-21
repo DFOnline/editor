@@ -5,7 +5,7 @@
     display: flex;
     flex-flow: row wrap;
     .template {
-        box-shadow: black 3px 3px 2px;
+        box-shadow: black 3px 3px 20px;
         border-radius: 5px;
         background-color: $level1;
         min-width: 230px;
@@ -20,17 +20,18 @@
         
         & > button {width: 90%; background-color: $level2;}
         & > #start, .template > #import {color: $level2; margin-top: auto; align-self: flex-end; margin-bottom: 5px;}
-        & > #start {background-color: yellow; color: $level2;}
-        & > #import {background-color: limegreen; color: $level2;}
+        & > #start {background: linear-gradient(150deg, rgba(72,185,29,1) 0%, rgba(0,255,21,1) 100%); color: $level2;}
+        & > #import {background: linear-gradient(150deg, rgba(200,160,36,1) 0%, rgba(255,226,0,1) 100%); color: $level2;}
     }
 }
 
 #user {
+    cursor: pointer;
+    user-select: none;
     position: absolute;
     right: 2vw;
     &:hover {
         text-decoration: underline;
-        user-select: none;
     }
 }
 
@@ -50,4 +51,8 @@
             > button {width: 90%; margin-bottom: 20px;}
         }
     }
+}
+
+ul {
+    user-select: none;
 }

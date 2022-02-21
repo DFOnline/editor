@@ -49,15 +49,31 @@ html,body {
     width: fit-content;
     height: fit-content;
 }
-button,input {
-    border-color: #736b5e;
+input, button {
     color: #e8e6e3;
     background-color: #181a1b;
+    border: #0001 1px solid;
+    border-radius: 2px;
+    font-size: 16px;
+    box-shadow: #0009 3px 3px 10px;
+    padding: 5px;
+    margin: 2.5px 0 2.5px 0;
+    
+}
+
+
+button, input[type=submit], input[type=button] {
     cursor: pointer;
+    padding-left: 15px;
+    padding-right: 15px;
+    transition: filter .2s ease;
+    &:hover {
+        filter: brightness(1.1);
+    }
 }
 
 /* buttons */
-.bigbutton{
+.bigbutton {
     background-color: #333;
     border: none;
     color: white;
@@ -65,30 +81,54 @@ button,input {
     display: inline-block;
     padding: 10px 10px;
     font-size: 14px;
-    box-shadow: #000 2px 2px 2px;
+    box-shadow: #0009 2px 2px 10px;
     text-decoration: none;
     transition: 0.1s;
     border-radius: 5px / 2px;
     &:hover {
         transform: scaleX(1.05);
     }
-    &:disabled{
-        transform: initial;
-        filter: brightness(0.8);
-        cursor: not-allowed;
+}
+button {
+    transition: transform .1s ease-out, filter .2s ease;
+    &.bigbutton{
+        background-color: #333;
+        border: none;
+        color: white;
+        text-align: center;
+        display: inline-block;
+        padding: 10px 10px;
+        font-size: 14px;
+        box-shadow: #0009 2px 2px 10px;
+        text-decoration: none;
+        transition: 0.1s;
+        border-radius: 5px / 2px;
+        &:hover {
+            transform: scaleX(1.05);
+        }
+        &:disabled{
+            transform: initial;
+            filter: brightness(0.8);
+            cursor: not-allowed;
+        }
+    }
+    &:active {
+        transform: scale(0.97);
     }
 }
+
+/* buttons */
+
 
 /* header */
 #header {
     background-color: $level1;
     margin: 0;
-    width: 100;
     margin-top: 0;
     padding: 2vw;
     padding-top: 1vh;
     padding-bottom: 1vh;
-    box-shadow: #000 10;
+    box-shadow: #0009 10px 10px 30px;
     display: flex;
 }
 
@@ -135,16 +175,18 @@ button,input {
 
 /* snackbar css */
 #snackbars {
-    position: fixed;
-    bottom: 3%;
-    z-index: 10;
     width: 100%;
+    pointer-events: none;
+    position: fixed;
+    bottom: 10px;
+    z-index: 10;
     display: grid;
     > span {
-        box-shadow: #000 6px 6px 6px;
+        pointer-events: initial;
+        box-shadow: #0009 6px 6px 10px;
         width: min(20%,90vw);
         min-width: min(500px,100vw);
-        background-color: $level3;
+        background-color: $level1;
         padding: 5px;
         border-radius: 5px;
         text-align: center;
@@ -159,6 +201,7 @@ button,input {
         &.snackbartime {
             animation: fadeout 0.8s 1;
         }
+        cursor: pointer;
     }
 }
 
@@ -170,6 +213,13 @@ button,input {
     user-select: none;
     border-radius: 5px;
     background-color: $level3;
-    box-shadow: #000 3px 3px 3px;
+    box-shadow: #0009 3px 3px 5px;
     display: none;
+}
+
+.code {
+    background-color: $level1;
+    border-radius: 5px;
+    padding: 2px;
+    user-select: text;
 }

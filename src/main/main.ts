@@ -2,6 +2,10 @@ import { inflate, gzip } from "pako";
 
 let cuopen = false;
 
+/**
+ * Shows a popup like the one saying "Couldn't connect to codeutilties"
+ * @param message A message to show in the popup
+ */
 function snackbar(message : string){
     var bar = document.createElement('span')
     bar.innerText = message
@@ -11,6 +15,11 @@ function snackbar(message : string){
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
 }
 
+/**
+ * Opens a menu such as the one seen as the login, import and items menu.
+ * @param title The title of the menu
+ * @param content HTMLElement object of what the menu should contain
+ */
 function menu(title : string, content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
@@ -36,6 +45,11 @@ function menu(title : string, content : HTMLElement = document.createElement('sp
 }
 
 const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
+/**
+ * Login to DFOnline server with Username and Password.
+ * @param name Username
+ * @param auth Password
+ */
 function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
         method: "POST",
@@ -53,6 +67,10 @@ function login(name : string, auth : string){
     .catch(() => snackbar('Failed to log in.'));
 }
 
+/**
+ * A function which does the start up activity for all pages, and returns some data.
+ * @returns MouseInfo (HTMLElement, what I use for tooltips) urlParams (self generated data for the URL)
+ */
 function startup(){
     let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
     document.body.onmousemove = e => {
@@ -94,28 +112,28 @@ function encode(codedata : string){
  * @returns An array of span elements which use css to add the formatting.
  */
 function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
-    var styleMap = {
-        '4': {css: 'color: #be0000;', reset: true},
-        'c': {css: 'color: #fe3f3f;', reset: true},
-        '6': {css: 'color: #d9a334;', reset: true},
-        'e': {css: 'color: #fefe3f;', reset: true},
-        '2': {css: 'color: #00be00;', reset: true},
-        'a': {css: 'color: #3ffe3f;', reset: true},
-        'b': {css: 'color: #3ffefe;', reset: true},
-        '3': {css: 'color: #00bebe;', reset: true},
-        '1': {css: 'color: #0000be;', reset: true},
-        '9': {css: 'color: #3f3ffe;', reset: true},
-        'd': {css: 'color: #fe3ffe;', reset: true},
-        '5': {css: 'color: #be00be;', reset: true},
-        'f': {css: 'color: #ffffff;', reset: true},
-        '7': {css: 'color: #bebebe;', reset: true},
-        '8': {css: 'color: #3f3f3f;', reset: true},
+    const styleMap = {
         '0': {css: 'color: #000000;', reset: true},
+        '1': {css: 'color: #0000aa;', reset: true},
+        '2': {css: 'color: #00aa00;', reset: true},
+        '3': {css: 'color: #00aaaa;', reset: true},
+        '4': {css: 'color: #aa0000;', reset: true},
+        '5': {css: 'color: #aa00aa;', reset: true},
+        '6': {css: 'color: #ffaa00;', reset: true},
+        '7': {css: 'color: #aaaaaa;', reset: true},
+        '8': {css: 'color: #555555;', reset: true},
+        '9': {css: 'color: #5555ff;', reset: true},
+        'a': {css: 'color: #55ff55;', reset: true},
+        'b': {css: 'color: #55ffff;', reset: true},
+        'c': {css: 'color: #ff5555;', reset: true},
+        'd': {css: 'color: #ff55ff;', reset: true},
+        'e': {css: 'color: #ffff55;', reset: true},
+        'f': {css: 'color: #ffffff;', reset: true},
         'l': {css: 'font-weight: bold;', reset: false},
         'n': {css: 'text-decoration: underline;', reset: false},
         'o': {css: 'font-style: italic;', reset: false},
         'm': {css: 'text-decoration: line-through;', reset: false},
-        'k': {css: '', reset: false},
+        'k': {css: 'animation: fadepulse 1s infinite alternate ease-in-out;', reset: false},
         'r': {css: 'color: #ffffff;', reset: true},
     };
     var last = styleMap['r'].css
@@ -133,4 +151,14 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
         .filter(x => x.innerText !== '')
 }
 
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML};
+/**
+ * Edits a number to look like a df one, where there usually is a .0 after things.
+ * @param num The number to work this on
+ * @param accuray How many digits
+ * @returns A number with edits applied
+ */
+function dfNumber(num : number | string,accuray = 3){
+    return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
+}
+
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML, dfNumber};
