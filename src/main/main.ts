@@ -56,8 +56,8 @@ function login(name : string, auth : string){
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             name,
-            auth
-        })
+            auth,
+        }),
     })
     .then(res => res.json())
     .then((json : {auth: string, name: string, token: string}) => {
@@ -138,7 +138,7 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
     };
     var last = styleMap['r'].css
     return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-OR].*?(?=[&§][\dA-FK-OR])|[&§][\dA-FK-OR].*/gi).map((str : string) => {
-            var newStr = str.replace(/^[&§][\dA-FK-OR]/gi,'')
+            var newStr = str.replace(/^[&§][\dA-FK-OR]/gi,'');
             var element = document.createElement('span');
             element.innerText = newStr;
             var style = styleMap[str[1] as 'r'];

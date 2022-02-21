@@ -3,7 +3,7 @@ import { ActionDump, CodeBlockTypeName } from "./actiondump";
 import type { Template, Block } from "./template";
 
 let ActDB : ActionDump
-fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
+fetch('https://dfonline.dev/public/db.json') // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
 				ActDB = data;
@@ -218,8 +218,7 @@ function chestMenu(id : number){
 					var typepot = document.createElement('span');
 					typepot.innerText = item.item.data.pot
 					mouseInfo.append(typepot);
-					mouseInfo.append(document.createElement('br'));
-					mouseInfo.append(document.createElement('br'));
+					mouseInfo.append(document.createElement('hr'));
 					var amp = document.createElement('span');
 					amp.innerText = 'Amplifier: ' + String(item.item.data.amp)
 					mouseInfo.append(amp);
@@ -236,6 +235,7 @@ function chestMenu(id : number){
 					var sound = document.createElement('span');
 					sound.innerText = item.item.data.sound;
 					mouseInfo.append(sound);
+					mouseInfo.append(document.createElement('hr'))
 					var pitchs = document.createElement('span');
 					pitchs.innerText = 'Pitch: ' + String(dfNumber(item.item.data.pitch));
 					mouseInfo.append(pitchs)
@@ -258,7 +258,7 @@ function chestMenu(id : number){
 					else if(item.item.data.target === 'LastEntity' || item.item.data.target === 'Shooter'){
 						selection.style.color = '#FFFF55';
 						if(item.item.data.target === 'LastEntity'){
-							selection.innerHTML = 'Last-Spawned Entity';
+							selection.innerText = 'Last-Spawned Entity';
 						}
 					}
 					else if(item.item.data.target === 'Victim'){
@@ -269,6 +269,50 @@ function chestMenu(id : number){
 						selection.style.color = '#55FFFF';
 					}
 					mouseInfo.append(selection);
+				}
+				else if (item.item.id === 'part'){
+					var titlep = document.createElement('span');
+					titlep.innerText = 'Particle Effect';
+					titlep.style.color = '#aa55ff';
+					titlep.style.textShadow = '1px 1px #000';
+					mouseInfo.append(titlep);
+					var par = document.createElement('span');
+					par.innerText = item.item.data.particle;
+					mouseInfo.append(par);
+					mouseInfo.append(document.createElement('hr'));
+					var amount = document.createElement('span');
+					amount.innerText = "Amount: " + String(item.item.data.cluster.amount);
+					mouseInfo.append(amount);
+					var spread = document.createElement('span');
+					spread.innerText = 'Spread: ' + dfNumber(item.item.data.cluster.horizontal) + ' ' + dfNumber(item.item.data.cluster.vertical); // string templates go brrrrr // tbh this is mostly function so I think a string template would look worse but atleast I mention as such in a massive line to make mild refrence to the existance to string litterals, their often place in strings generated like this and their still uselessness here despite what they are usefull for.
+					mouseInfo.append(spread);
+					if(item.item.data.data.motionVariation !== undefined || item.item.data.data.colorVariation !== undefined || item.item.data.data.material !== undefined){
+						mouseInfo.append(document.createElement('hr'));
+						if(item.item.data.data.motionVariation !== undefined){
+							var motion = document.createElement('span');
+							motion.innerText = `Motion: ${dfNumber(item.item.data.data.x)} ${dfNumber(item.item.data.data.y)} ${dfNumber(item.item.data.data.z)}`;
+							motion.style.color = '#2affaa';
+							mouseInfo.append(motion);
+							var motionVariation = document.createElement('span');
+							motionVariation.innerText = 'Motion Variation: ' + String(item.item.data.data.motionVariation) + '%';
+							mouseInfo.append(motionVariation);
+						}
+						if(item.item.data.data.colorVariation !== undefined){
+							var color = document.createElement('span');
+							const colorHex = item.item.data.data.rgb.toString(16).toUpperCase(); // the color as #BLABLA
+							color.innerText = 'Color: ' + colorHex;
+							color.style.color = '#' + colorHex;
+							mouseInfo.append(color);
+							var colorVariation = document.createElement('span');
+							colorVariation.innerText = 'Color Variation: ' + String(item.item.data.data.colorVariation) + '%';
+							mouseInfo.append(colorVariation);
+						}
+						if(item.item.data.data.material !== undefined){
+							var material = document.createElement('span');
+							material.innerText = 'Material: ' + item.item.data.data.material.toLowerCase();
+							mouseInfo.append(material);
+						}
+					}
 				}
 				else {
 					var info = document.createElement('span');

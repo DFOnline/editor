@@ -60,5 +60,22 @@ export interface Item {
         vol?: number
         type?: string
         target?: g_valSelection
+        particle?: string
+        cluster?: {
+            amount: number;
+            horizontal: number;
+            vertical: number;
+        }
+        data?: {
+            motionVariation?: number;
+            x?: number;
+            y?: number;
+            z?: number;
+            colorVariation?: number;
+            rgb?: number;
+            sizeVariation?: number;
+            size?: number;
+            material?: string;
+        }
     }
 }
