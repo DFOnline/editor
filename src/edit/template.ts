@@ -37,36 +37,92 @@ export interface Argument {
     slot: number;
 }
 
-export interface Item {
-    id: ItemType
+
+// Item Code ========================================================
+
+export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag
+
+export interface Number {
+    id: 'num';
     data: {
-        name: string
-        scope?: VarScope
-        loc?: {
+        name: string;
+    }
+}
+
+export interface Text {
+    id: 'txt';
+    data: {
+        name: string;
+    }
+}
+
+export interface Variable {
+    id: 'var'
+    data: {
+        name: string;
+        scope: VarScope;
+    }
+}
+
+export interface Location {
+    id: 'loc';
+    data: {
+        isBlock: boolean;
+        loc: {
             x: number
             y: number
             z: number
             pitch: number
             yaw: number
         }
-        x?: number
-        y?: number
-        z?: number
-        pot?: string
-        dur?: number
-        amp?: number
-        sound?: string
-        pitch?: number
-        vol?: number
-        type?: string
-        target?: g_valSelection
-        particle?: string
-        cluster?: {
+    }
+}
+
+export interface Vector {
+    id: 'vec';
+    data: {
+        x: number;
+        y: number;
+        z: number;
+    }
+}
+
+export interface Potion {
+    id: 'pot';
+    data: {
+        pot: string;
+        dur: number;
+        amp: number;
+    }
+}
+
+export interface Sound {
+    id: 'snd';
+    data: {
+        sound: string
+        pitch: number
+        vol: number
+    }
+}
+
+export interface GameValue {
+    id: 'g_val';
+    data: {
+        type: string;
+        target: g_valSelection;
+    }
+}
+
+export interface Particle {
+    id: 'part';
+    data: {
+        particle: string
+        cluster: {
             amount: number;
             horizontal: number;
             vertical: number;
         }
-        data?: {
+        data: {
             motionVariation?: number;
             x?: number;
             y?: number;
@@ -77,5 +133,15 @@ export interface Item {
             size?: number;
             material?: string;
         }
+    }
+}
+
+export interface BlockTag {
+    id: 'bl_tag';
+    data: {
+        option: string;
+        tag: string;
+        action: string;
+        block: BlockID;
     }
 }
