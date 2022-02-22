@@ -1,9 +1,9 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber } from "../main/main";
-import { ActionDump, CodeBlockTypeName } from "./actiondump";
+import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import type { Template, Block } from "./template";
 
 let ActDB : ActionDump
-fetch('https://dfonline.dev/public/db.json') // Gets ?actiondump.
+fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
 				ActDB = data;
@@ -105,10 +105,11 @@ function chestMenu(id : number){
 	var menuDiv = document.createElement('div');
 	menuDiv.id = 'chest';
 	for (var x = 0; x < 27; x++) {
+		var block = code.blocks[id];
 		var slot = document.createElement('div');
 		slot.classList.add('slot');
-		const itemIndex = code.blocks[id].args.items.findIndex(i => i.slot == x)
-		var item = (code.blocks[id].args.items[itemIndex]);
+		const itemIndex = block.args.items.findIndex(i => i.slot == x)
+		var item = (block.args.items[itemIndex]);
 		var itemElement = document.createElement('img');
 		itemElement.src = "";
 		if(item){
@@ -141,13 +142,22 @@ function chestMenu(id : number){
 				else if (item.item.id === 'vec'){
 					itemElement.src = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
 				}
+				else if (item.item.id === 'bl_tag'){
+					try{
+						itemElement.src = 'https://dfonline.dev/public/images/' + (findBlockTagOption(block.block,block.action,item.item.data.tag,item.item.data.option).icon.material) + '.png';
+					}
+					catch{
+						itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
+						itemElement.classList.add('fadepulse');
+					}
+				}
 				else {
 					itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
-					itemElement.classList.add('fadepulse')
+					itemElement.classList.add('fadepulse');
 				}
 			}
 			itemElement.onmousemove = (e) => {
-				var item = code.blocks[id].args.items[Number((e.target as HTMLDivElement).parentElement.id)]
+				var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)]
 				mouseInfo.style.display = 'grid';
 				mouseInfo.innerHTML = '';
 				if (item.item.id === 'num' || item.item.id === 'txt') {
@@ -314,6 +324,22 @@ function chestMenu(id : number){
 						}
 					}
 				}
+				else if (item.item.id === 'bl_tag'){
+					const tag = findBlockTagOption(block.block, block.action, item.item.data.tag, item.item.data.option);
+					const tags = findBlockTags(block.block, block.action)
+					var tagName = document.createElement('span');
+					tagName.innerText = 'Tag: ' + item.item.data.tag
+					tagName.style.color = 'yellow';
+					mouseInfo.append(tagName);
+					mouseInfo.append(document.createElement('hr'));
+					tags.forEach(t => t.options.forEach(t => {
+						const tagElement = document.createElement('span');
+						tagElement.innerText = t.name;
+						if(t.name === tag.name){tagElement.style.color = 'aqua';}
+						else{tagElement.style.color = 'white';}
+						mouseInfo.append(tagElement);
+					}))
+				}
 				else {
 					var info = document.createElement('span');
 					info.innerText = "It seems this item type\nisn't implemented yet."
@@ -342,4 +368,12 @@ function backup(element : HTMLElement) : HTMLDivElement {
 	}else{
 		return backup(element.parentNode as HTMLElement)
 	}
+}
+
+function findBlockTags(block: CodeBlockIdentifier, action: String) {
+	return ActDB.actions.find(x => CodeBlockTypeName[block] === x.codeblockName && x.name === action).tags;
+}
+
+function findBlockTagOption(block: CodeBlockIdentifier, action: String, tag: String, option: string){
+	return findBlockTags(block,action).find(x => tag === x.name).options.find(x => x.name === option);
 }
