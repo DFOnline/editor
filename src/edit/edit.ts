@@ -1,6 +1,6 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import type { Template, Block, SelectionBlock, SubActionBlock } from "./template";
+import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -353,12 +353,23 @@ function chestMenu(id : number){
 					console.log(item.item);
 				}
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
+				itemElement.onclick = (e) => {
+					var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)]
+					if(item.item.id === 'bl_tag'){
+						const tag = findBlockTag(block.block,block.action,item.item.data.tag);
+						item.item.data.option = (tag.options[Math.abs((tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length)].name); // yeh cool line
+					}
+					itemElement.onmousemove(e);
+					chestMenu(id);
+				}
 			}
 			itemElement.classList.add('item')
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
 		}
-		menu('Chest',menuDiv);
+		var chestDiv = document.querySelector('#chest')
+		if(chestDiv) chestDiv.parentElement.replaceChild(menuDiv,chestDiv);
+		else menu('Chest',menuDiv);
 	}
 }
 
@@ -379,6 +390,10 @@ function findBlockTags(block: CodeBlockIdentifier, action: String) {
 	return ActDB.actions.find(x => CodeBlockTypeName[block] === x.codeblockName && x.name === action).tags;
 }
 
+function findBlockTag(block: CodeBlockIdentifier, action: String, tag: String){
+	return findBlockTags(block,action).find(x => tag === x.name)
+}
+
 function findBlockTagOption(block: CodeBlockIdentifier, action: String, tag: String, option: string){
-	return findBlockTags(block,action).find(x => tag === x.name).options.find(x => x.name === option);
+	return findBlockTag(block,action,tag).options.find(x => x.name === option);
 }
