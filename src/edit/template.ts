@@ -9,7 +9,7 @@ export type VarScope = "saved" | "unsaved" | "local"
 export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
 
 export type ID = "block" | "bracket" | "killable"
-export type Inverted = "" | "NOT"
+export type Inverted = "" | "NOT" // funny
 export type Target = "" | "AllPlayers" | "Victim" | "Shooter" | "Damager" | "Killer" | "Default" | "Selection"
 export type Direction = "open" | "close"
 export type BracketType = "norm" | "repeat"
@@ -19,17 +19,44 @@ export type BlockActionID = "event" | "player_action" | "entity_event" | "entity
 export type BlockSubActionID = "if_entity" | "if_game" | "if_player" | "if_var";
 export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
-export interface Block {
-    id: ID
-    block: BlockID
-    action?: string
-    data?: string
-    target?: Target
-    subAction?: string
-    inverted?: Inverted
-    type?: BracketType
-    direct?: Direction
-    args: {items:Argument[]}
+export type Block = Bracket | SelectionBlock | SubActionBlock | DataBlock | Killable
+
+export interface Bracket {
+    id: "bracket";
+    type: "norm" | "repeat";
+    direct: "open" | "close";
+}
+
+export interface SelectionBlock {
+    id: "block";
+    block: BlockActionID
+    action: string;
+    target: Target;
+    inverted: Inverted;
+    args: {items: Argument[]}
+}
+
+export interface SubActionBlock {
+    id: "block";
+    block: BlockSubActionID
+    action: string;
+    subAction: string;
+    inverted: Inverted;
+    args: {items: Argument[]}
+}
+
+export interface DataBlock {
+    id: "block";
+    block: BlockDataID;
+    data: string;
+}
+
+export interface Else {
+    id: "else"; // 💀
+}
+
+export interface Killable {
+    id: 'killable';
 }
 
 export interface Argument {
