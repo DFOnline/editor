@@ -16,7 +16,7 @@ export interface Action {
 
 export interface Icon {
     material: string;
-};
+}
 export interface Tag {
     name: string;
     options: {
