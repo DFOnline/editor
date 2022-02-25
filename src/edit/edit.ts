@@ -38,16 +38,22 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		blockDiv.draggable = true;
 		blockDiv.ondrag = () => {dragging.type = 'block',dragging.value = i}
 		blockDiv.ondragover = e => {if(dragging.type === 'block'){e.preventDefault()}};
-		blockDiv.addEventListener('drop',e => { // pain // it doesn't even seem to work..
+		blockDiv.addEventListener('drop',e => { // pain
 
-			var HTMLblock = backup(e.target as HTMLElement); // the block html element
-			var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
-			var data = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // get the block
-			code.blocks[dragging.value]['id'] = 'killable'; // mark thing for deletion
+			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
 			var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
-			code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
-			code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the one marked for deletion
-
+			if(Math.abs(id - dragging.value) === 1){ // if it is next to the one you just used
+				var swapData = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // the block you held
+				code.blocks[dragging.value] = code.blocks[id]; // and some swapping shenanagins
+				code.blocks[id] = swapData; // it works so I got it correct
+			}
+			else{
+				var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
+				var data = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // get the block you held
+				code.blocks[dragging.value]['id'] = 'killable'; // mark thing for deletion
+				code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
+				code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the one marked for deletion
+			}
 			rendBlocks();
 
 		}); // why doesn't it exist add HTMLElement.drop??
