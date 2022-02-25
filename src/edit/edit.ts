@@ -336,19 +336,19 @@ function chestMenu(id : number){
 					}
 					else if (item.item.id === 'bl_tag'){
 						const tag = findBlockTagOption(block.block, block.action, item.item.data.tag, item.item.data.option);
-						const tags = findBlockTags(block.block, block.action)
+						const tags = findBlockTag(block.block, block.action, item.item.data.tag);
 						var tagName = document.createElement('span');
 						tagName.innerText = 'Tag: ' + item.item.data.tag
 						tagName.style.color = 'yellow';
 						mouseInfo.append(tagName);
 						mouseInfo.append(document.createElement('hr'));
-						tags.forEach(t => t.options.forEach(t => {
+						tags.options.forEach(t => {
 							const tagElement = document.createElement('span');
 							tagElement.innerText = t.name;
 							if(t.name === tag.name){tagElement.style.color = 'aqua';}
 							else{tagElement.style.color = 'white';}
 							mouseInfo.append(tagElement);
-						}))
+						})
 					}
 					else {
 						var info = document.createElement('span');
@@ -360,10 +360,10 @@ function chestMenu(id : number){
 				}
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
 				itemElement.onclick = (e) => {
-					var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)]
+					var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)];
 					if(item.item.id === 'bl_tag'){
 						const tag = findBlockTag(block.block,block.action,item.item.data.tag);
-						item.item.data.option = (tag.options[Math.abs((tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length)].name); // yeh cool line
+						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
 					}
 					itemElement.onmousemove(e);
 					chestMenu(id);
