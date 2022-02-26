@@ -120,49 +120,49 @@ function chestMenu(id : number){
 			slot.classList.add('slot');
 			const itemIndex = block.args.items.findIndex(i => i.slot == x)
 			var item = (block.args.items[itemIndex]);
-			var itemElement = document.createElement('img');
-			itemElement.src = "";
+			var itemElement = document.createElement('div');
+			itemElement.style.backgroundImage = "";
 			if(item){
 				slot.id = String(itemIndex);
 				{ // the textures.
 					if(item.item.id === 'txt'){
-						itemElement.src = 'https://dfonline.dev/public/images/BOOK.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
 					}
 					else if(item.item.id === 'num'){
-						itemElement.src = 'https://dfonline.dev/public/images/SLIME_BALL.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/SLIME_BALL.png)';
 					}
 					else if(item.item.id === 'loc'){
-						itemElement.src = 'https://dfonline.dev/public/images/PAPER.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PAPER.png)';
 					}
 					else if (item.item.id === 'g_val'){
-						itemElement.src = 'https://dfonline.dev/public/images/NAME_TAG.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/NAME_TAG.png)';
 					}
 					else if (item.item.id === 'part'){
-						itemElement.src = 'https://dfonline.dev/public/images/WHITE_DYE.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/WHITE_DYE.png)';
 					}
 					else if (item.item.id === 'pot'){
-						itemElement.src = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/DRAGON_BREATH.png)';
 					}
 					else if (item.item.id === 'snd'){
-						itemElement.src = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/NAUTILUS_SHELL.png)';
 					}
 					else if (item.item.id === 'var'){
-						itemElement.src = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/MAGMA_CREAM.png)';
 					}
 					else if (item.item.id === 'vec'){
-						itemElement.src = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PRISMARINE_SHARD.png)';
 					}
 					else if (item.item.id === 'bl_tag'){
 						try{
-							itemElement.src = 'https://dfonline.dev/public/images/' + (findBlockTagOption(block.block,block.action,item.item.data.tag,item.item.data.option).icon.material) + '.png';
+							itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/' + (findBlockTagOption(block.block,block.action,item.item.data.tag,item.item.data.option).icon.material) + '.png)';
 						}
 						catch{
-							itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
+							itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BARRIER.png)';
 							itemElement.classList.add('fadepulse');
 						}
 					}
 					else {
-						itemElement.src = 'https://dfonline.dev/public/images/BARRIER.png';
+						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BARRIER.png)';
 						itemElement.classList.add('fadepulse');
 					}
 				}
