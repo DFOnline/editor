@@ -206,6 +206,7 @@ button {
 }
 
 #mouseinfo {
+    pointer-events: none;
     display: grid;
     position: fixed;
     z-index: 11;
