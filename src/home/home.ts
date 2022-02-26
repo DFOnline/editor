@@ -61,6 +61,10 @@ function loginMenu(){
         loginButton.onclick = () => login(nameSlot.value,codeSlot.value);
         authBox.appendChild(loginButton);
         div.append(authBox);
+        var congrog = document.createElement('button')
+        congrog.innerText = 'Get a DFOnline premuim subcription and join the democratic rebulpic of congrog!'
+        congrog.onclick = () => {location.replace('https://discord.com/invite/NqU6XnyVPA')}
+        div.append(congrog);
         menu("Login",div);
     }
 }
