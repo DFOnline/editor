@@ -10,7 +10,7 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
 			})
-let dragging: {"type": 'block' | undefined, "value": any | undefined} = {"type": undefined,"value": undefined}
+let dragging: {"type": 'block' | 'item' | undefined, "value": any | undefined} = {"type": undefined,"value": undefined}
 let code: Template
 
 let mouseInfo : HTMLDivElement;
@@ -124,6 +124,24 @@ function chestMenu(id : number){
 			itemElement.style.backgroundImage = "";
 			if(item){
 				slot.id = String(itemIndex);
+				if(item.item.id === 'bl_tag'){itemElement.draggable = false; itemElement.ondragstart = e => {e.preventDefault(); return false;}}
+				else {
+					itemElement.draggable = true;
+					itemElement.ondragstart = event => {
+		 				dragging.type = 'item';
+						dragging.value = Number((event.target as HTMLDivElement).parentElement.id);
+						console.log(dragging);
+					}
+					itemElement.ondragover = e => e.preventDefault()
+					itemElement.ondrop = event => {
+						var dropOn = block.args.items[Number((event.target as HTMLDivElement).parentElement.id)]; // the item you just dropped onto
+						var dropping = block.args.items[dragging.value];
+						const swap = dropOn.slot;
+						dropOn.slot = dropping.slot;
+						dropping.slot = swap;
+						chestMenu(id);
+					}
+				}
 				{ // the textures.
 					if(item.item.id === 'txt'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
@@ -366,6 +384,15 @@ function chestMenu(id : number){
 						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
 					}
 					itemElement.onmousemove(e);
+					chestMenu(id);
+				}
+			}
+			else{
+				itemElement.id = 'empty' + String(x);
+				itemElement.ondragover = e => e.preventDefault()
+				itemElement.ondrop = event => {
+					var target = event.target as HTMLDivElement
+					block.args.items[dragging.value].slot = Number(target.id.replace('empty',''))
 					chestMenu(id);
 				}
 			}
