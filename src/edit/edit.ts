@@ -130,9 +130,8 @@ function chestMenu(id : number){
 					itemElement.ondragstart = event => {
 		 				dragging.type = 'item';
 						dragging.value = Number((event.target as HTMLDivElement).parentElement.id);
-						console.log(dragging);
 					}
-					itemElement.ondragover = e => e.preventDefault()
+					itemElement.ondragover = e => e.preventDefault();
 					itemElement.ondrop = event => {
 						var dropOn = block.args.items[Number((event.target as HTMLDivElement).parentElement.id)]; // the item you just dropped onto
 						var dropping = block.args.items[dragging.value];
@@ -389,10 +388,10 @@ function chestMenu(id : number){
 			}
 			else{
 				itemElement.id = 'empty' + String(x);
-				itemElement.ondragover = e => e.preventDefault()
+				itemElement.ondragover = e => e.preventDefault();
 				itemElement.ondrop = event => {
 					var target = event.target as HTMLDivElement
-					block.args.items[dragging.value].slot = Number(target.id.replace('empty',''))
+					block.args.items[dragging.value].slot = Number(target.id.replace('empty',''));
 					chestMenu(id);
 				}
 			}
@@ -400,7 +399,7 @@ function chestMenu(id : number){
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
 		}
-		var chestDiv = document.querySelector('#chest')
+		var chestDiv = document.querySelector('#chest');
 		if(chestDiv) chestDiv.parentElement.replaceChild(menuDiv,chestDiv);
 		else menu('Chest',menuDiv);
 	}
