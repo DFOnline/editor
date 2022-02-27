@@ -23,17 +23,20 @@ function snackbar(message : string){
 function menu(title : string, content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
-    bg.onclick = event => {
-        var hit = event.target as HTMLElement
-        if(hit.classList.contains('background')){
-            if(!hit.classList.contains('fade')){
-                hit.classList.add('fade')
-                hit.onanimationend = () => {
-                    hit.remove()
+    setTimeout(() => {
+        bg.onclick = event => {
+            var hit = event.target as HTMLElement
+            if(hit.classList.contains('background')){
+                if(!hit.classList.contains('fade')){
+                    hit.classList.add('fade')
+                    hit.onanimationend = () => {
+                        hit.remove()
+                    }
                 }
             }
         }
-    }
+    },100)
+    
     var screen = document.createElement('div');
     var obj = document.createElement('h1');
     obj.innerText = title;

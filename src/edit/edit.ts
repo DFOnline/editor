@@ -10,8 +10,18 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
 			})
-let dragging: {"type": 'block' | 'item' | undefined, "value": any | undefined} = {"type": undefined,"value": undefined}
+let dragging: {"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean} = {"type": undefined,"value": undefined, "canDragMove": true};
 let code: Template
+document.ondragstart = () => {
+	dragging.canDragMove = false;
+}
+document.ondragend = () => {
+	dragging.canDragMove = true;
+}
+document.ondrop = () => {
+	dragging.canDragMove = true;
+}
+document.addEventListener('touchmove', function(e) { if(!dragging.canDragMove){e.preventDefault();} }, { passive:false });
 
 let mouseInfo : HTMLDivElement;
 
