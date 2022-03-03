@@ -10,18 +10,18 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
 			})
-let dragging: {"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean} = {"type": undefined,"value": undefined, "canDragMove": true};
+let userMeta: {"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean} = {"type": undefined,"value": undefined, "canDragMove": true};
 let code: Template
 document.ondragstart = () => {
-	dragging.canDragMove = false;
+	userMeta.canDragMove = false;
 }
 document.ondragend = () => {
-	dragging.canDragMove = true;
+	userMeta.canDragMove = true;
 }
 document.ondrop = () => {
-	dragging.canDragMove = true;
+	userMeta.canDragMove = true;
 }
-document.addEventListener('touchmove', function(e) { if(!dragging.canDragMove){e.preventDefault();} }, { passive:false });
+document.addEventListener('touchmove', function(e) { if(!userMeta.canDragMove){e.preventDefault();} }, { passive:false });
 
 let mouseInfo : HTMLDivElement;
 
@@ -46,27 +46,31 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		blockDiv.classList.add('block');
 		blockDiv.id = 'block' + String(i);
 		blockDiv.draggable = true;
-		blockDiv.ondrag = () => {dragging.type = 'block',dragging.value = i}
-		blockDiv.ondragover = e => {if(dragging.type === 'block'){e.preventDefault()}};
+		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
+		blockDiv.ondragover = e => {if(userMeta.type === 'block'){e.preventDefault()}};
 		blockDiv.addEventListener('drop',e => { // pain
 
 			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
 			var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
-			if(Math.abs(id - dragging.value) === 1){ // if it is next to the one you just used
-				var swapData = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // the block you held
-				code.blocks[dragging.value] = code.blocks[id]; // and some swapping shenanagins
-				code.blocks[id] = swapData; // it works so I got it correct
+			if(id !== userMeta.value){
+				if(Math.abs(id - userMeta.value) === 1 || e.shiftKey){ // if it is next to the one you just used
+					var swapData = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // the block you held
+					code.blocks[userMeta.value] = code.blocks[id]; // and some swapping shenanagins
+					code.blocks[id] = swapData; // it works so I got it correct
+				}
+				else{
+					var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
+					var data = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // get the block you held
+					code.blocks[userMeta.value]['id'] = 'killable'; // mark thing for deletion
+					code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
+					code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the one marked for deletion
+				}
+				rendBlocks();
 			}
-			else{
-				var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
-				var data = JSON.parse((JSON.stringify(code.blocks[dragging.value]))) as Readonly<Block>; // get the block you held
-				code.blocks[dragging.value]['id'] = 'killable'; // mark thing for deletion
-				code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
-				code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the one marked for deletion
-			}
-			rendBlocks();
-
 		}); // why doesn't it exist add HTMLElement.drop??
+		blockDiv.oncontextmenu = e => {
+			e.preventDefault();
+		}
 		var stack = document.createElement('div');
 		var topper = document.createElement('div');
 		var blockElement = document.createElement('div');
@@ -138,13 +142,13 @@ function chestMenu(id : number){
 				else {
 					itemElement.draggable = true;
 					itemElement.ondragstart = event => {
-		 				dragging.type = 'item';
-						dragging.value = Number((event.target as HTMLDivElement).parentElement.id);
+		 				userMeta.type = 'item';
+						userMeta.value = Number((event.target as HTMLDivElement).parentElement.id);
 					}
 					itemElement.ondragover = e => e.preventDefault();
 					itemElement.ondrop = event => {
 						var dropOn = block.args.items[Number((event.target as HTMLDivElement).parentElement.id)]; // the item you just dropped onto
-						var dropping = block.args.items[dragging.value];
+						var dropping = block.args.items[userMeta.value];
 						const swap = dropOn.slot;
 						dropOn.slot = dropping.slot;
 						dropping.slot = swap;
@@ -401,7 +405,7 @@ function chestMenu(id : number){
 				itemElement.ondragover = e => e.preventDefault();
 				itemElement.ondrop = event => {
 					var target = event.target as HTMLDivElement
-					block.args.items[dragging.value].slot = Number(target.id.replace('empty',''));
+					block.args.items[userMeta.value].slot = Number(target.id.replace('empty',''));
 					chestMenu(id);
 				}
 			}
