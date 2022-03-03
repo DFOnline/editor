@@ -1,11 +1,31 @@
 export interface ActionDump {
     codeblocks: CodeBlock[]
+    actions: Action[]
 }
 export default ActionDump
-
 export interface CodeBlock {
-    name: string
-    identifier: CodeBlockIdentifier
+    name: string;
+    identifier: CodeBlockIdentifier;
+}
+
+export interface Action {
+    name: string;
+    codeblockName: string;
+    tags: Tag[]
+}
+
+export interface Icon {
+    material: string;
+}
+export interface Tag {
+    name: string;
+    options: {
+        name: string;
+        icon: Icon;
+        alaises: Array<any>
+    }[]
+    defaultOption: string;
+    alaises: Array<any>
 }
 
 export type CodeBlockIdentifier = "player_action" | "if_player" | "start_process" | "call_func" | "control" | "set_var" | "entity_event" | "event" | "func" | "if_entity" | "entity_action" | "if_var" | "select_obj" | "game_action" | "else" | "process" | "repeat" | "if_game";

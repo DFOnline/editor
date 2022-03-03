@@ -1,19 +1,20 @@
 import { startup, menu, login, cuopen, codeutilities, user, snackbar } from "../main/main"
 
-function importMenu(){
-    var div = document.createElement('div')
+function importMenu(code = ""){
+    var div = document.createElement('div');
 
-    var toptext = document.createElement('p')
-    toptext.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`
-    div.appendChild(toptext)
+    var toptext = document.createElement('p');
+    toptext.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
+    div.appendChild(toptext);
 
-    var imports = document.createElement('div')
-    var importField = document.createElement('input')
-    importField.type = "text"
+    var imports = document.createElement('div');
+    var importField = document.createElement('input');
+    importField.type = "text";
     importField.placeholder = "Template Data";
     importField.onkeyup = event => {if(event.key === "Enter"){activateImport.click()}}
-    importField.id = "importfield"
-    imports.appendChild(importField)
+    importField.id = "importfield";
+    importField.value = code;
+    imports.appendChild(importField);
 
     var activateImport = document.createElement('button')
     activateImport.innerText = "Go!"
@@ -61,6 +62,10 @@ function loginMenu(){
         loginButton.onclick = () => login(nameSlot.value,codeSlot.value);
         authBox.appendChild(loginButton);
         div.append(authBox);
+        var congrog = document.createElement('button')
+        congrog.innerText = 'Get a DFOnline premuim subcription and join the democratic rebulpic of congrog!'
+        congrog.onclick = () => {location.replace('https://discord.com/invite/NqU6XnyVPA')}
+        div.append(congrog);
         menu("Login",div);
     }
 }
@@ -98,8 +103,7 @@ codeutilities.onmessage = event => {
         try{
             importField.value = JSON.parse(data.received).code
         }catch{
-            importMenu()
-            importField.value = JSON.parse(data.received).code
+            importMenu(JSON.parse(data.received).code)
         }
     }
 }

@@ -114,6 +114,8 @@
         left: calc(($add / 2) * -1);
         top: calc(($add / 2) * -1);
         width: calc(100% + $add);
+        height: calc(100% + $add);
+        background-size: cover;
     }
 }
 
@@ -121,3 +123,5 @@
 html,body {
     overflow-y: hidden;
 }
+
+#mouseinfo hr { opacity: 0; }
