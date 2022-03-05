@@ -1,6 +1,7 @@
 {
     "include": ["src", "types"],
     "compilerOptions": {
+      "downlevelIteration": true,
       "target": "es5",
       "moduleResolution": "node",
       "jsx": "preserve",
