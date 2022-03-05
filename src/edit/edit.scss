@@ -125,3 +125,28 @@ html,body {
 }
 
 #mouseinfo hr { opacity: 0; }
+
+#context {
+    $value: 5px;
+    display: none;
+    position: fixed;
+    background-color: $level1;
+    padding: $value;
+    top: 0px;
+    left: 0px;
+    border-radius: $value;
+    > button {
+        margin: 0;
+        box-shadow: none;
+        background-color: adjust-color($color: $level1, $saturation: 0%, $lightness: 2.5%);
+        padding: $value;
+        border-radius: $value;
+        &:hover {
+            background-color: $level2;
+        }
+    }
+    > hr {
+        width: calc(100% - $value);
+        margin: 0;
+    }
+}
