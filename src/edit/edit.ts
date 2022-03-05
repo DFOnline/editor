@@ -180,7 +180,7 @@ function chestMenu(id : number){
 	if(block.args !== undefined){
 		var menuDiv = document.createElement('div');
 		menuDiv.id = 'chest';
-		for (var x = 0; x < 27; x++) {
+		[...Array(27).keys()].forEach((x) => {
 			var slot = document.createElement('div');
 			slot.classList.add('slot');
 			const itemIndex = block.args.items.findIndex(i => i.slot == x)
@@ -266,7 +266,6 @@ function chestMenu(id : number){
 					}
 				}
 				itemElement.onmousemove = (e) => {
-					var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)]
 					mouseInfo.style.display = 'grid';
 					mouseInfo.innerHTML = '';
 					if (item.item.id === 'num' || item.item.id === 'txt') {
@@ -459,7 +458,6 @@ function chestMenu(id : number){
 				}
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
 				itemElement.onclick = (e) => {
-					var item = block.args.items[Number((e.target as HTMLDivElement).parentElement.id)];
 					if(item.item.id === 'bl_tag'){
 						const tag = findBlockTag(block.block,block.action,item.item.data.tag);
 						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
@@ -480,7 +478,7 @@ function chestMenu(id : number){
 			itemElement.classList.add('item')
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
-		}
+		})
 		var chestDiv = document.querySelector('#chest');
 		if(chestDiv) chestDiv.parentElement.replaceChild(menuDiv,chestDiv);
 		else menu('Chest',menuDiv);
