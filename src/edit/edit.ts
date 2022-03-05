@@ -1,6 +1,6 @@
-import { startup, decode, menu, minecraftColorHTML, dfNumber } from "../main/main";
+import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag } from "./template";
+import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -10,7 +10,12 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
 			})
-let userMeta: {"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean} = {"type": undefined,"value": undefined, "canDragMove": true};
+			.catch(() => {
+				snackbar('An error occurred whilst getting required data.')
+			})
+let userMeta:
+{"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}} =
+{"type": undefined,                    "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {}};
 let code: Template
 document.ondragstart = () => {
 	userMeta.canDragMove = false;
@@ -23,11 +28,25 @@ document.ondrop = () => {
 }
 document.addEventListener('touchmove', function(e) { if(!userMeta.canDragMove){e.preventDefault();} }, { passive:false });
 
+document.onclick = () => {
+	contextMenu.click()
+}
+document.onscroll = () => {
+	contextMenu.click()
+}
+document.onkeydown = e => {
+	if(userMeta.ctxKeys[e.key] !== undefined){
+		userMeta.ctxKeys[e.key].click()
+	}
+}
+
+let contextMenu : HTMLDivElement;
 let mouseInfo : HTMLDivElement;
 
 window.onload = () => {
 	var start = startup();
 	mouseInfo = start.mouseInfo;
+	contextMenu = document.querySelector('div#context');
 	if(start.urlParams.has('template')){
 		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
 	}
@@ -35,7 +54,15 @@ window.onload = () => {
 		code = JSON.parse(decode(sessionStorage.getItem('import')));
 	}
 	rendBlocks();
+
+	contextMenu.onclick = () => {
+		contextMenu.style.display = 'none';
+		contextMenu.innerHTML = '';
+		userMeta.ctxKeys = {};
+	}
+	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
 }
+
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
 	var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
 	var messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
@@ -68,8 +95,32 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 				rendBlocks();
 			}
 		}); // why doesn't it exist add HTMLElement.drop??
-		blockDiv.oncontextmenu = e => {
+		blockDiv.oncontextmenu = e => { // the right click menu :D
 			e.preventDefault();
+			contextMenu.innerHTML = '';
+			contextMenu.style.left = String(e.clientX) + 'px';
+			contextMenu.style.top = String(e.clientY) + 'px';
+			contextMenu.style.display = 'grid';
+			contextMenu.focus()
+			if(block.id !== 'bracket' && block.id !== 'killable' && block.block.includes('if_')){ // NOT button
+				var not = document.createElement('button');
+				not.innerHTML = '<u>N</u>OT';
+				not.onclick = () => {
+					(block as SelectionBlock).inverted = (block as SelectionBlock).inverted === 'NOT' ? '' : 'NOT';
+					rendBlocks();
+				}
+				userMeta.ctxKeys['n'] = not;
+				contextMenu.append(not);
+				contextMenu.append(document.createElement('hr'));
+			}
+			var deleteButton = document.createElement('button');
+			deleteButton.innerHTML = '<u>D</u>elete';
+			deleteButton.onclick = () => {
+				code.blocks.splice(i,1);
+				rendBlocks()
+			}
+			userMeta.ctxKeys['d'] = deleteButton;
+			contextMenu.append(deleteButton);
 		}
 		var stack = document.createElement('div');
 		var topper = document.createElement('div');
@@ -153,6 +204,23 @@ function chestMenu(id : number){
 						dropOn.slot = dropping.slot;
 						dropping.slot = swap;
 						chestMenu(id);
+					}
+					itemElement.oncontextmenu = e => { // the right click menu :D
+						e.preventDefault();
+						contextMenu.innerHTML = '';
+						contextMenu.style.left = String(e.clientX) + 'px';
+						contextMenu.style.top = String(e.clientY) + 'px';
+						contextMenu.style.display = 'grid';
+						contextMenu.focus()
+						var deleteButton = document.createElement('button');
+						deleteButton.innerHTML = '<u>D</u>elete';
+						deleteButton.onclick = () => {
+
+							block.args.items.splice(Number((event.target as HTMLDivElement).parentElement.id),1);
+							chestMenu(id)
+						}
+						userMeta.ctxKeys['d'] = deleteButton;
+						contextMenu.append(deleteButton);
 					}
 				}
 				{ // the textures.
