@@ -1,4 +1,4 @@
-import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, user } from "../main/main";
+import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock } from "./template";
 
@@ -14,8 +14,8 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				snackbar('An error occurred whilst getting required data.')
 			})
 let userMeta:
-{"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}} =
-{"type": undefined,                    "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {}};
+{"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
+{"type": undefined,                    "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
 let code: Template
 document.ondragstart = () => {
 	userMeta.canDragMove = false;
@@ -59,6 +59,8 @@ window.onload = () => {
 		contextMenu.style.display = 'none';
 		contextMenu.innerHTML = '';
 		userMeta.ctxKeys = {};
+		userMeta.search.index = 0;
+		userMeta.search.value = undefined;
 	}
 	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
 }
@@ -96,31 +98,80 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 			}
 		}); // why doesn't it exist add HTMLElement.drop??
 		blockDiv.oncontextmenu = e => { // the right click menu :D
-			e.preventDefault();
-			contextMenu.innerHTML = '';
-			contextMenu.style.left = String(e.clientX) + 'px';
-			contextMenu.style.top = String(e.clientY) + 'px';
-			contextMenu.style.display = 'grid';
-			contextMenu.focus()
-			if(block.id !== 'bracket' && block.id !== 'killable' && block.block.includes('if_')){ // NOT button
-				var not = document.createElement('button');
-				not.innerHTML = '<u>N</u>OT';
-				not.onclick = () => {
-					(block as SelectionBlock).inverted = (block as SelectionBlock).inverted === 'NOT' ? '' : 'NOT';
-					rendBlocks();
+			if(block.id !== 'killable'){
+				e.preventDefault();
+				contextMenu.innerHTML = '';
+				contextMenu.style.left = String(e.clientX) + 'px';
+				contextMenu.style.top = String(e.clientY) + 'px';
+				contextMenu.style.display = 'grid';
+				contextMenu.focus()
+				if(block.id !== 'bracket'){
+					if(block.block !== 'else'){
+						var valueButton = document.createElement('button');
+						if((block as DataBlock).data){
+							valueButton.innerHTML = 'D<u>a</u>ta';
+						}
+						if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined){
+							valueButton.innerHTML = '<u>A</u>ction'
+						}
+						valueButton.onclick = () => {
+							setTimeout(() => {
+								contextMenu.style.display = 'grid';
+									var value = document.createElement('input');
+									value.value = (block as SelectionBlock | SubActionBlock).action;
+									value.onkeydown = e => {
+										if(e.key === 'Enter'){
+											(block as SelectionBlock | SubActionBlock).action = value.value;
+											contextMenu.click();
+											rendBlocks();
+										}
+										else if(e.key === 'Escape'){
+											contextMenu.click();
+										}
+										else if(e.key === 'Tab'){
+											e.preventDefault();
+											if(userMeta.search.value === undefined){
+												userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block]).filter(x => x.name.toLowerCase().includes(value.value.toLowerCase()));
+												userMeta.search.index = 0;
+											}
+											value.value = userMeta.search.value[userMeta.search.index].name;
+											userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
+										}
+										else{
+											userMeta.search.value = undefined;
+										}
+									}
+									value.onclick = e => {
+										e.stopPropagation();
+									}
+									contextMenu.append(value);
+									value.focus()
+							})
+						}
+						userMeta.ctxKeys['a'] = valueButton;
+						contextMenu.append(valueButton);
+						if(block.block.includes('if_')){ // NOT button
+							var not = document.createElement('button');
+							not.innerHTML = '<u>N</u>OT';
+							not.onclick = () => {
+								(block as SelectionBlock).inverted = (block as SelectionBlock).inverted === 'NOT' ? '' : 'NOT';
+								rendBlocks();
+							}
+							userMeta.ctxKeys['n'] = not;
+							contextMenu.append(not);
+						}
+						contextMenu.append(document.createElement('hr'));
+					}
 				}
-				userMeta.ctxKeys['n'] = not;
-				contextMenu.append(not);
-				contextMenu.append(document.createElement('hr'));
+				var deleteButton = document.createElement('button');
+				deleteButton.innerHTML = '<u>D</u>elete';
+				deleteButton.onclick = () => {
+					code.blocks.splice(i,1);
+					rendBlocks()
+				}
+				userMeta.ctxKeys['d'] = deleteButton;
+				contextMenu.append(deleteButton);
 			}
-			var deleteButton = document.createElement('button');
-			deleteButton.innerHTML = '<u>D</u>elete';
-			deleteButton.onclick = () => {
-				code.blocks.splice(i,1);
-				rendBlocks()
-			}
-			userMeta.ctxKeys['d'] = deleteButton;
-			contextMenu.append(deleteButton);
 		}
 		var stack = document.createElement('div');
 		var topper = document.createElement('div');
@@ -211,10 +262,43 @@ function chestMenu(id : number){
 						contextMenu.style.left = String(e.clientX) + 'px';
 						contextMenu.style.top = String(e.clientY) + 'px';
 						contextMenu.style.display = 'grid';
-						contextMenu.focus()
+						contextMenu.focus();
+						var valueButton = document.createElement('button');
+						valueButton.innerHTML = 'V<u>a</u>lue'
+						valueButton.onclick = () => {
+							setTimeout(() => {
+								contextMenu.style.display = 'grid';
+								if(item.item.id === 'num' || item.item.id === 'txt'){
+									var value = document.createElement('input');
+									value.value = item.item.data.name;
+									value.onkeydown = e => {
+										if(e.key === 'Enter'){
+											if(!e.shiftKey){
+												(item.item.data as {name: string}).name = value.value;
+												contextMenu.click();
+											}
+											else{
+												value.value += '\n';
+											}
+										}
+										if(e.key === 'Escape'){
+											contextMenu.click();
+										}
+									}
+									value.onclick = e => {
+										e.stopPropagation();
+									}
+									contextMenu.append(value);
+									value.focus()
+								}
+							})
+						}
+						userMeta.ctxKeys['a'] = valueButton;
+						contextMenu.append(valueButton);
+						contextMenu.append(document.createElement('hr'));
 						var deleteButton = document.createElement('button');
 						deleteButton.innerHTML = '<u>D</u>elete';
-						deleteButton.onclick = () => {
+						deleteButton.onclick = event => {
 
 							block.args.items.splice(Number((event.target as HTMLDivElement).parentElement.id),1);
 							chestMenu(id)
