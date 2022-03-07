@@ -119,6 +119,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 								contextMenu.style.display = 'grid';
 									var value = document.createElement('input');
 									value.value = (block as SelectionBlock | SubActionBlock).action;
+									let pre = value.value.substring(value.selectionStart,0);
 									value.onkeydown = e => {
 										if(e.key === 'Enter'){
 											(block as SelectionBlock | SubActionBlock).action = value.value;
@@ -130,16 +131,32 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 										}
 										else if(e.key === 'Tab'){
 											e.preventDefault();
-											if(userMeta.search.value === undefined){
-												userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block]).filter(x => x.name.toLowerCase().includes(value.value.toLowerCase()));
-												userMeta.search.index = 0;
+											if(userMeta.search.value.length !== 0){
+												value.value = userMeta.search.value[userMeta.search.index].name;
+												value.setSelectionRange(pre.length,value.value.length);
+												userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
 											}
-											value.value = userMeta.search.value[userMeta.search.index].name;
-											userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
 										}
+										else if(e.key === 'Backspace') pre = value.value.substring(value.selectionStart + 1,0);
 										else{
 											userMeta.search.value = undefined;
+											pre = value.value.substring(value.selectionStart,0);
 										}
+									}
+									value.oninput = () => {
+										console.log(pre)
+										if(value.value.length - pre.length >= 0){
+											userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block]).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
+											userMeta.search.index = 0;
+											if(userMeta.search.value.length !== 0){
+												var length = value.value.length;
+												value.value = userMeta.search.value[userMeta.search.index].name;
+												value.setSelectionRange(length,value.value.length);
+												userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
+											}
+											else userMeta.search.value = undefined;
+										}
+										pre = value.value.substring(value.selectionStart,0);
 									}
 									value.onclick = e => {
 										e.stopPropagation();
