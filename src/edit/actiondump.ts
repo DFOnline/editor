@@ -12,10 +12,12 @@ export interface Action {
     name: string;
     codeblockName: string;
     tags: Tag[]
+    icon: Icon
 }
 
 export interface Icon {
     material: string;
+    description: string;
 }
 export interface Tag {
     name: string;
