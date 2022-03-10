@@ -114,13 +114,14 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 						if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined){
 							valueButton.innerHTML = '<u>A</u>ction'
 						}
-						valueButton.onclick = () => {
+						valueButton.onclick = () => { // YEEE CONTEXT FOR EDITING ACTIONS
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
 									var value = document.createElement('input');
 									value.value = (block as SelectionBlock | SubActionBlock).action;
+									var results = document.createElement('div');
 									let pre = value.value.substring(value.selectionStart,0);
-									value.onkeydown = e => {
+									value.onkeydown = e => { // ENTER ESCAPE AND TAB
 										if(e.key === 'Enter'){
 											(block as SelectionBlock | SubActionBlock).action = value.value;
 											contextMenu.click();
@@ -143,16 +144,26 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 											pre = value.value.substring(value.selectionStart,0);
 										}
 									}
-									value.oninput = () => {
-										console.log(pre)
+									value.oninput = () => { // EVERYTHING ELSE THAT YOU TYPE
+										results.innerHTML = '';
 										if(value.value.length - pre.length >= 0){
-											userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block]).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
+											userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block] && x.icon.description.length !== 0).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
 											userMeta.search.index = 0;
 											if(userMeta.search.value.length !== 0){
 												var length = value.value.length;
 												value.value = userMeta.search.value[userMeta.search.index].name;
 												value.setSelectionRange(length,value.value.length);
 												userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
+												userMeta.search.value.forEach(v => {
+													var res = document.createElement('button');
+													res.innerText = v.name;
+													res.onclick = () => {
+														(block as SelectionBlock | SubActionBlock).action = v.name;
+														rendBlocks()
+													}
+													results.append(res);
+													results.append(document.createElement('br'));
+												})
 											}
 											else userMeta.search.value = undefined;
 										}
@@ -162,6 +173,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 										e.stopPropagation();
 									}
 									contextMenu.append(value);
+									contextMenu.append(results);
 									value.focus()
 							})
 						}

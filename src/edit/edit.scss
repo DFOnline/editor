@@ -135,18 +135,25 @@ html,body {
     top: 0px;
     left: 0px;
     border-radius: $value;
-    > button {
+    div {
+        display: grid;
+    }
+    button {
         margin: 0;
         box-shadow: none;
-        background-color: adjust-color($color: $level1, $saturation: 0%, $lightness: 2.5%);
+        // background-color: adjust-color($color: $level1, $saturation: 0%, $lightness: 2.5%);
         padding: $value;
         border-radius: $value;
-        &:hover {
-            background-color: $level2;
-        }
+        // &:active {
+        //     background-color: $level2;
+        // }
     }
-    > hr {
+    hr {
         width: calc(100% - $value);
-        margin: 0;
+        margin: 2px 0;
     }
+}
+
+header {
+    background-color: $level1;
 }
