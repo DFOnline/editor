@@ -1,4 +1,4 @@
-import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar } from "../main/main";
+import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock } from "./template";
 
@@ -40,10 +40,16 @@ document.onkeydown = e => {
 	}
 }
 
+// document.onkeyup = e => { Remove this commented out code BLAH BLAH SHUT UP SONARLINT I DO NOT CARE ABOUT THE STUPID COMMENTED CODE WARNING WHAT DO YOU HAVE AGAISNT COMMENETED CODE
+// 	if (e.key === "Alt") {
+// 		e.preventDefault();
+// 	}
+// }
+
 let contextMenu : HTMLDivElement;
 let mouseInfo : HTMLDivElement;
 
-window.onload = () => {
+window.onload = () => { // init
 	var start = startup();
 	mouseInfo = start.mouseInfo;
 	contextMenu = document.querySelector('div#context');
@@ -54,7 +60,6 @@ window.onload = () => {
 		code = JSON.parse(decode(sessionStorage.getItem('import')));
 	}
 	rendBlocks();
-
 	contextMenu.onclick = () => {
 		contextMenu.style.display = 'none';
 		contextMenu.innerHTML = '';
@@ -63,6 +68,73 @@ window.onload = () => {
 		userMeta.search.value = undefined;
 	}
 	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
+
+	document.getElementById('file').onclick = e => {
+		e.stopPropagation();
+		var {top, bottom} = (e.target as HTMLButtonElement).getBoundingClientRect();
+		contextMenu.style.left = String(top) + "px";
+		contextMenu.style.top = String(bottom) + "px";
+		contextMenu.innerHTML = '';
+		contextMenu.style.display = 'grid';
+		var save = document.createElement('button');
+		save.innerText = 'Save';
+		save.disabled = true;
+		contextMenu.append(save);
+		var newTemplate = document.createElement('button');
+		newTemplate.innerText = 'New Template';
+		newTemplate.disabled = true;
+		contextMenu.append(newTemplate);
+		var exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
+		exportTemplateButton.innerText = 'Export';
+		exportTemplateButton.onclick = () => { // a mess, anyway the menu for export.
+			let exportDiv = document.createElement('div');
+			var p = document.createElement('p');
+			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
+			exportDiv.append(p);
+			let options = document.createElement('div');
+			options.style.display = 'grid';
+			options.style.width = 'fit-content'
+			var copyTemplate = document.createElement('button');
+			copyTemplate.innerText = "Copy Data";
+			copyTemplate.onclick = e => {
+				var data = exportTemplate(JSON.stringify(code));
+				var altName = data.name.replace('"','\\"').replace('\\','\\\\').replace("'","\\'");
+				if(e.shiftKey || e.ctrlKey) navigator.clipboard.writeText(`/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.data}",version:1,author:"${data.author}"}'}} 1`);
+				else navigator.clipboard.writeText(data.data);
+			}
+			options.append(copyTemplate);
+			var CodeUtilsSend = document.createElement('button');
+			CodeUtilsSend.innerText = 'Send to CodeUtilities';
+			CodeUtilsSend.disabled = !cuopen;
+			CodeUtilsSend.onclick = () => { // the code for sending :D
+				codeutilities.send(JSON.stringify(
+					{
+						type: 'template',
+						data: JSON.stringify(exportTemplate(JSON.stringify(code))),
+						source: 'DFOnline'
+					}
+				));
+				codeutilities.onmessage = e => {
+					if(JSON.parse(e.data).status === 'success') snackbar('Recieved confirmation for sent template');
+				}
+			}
+			options.append(CodeUtilsSend);
+			var CopyLinkButton = document.createElement('button');
+			CopyLinkButton.innerText = 'Copy Link';
+			CopyLinkButton.onclick = e => {
+				var href : string
+				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
+				else href = location.href;
+				var searchParams = new URLSearchParams(location.search);
+				searchParams.set('template',exportTemplate(JSON.stringify(code)).data);
+				navigator.clipboard.writeText(href + '?' + searchParams.toString());
+			}
+			options.append(CopyLinkButton);
+			exportDiv.append(options);
+			menu('Export',exportDiv);
+		}
+		contextMenu.append(exportTemplateButton);
+	}
 }
 
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
@@ -621,4 +693,20 @@ function findBlockTag(block: CodeBlockIdentifier, action: String, tag: String){
 
 function findBlockTagOption(block: CodeBlockIdentifier, action: String, tag: String, option: string){
 	return findBlockTag(block,action,tag).options.find(x => x.name === option);
+}
+
+/**
+ *
+ * @param code Stringified version of a template to compile
+ * @returns data: contains the gzip template data, author: Who created the template, name: the name of the template
+ */
+function exportTemplate(code : string) : {data: string, author: string, name: string;}{
+	let name : string;
+	if(user && user.name) name = user.name;
+	else name = 'DFOnline';
+	return ({
+		data: encode(code),
+		author: name,
+		name: 'DFOnline Template', // proper name system planned later
+	})
 }

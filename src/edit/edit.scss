@@ -156,4 +156,11 @@ html,body {
 
 header {
     background-color: $level1;
+    box-shadow: black 10px 0px 10px;
+    button {
+        border-radius: 0;
+        margin: 0;
+        box-shadow: black 1px 1px 0px;
+        outline: black solid 0.5px;
+    }
 }
