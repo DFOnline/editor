@@ -6,6 +6,7 @@
 }
 
 #codeBlocks {
+    margin-top: 31px;
     display: flex;
     .block {
         position: relative;
@@ -155,6 +156,9 @@ html,body {
 }
 
 header {
+    top: 0;
+    width: 100vw;
+    position: fixed;
     background-color: $level1;
     box-shadow: black 10px 0px 10px;
     button {
