@@ -51,11 +51,11 @@ html,body {
 }
 input, button {
     color: #e8e6e3;
-    background-color: #181a1b;
+    background-color: #222222;
     border: #0001 1px solid;
     border-radius: 2px;
     font-size: 16px;
-    box-shadow: #0009 3px 3px 10px;
+    box-shadow: #000e 3px 3px 10px;
     padding: 5px;
     margin: 2.5px 0 2.5px 0;
     
@@ -67,8 +67,8 @@ button, input[type=submit], input[type=button] {
     padding-left: 15px;
     padding-right: 15px;
     transition: filter .2s ease;
-    &:hover {
-        filter: brightness(1.1);
+    &:not(:disabled):hover {
+        filter: brightness(1.3);
     }
 }
 
@@ -85,7 +85,7 @@ button, input[type=submit], input[type=button] {
     text-decoration: none;
     transition: 0.1s;
     border-radius: 5px / 2px;
-    &:hover {
+    &:not(:disabled):hover {
         transform: scaleX(1.05);
     }
 }
@@ -106,13 +106,13 @@ button {
         &:hover {
             transform: scaleX(1.05);
         }
-        &:disabled{
-            transform: initial;
-            filter: brightness(0.8);
-            cursor: not-allowed;
-        }
     }
-    &:active {
+    &:disabled{
+        transform: initial;
+        filter: brightness(0.8);
+        cursor: not-allowed;
+    }
+    &:not(:disabled):active {
         transform: scale(0.97);
     }
 }
