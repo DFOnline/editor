@@ -1,6 +1,6 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import type { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock } from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -251,6 +251,33 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 						}
 						userMeta.ctxKeys['a'] = valueButton;
 						contextMenu.append(valueButton);
+						if(SelectionBlocks.includes(block.block)){
+							var targetButton = document.createElement('button');
+							targetButton.innerHTML = '<u>S</u>election';
+							targetButton.onclick = () => {
+								setTimeout(() => {
+									var target = document.createElement('select'); // selection
+									target.value = (block as SelectionBlock).target;
+									target.onclick = e => e.stopPropagation(); // allow clicking
+									SelectionValues.forEach(sel => { // create the options
+										var option = document.createElement('option');
+										option.value = sel;
+										option.innerText = sel;
+										target.append(option);
+									})
+									target.oninput = () => {
+										(block as SelectionBlock).target = target.value;
+										contextMenu.click();
+										rendBlocks();
+									}
+									contextMenu.append(target);
+									contextMenu.style.display = 'grid'; // make ctx visible
+
+								})
+							}
+							userMeta.ctxKeys['s'] = targetButton;
+							contextMenu.append(targetButton);
+						}
 						if(block.block.includes('if_')){ // NOT button
 							var not = document.createElement('button');
 							not.innerHTML = '<u>N</u>OT';
