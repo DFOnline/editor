@@ -1,6 +1,6 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues } from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -266,7 +266,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 										target.append(option);
 									})
 									target.oninput = () => {
-										(block as SelectionBlock).target = target.value;
+										(block as SelectionBlock).target = (target.value as Target);
 										contextMenu.click();
 										rendBlocks();
 									}
