@@ -7,6 +7,7 @@ export interface Template {
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = "saved" | "unsaved" | "local"
 export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
+export const SelectionValues = ["", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"]
 
 export type ID = "block" | "bracket" | "killable"
 export type Inverted = "" | "NOT" // funny
@@ -15,11 +16,12 @@ export type Direction = "open" | "close"
 export type BracketType = "norm" | "repeat"
 
 export type BlockID = BlockActionID | BlockSubActionID | BlockDataID | "else";
-export type BlockActionID = "event" | "player_action" | "entity_event" | "entity_action" | "set_var" | "game_action" | "repeat" | "control" | "select_obj" | "else";
+export type BlockActionID = "event" | "player_action" | "entity_event" | "entity_action" | "set_var" | "game_action" | "repeat" | "control" | "select_obj";
+export const SelectionBlocks : BlockID[] = ["player_action", "entity_event", "entity_action", "if_entity", "if_player"]
 export type BlockSubActionID = "if_entity" | "if_game" | "if_player" | "if_var";
 export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
-export type Block = Bracket | SelectionBlock | SubActionBlock | DataBlock | Killable
+export type Block = Bracket | SelectionBlock | SubActionBlock | DataBlock | Else | Killable
 
 export interface Bracket {
     id: "bracket";
@@ -52,7 +54,8 @@ export interface DataBlock {
 }
 
 export interface Else {
-    id: "else"; // 💀
+    id: "block";
+    block: "else"; // 💀
 }
 
 export interface Killable {
