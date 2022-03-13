@@ -7,7 +7,7 @@ export interface Template {
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = "saved" | "unsaved" | "local"
 export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
-export const SelectionValues : Target[] = ["", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"]
+export const SelectionValues : Target[] = ["", "AllPlayers", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"]
 
 export type ID = "block" | "bracket" | "killable"
 export type Inverted = "" | "NOT" // funny
