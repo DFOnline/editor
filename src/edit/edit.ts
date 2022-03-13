@@ -1,6 +1,6 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target } from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, PlacedBlock, Bracket, BracketType } from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -9,13 +9,32 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 				ActDB = data;
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
+				var blockPicker = document.getElementById('blocks');
+				ActDB.codeblocks.forEach(block => {
+					var blockDiv = document.createElement('div');
+					blockDiv.draggable = true;
+					blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
+					blockDiv.ondragstart = () => {
+						userMeta.type = 'newBlock';
+						var value : any = {id: 'block', block: block.identifier /* lmao */}
+						console.log(block.identifier);
+						if(block.identifier !== 'else'){
+							value.args = {'items':[]}
+							if(block.identifier.includes('process') || block.identifier.includes('func')) value.data = '';
+							else if(block.identifier === 'control') value.action = 'Wait';
+							else value.action = '';
+						}
+						userMeta.value = value;
+					}
+					blockPicker.appendChild(blockDiv);
+				})
 			})
 			.catch(() => {
 				snackbar('An error occurred whilst getting required data.')
 			})
 let userMeta:
-{"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
-{"type": undefined,                    "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
+{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
+{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
 
 let code: Template
 document.ondragstart = () => {
@@ -50,7 +69,7 @@ document.onkeydown = e => {
 let contextMenu : HTMLDivElement;
 let mouseInfo : HTMLDivElement;
 
-window.onload = () => { // init
+window.onload = () => { // when everything loads - this function is pretty hard to find lol.
 	var start = startup();
 	mouseInfo = start.mouseInfo;
 	contextMenu = document.querySelector('div#context');
@@ -139,6 +158,7 @@ window.onload = () => { // init
 }
 
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
+	console.log('%cREND BLOCKS','color: red; font-size: 20px;');
 	var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
 	var messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
 	codeSpace.innerHTML = `<!-- ${messages[Math.floor(Math.random() * messages.length)]} -->`; // hi
@@ -149,23 +169,36 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		blockDiv.id = 'block' + String(i);
 		blockDiv.draggable = true;
 		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
-		blockDiv.ondragover = e => {if(userMeta.type === 'block'){e.preventDefault()}};
+		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault()}};
 		blockDiv.addEventListener('drop',e => { // pain
 
 			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
 			var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
 			if(id !== userMeta.value){
-				if(Math.abs(id - userMeta.value) === 1 || e.shiftKey){ // if it is next to the one you just used
+				if(userMeta.type !== 'newBlock' && (Math.abs(id - userMeta.value) === 1 || e.shiftKey)){ // if it is next to the one you just used
 					var swapData = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // the block you held
 					code.blocks[userMeta.value] = code.blocks[id]; // and some swapping shenanagins
 					code.blocks[id] = swapData; // it works so I got it correct
 				}
 				else{
 					var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
-					var data = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // get the block you held
-					code.blocks[userMeta.value]['id'] = 'killable'; // mark thing for deletion
-					code.blocks.splice((id + Number(e.clientX > (width / 2) + posX)),0,data); // splice it in
-					code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the one marked for deletion
+					var pushSpot = (id + Number(e.clientX > (width / 2) + posX))
+					if(userMeta.type !== 'newBlock'){
+						var data = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // get the block you held
+						code.blocks[userMeta.value]['id'] = 'killable'; // mark thing for deletion
+						code.blocks.splice(pushSpot,0,data); // splice data in
+					}
+					else{
+						code.blocks.splice(pushSpot,0,userMeta.value); // splice userMeta value in
+						if(userMeta.value.block.includes('if') || userMeta.value.block === 'repeat'){
+							var type : BracketType = userMeta.value.block === 'repeat' ? 'repeat' : 'norm';
+							var open : Bracket = {id: 'bracket', direct: 'open', type};
+							var close : Bracket = {id: 'bracket', direct: 'close', type};
+							code.blocks.splice(pushSpot + 1,0,open,close)
+						}
+
+					}
+					code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the ones marked for deletion. If nothing marked, nothing gone.
 				}
 				rendBlocks();
 			}
@@ -181,7 +214,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 				if(block.id !== 'bracket'){
 					if(block.block !== 'else'){
 						var valueButton = document.createElement('button');
-						if((block as DataBlock).data){
+						if((block as DataBlock).data !== undefined){
 							valueButton.innerHTML = 'D<u>a</u>ta';
 						}
 						if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined){
@@ -191,7 +224,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
 									var value = document.createElement('input');
-									if(!(block as DataBlock).data){
+									if((block as DataBlock).data === undefined){
 									value.value = (block as SelectionBlock | SubActionBlock).action;
 									var results = document.createElement('div');
 									let pre = value.value.substring(value.selectionStart,0);
@@ -368,6 +401,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		stack.append(blockElement);
 		codeSpace.append(blockDiv);
 	})
+	console.log('%cREND BLOCKS COMPLETE','color: red; font-size: 20px;');
 }
 
 function chestMenu(id : number){
