@@ -16,6 +16,7 @@ fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
 let userMeta:
 {"type": 'block' | 'item' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
 {"type": undefined,                    "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
+
 let code: Template
 document.ondragstart = () => {
 	userMeta.canDragMove = false;
@@ -190,6 +191,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
 									var value = document.createElement('input');
+									if(!(block as DataBlock).data){
 									value.value = (block as SelectionBlock | SubActionBlock).action;
 									var results = document.createElement('div');
 									let pre = value.value.substring(value.selectionStart,0);
@@ -241,11 +243,25 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 										}
 										pre = value.value.substring(value.selectionStart,0);
 									}
+									contextMenu.append(results);
+									}
+									else { // I forgor data blocks lmao
+										value.value = (block as DataBlock).data
+										value.onkeydown = e => {
+											if(e.key === 'Enter'){
+												(block as DataBlock).data = value.value;
+												contextMenu.click();
+												rendBlocks();
+											}
+											else if(e.key === 'Escape'){
+												contextMenu.click();
+											}
+										}
+									}
 									value.onclick = e => {
 										e.stopPropagation();
 									}
-									contextMenu.append(value);
-									contextMenu.append(results);
+									contextMenu.prepend(value);
 									value.focus()
 							})
 						}
@@ -272,7 +288,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 									}
 									contextMenu.append(target);
 									contextMenu.style.display = 'grid'; // make ctx visible
-
+									setTimeout(() => target.click())
 								})
 							}
 							userMeta.ctxKeys['s'] = targetButton;
