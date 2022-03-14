@@ -12,7 +12,7 @@
     "ts-node": "^10.4.0"
   },
   "scripts": {
-    "test": "powershell parcel 'src/**/*.html' --no-cache --dist-dir ./docs",
-    "build": "powershell parcel build 'src/**/*.html' --dist-dir ./docs;"
+    "test": "npx parcel \"src/**/*.html\" --no-cache --dist-dir ./docs",
+    "build": "npx parcel build \"src/**/*.html\" --dist-dir ./docs;"
   }
 }
