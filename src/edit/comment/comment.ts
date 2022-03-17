@@ -1,5 +1,5 @@
-import { codeutilities, encode } from "../main/main";
-import type { Template } from "./template";
+import { codeutilities, encode } from "../../main/main";
+import type { SelectionBlock, Template } from "../template";
 
 window.onload = () => {
     (document.getElementById('send') as HTMLButtonElement).onclick = generateTheComment;
@@ -21,9 +21,9 @@ window.onkeydown = event => {
 
 function generateTheComment(){
     var code : Template = {"blocks":[{"id":"block","block":"control","args":{"items":[]},"action":"","target":"","inverted":""}]};
-    code['blocks'][0]['action'] = (document.getElementById('action') as HTMLInputElement).value
-    code['blocks'][0]['target'] = (document.getElementById('target') as HTMLInputElement).value as any
-    code['blocks'][0]['inverted'] = (document.getElementById('inverted') as HTMLInputElement).value as any
+    (code['blocks'][0] as SelectionBlock)['action'] = (document.getElementById('action') as HTMLInputElement).value as any;
+    (code['blocks'][0] as SelectionBlock)['target'] = (document.getElementById('target') as HTMLInputElement).value as any;
+    (code['blocks'][0] as SelectionBlock)['inverted'] = (document.getElementById('inverted') as HTMLInputElement).value as any;
     codeutilities.send(
     JSON.stringify(
             {"type":"template","source":"DFOnline Comment Generator","data":
