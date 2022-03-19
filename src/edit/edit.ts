@@ -409,17 +409,17 @@ function chestMenu(id : number){
 	if(block.args !== undefined){
 		var menuDiv = document.createElement('div');
 		menuDiv.id = 'chest';
-		[...Array(27).keys()].forEach((x) => {
+		[...Array(27).keys()].forEach((x) => { // each slot
 			var slot = document.createElement('div');
 			slot.classList.add('slot');
 			const itemIndex = block.args.items.findIndex(i => i.slot == x)
 			var item = (block.args.items[itemIndex]);
 			var itemElement = document.createElement('div');
 			itemElement.style.backgroundImage = "";
-			if(item){
+			if(item){ // if there in an item
 				slot.id = String(itemIndex);
 				if(item.item.id === 'bl_tag'){itemElement.draggable = false; itemElement.ondragstart = e => {e.preventDefault(); return false;}}
-				else {
+				else { // events basically
 					itemElement.draggable = true;
 					itemElement.ondragstart = event => {
 		 				userMeta.type = 'item';
@@ -443,10 +443,10 @@ function chestMenu(id : number){
 						contextMenu.focus();
 						var valueButton = document.createElement('button');
 						valueButton.innerHTML = 'V<u>a</u>lue'
-						valueButton.onclick = () => {
+						valueButton.onclick = () => { // main value
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
-								if(item.item.id === 'num' || item.item.id === 'txt'){
+								if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){
 									var value = document.createElement('input');
 									value.value = item.item.data.name;
 									value.onkeydown = e => {
@@ -723,6 +723,11 @@ function chestMenu(id : number){
 					if(item.item.id === 'bl_tag'){
 						const tag = findBlockTag(block.block,block.action,item.item.data.tag);
 						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
+					}
+					else if(item.item.id === 'var'){
+						if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
+						else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
+						else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
 					}
 					itemElement.onmousemove(e);
 					chestMenu(id);
