@@ -473,6 +473,23 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		stack.append(blockElement);
 		codeSpace.append(blockDiv);
 	})
+
+	var end = document.createElement('div')
+	end.classList.add('block');
+	end.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault()}};
+	end.ondrop = () => {
+		if(userMeta.type === 'block'){
+			code.blocks.push(code.blocks[userMeta.value]);
+			code.blocks.splice(userMeta.value,1);
+			rendBlocks();
+		}
+		else if(userMeta.type === 'newBlock'){
+			code.blocks.push(userMeta.value);
+			rendBlocks();
+		}
+	}
+	codeSpace.append(end);
+
 	console.groupEnd();
 }
 
