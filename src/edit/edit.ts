@@ -1,6 +1,6 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument} from "./template";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -230,7 +230,7 @@ function menuBar(){
 }
 
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
-	console.log('%cREND BLOCKS','color: red; font-size: 20px;');
+	console.groupCollapsed('REND BLOCKS');
 	var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
 	var messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
 	codeSpace.innerHTML = `<!-- ${messages[Math.floor(Math.random() * messages.length)]} -->`; // hi
@@ -242,7 +242,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		blockDiv.draggable = true;
 		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
 		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault()}};
-		blockDiv.addEventListener('drop',e => { // pain
+		blockDiv.addEventListener('drop',e => { // pain and when you drop on a codeblock
 
 			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
 			var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
@@ -302,7 +302,7 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 									let pre = value.value.substring(value.selectionStart,0);
 									value.onkeydown = e => { // ENTER ESCAPE AND TAB
 										if(e.key === 'Enter'){
-											(block as SelectionBlock | SubActionBlock).action = value.value;
+											setAction(i,value.value);
 											contextMenu.click();
 											rendBlocks();
 										}
@@ -473,7 +473,61 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		stack.append(blockElement);
 		codeSpace.append(blockDiv);
 	})
-	console.log('%cREND BLOCKS COMPLETE','color: red; font-size: 20px;');
+	console.groupEnd();
+}
+
+/**
+ * Set the action of a CodeBlock, this will fill in the block tags.
+ *
+ * Params:
+ * @param index The index of the block to edit
+ * @param value The action to set to (including data blocks)
+ * @param ignoreInvalidAction Enable this to allow setting an action ignorant of if it exists
+ *
+ * Errors:
+ * @throws `TypeError` If the block doesn't support actions or if `ignoreInvalidAction` is `true` and the block doesn't have that action
+ * @throws `RangeError` If the block at `index` doesn't exist.
+ */
+function setAction(index: number, value: string, ignoreInvalidAction = false){
+	var block = code.blocks[index]
+	if(block){
+		if(block.id === 'block'){
+			if((block as DataBlock).data) (block as DataBlock).data = value;
+			else if((block as SubActionBlock)){
+
+				let action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block] && act.name === value)) // this is the action in db
+
+				if(value !== '' && !ignoreInvalidAction && action === undefined) throw new TypeError(`Action ${value} doesn't exist on block type ${CodeBlockTypeName[(block as PlacedBlock).block]}`);
+
+				else{ // logic for block tags
+
+					(block as SubActionBlock).action = value;
+					var newItems = (block as SubActionBlock).args.items.filter(item => item.item.id !== 'bl_tag');
+					if(action !== undefined){
+						action.tags.forEach((tag,i) => {
+							var newTag : Argument = ({
+								slot: (26 - i),
+								item: {
+									id: 'bl_tag',
+									data: {
+										action: value,
+										block: (block as PlacedBlock).block,
+										option: tag.defaultOption,
+										tag: tag.name,
+									}
+								}
+							});
+							newItems.push(newTag);
+						});
+					}
+					(block as SubActionBlock).args.items = newItems;
+				}
+			}
+			else throw new TypeError(`Block ${index} doesn't have a value.`)
+		}
+		else throw new TypeError(`Block ${index} is probably a ${block.id} which doesn't have a value.`)
+	}
+	else throw new RangeError(`Block ${index} doesn't exist.`)
 }
 
 function chestMenu(id : number){
