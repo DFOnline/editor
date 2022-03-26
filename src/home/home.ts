@@ -57,7 +57,26 @@ window.onload = () => {
     }
     var importButton = document.getElementById('import') as HTMLButtonElement;
     importButton.onclick = () => {importMenu()};
-    document.querySelector('button#start').addEventListener('click',() => snackbar('Cry about it'))
+    document.querySelector('button#start').addEventListener('click',() => {
+        var create = document.createElement('div');
+        var p = document.createElement('p');
+        p.innerHTML = `
+Creating new templates is rather useless, knowing that the editor can't do everything.<br>
+I suggest using DFOnline as a template viewer (knowing that derpystuff template web view is broken).<br>
+I don't suggest as using it as a full on editor, since it isn't finished and DF serves as better editing for code itself.<br>
+Sorry for the massive block of text, but have a button to make it an empty template, if you really want to.
+`;
+        create.appendChild(p);
+        var createButton = document.createElement('button');
+        createButton.innerText = "Create Empty Template";
+        createButton.onclick = () => {
+            // set importdata to empty template
+            sessionStorage.setItem('import','H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
+            location.href = '/edit/';
+        }
+        create.appendChild(createButton);
+        menu('Create',create);
+    })
 }
 
 codeutilities.onmessage = event => {
