@@ -1,6 +1,7 @@
 import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument} from "./template";
+import { parse } from "nbt-ts";
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -628,7 +629,7 @@ function chestMenu(id : number){
 						contextMenu.append(deleteButton);
 					}
 				}
-				{ // the textures.
+				{ // the textures. epic
 					if(item.item.id === 'txt'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
 					}
@@ -655,6 +656,10 @@ function chestMenu(id : number){
 					}
 					else if (item.item.id === 'vec'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PRISMARINE_SHARD.png)';
+					}
+					else if (item.item.id === 'item'){
+						var data = parse(item.item.data.item) as any;
+						itemElement.style.backgroundImage = `url(https://dfonline.dev/public/images/${data.id.toUpperCase().replace('MINECRAFT:','')}.png)`;
 					}
 					else if (item.item.id === 'bl_tag'){
 						try{
@@ -852,6 +857,45 @@ function chestMenu(id : number){
 							else{tagElement.style.color = 'white';}
 							mouseInfo.append(tagElement);
 						})
+					}
+					else if(item.item.id === 'item'){
+						var data = parse(item.item.data.item) as any;
+						console.log(data);
+
+						if(data.tag){
+
+								if(data.tag.display){
+									if(data.tag.display.Name){
+									var ItemName = document.createElement('span');
+									minecraftColorHTML(MinecraftTextCompToCodes(data.tag.display.Name)).forEach(e => ItemName.append(e));
+
+									mouseInfo.append(ItemName);
+								}
+
+								if(data.tag.display.Lore && data.tag.display.Lore.length > 0){
+									mouseInfo.append(document.createElement('hr'));
+									data.tag.display.Lore.forEach((l : string) => {
+										var lore = document.createElement('span');
+										minecraftColorHTML(MinecraftTextCompToCodes(l)).forEach(e => lore.append(e));
+										mouseInfo.append(lore);
+									})
+								}
+							}
+
+							mouseInfo.append(document.createElement('hr'));
+						}
+
+						var ItemType = document.createElement('span');
+						ItemType.innerText = data.id;
+						ItemType.style.color = 'gray';
+						ItemType.style.textShadow = '1px 1px #000';
+						mouseInfo.append(ItemType);
+
+						var ItemCount = document.createElement('span');
+						ItemCount.innerText = 'Count: ' + data.Count.value;
+						ItemCount.style.color = 'gray';
+						ItemCount.style.textShadow = '1px 1px #000';
+						mouseInfo.append(ItemCount);
 					}
 					else {
 						var info = document.createElement('span');
