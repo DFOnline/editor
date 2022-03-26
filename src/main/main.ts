@@ -36,7 +36,6 @@ function menu(title : string, content : HTMLElement = document.createElement('sp
             }
         }
     },100)
-    
     var screen = document.createElement('div');
     var obj = document.createElement('h1');
     obj.innerText = title;
@@ -107,6 +106,72 @@ function encode(codedata : string){
     return btoa(data2);
 }
 
+function MinecraftTextCompToCodes(component : string | object) : string{
+    let workComponents : any;
+    if(typeof component == 'string'){
+        workComponents = JSON.parse(component);
+    }
+    else{
+        workComponents = component;
+    }
+    console.log(workComponents);
+
+    const codes : {[key: string]: string} = {
+        "black": "0",
+        "dark_blue": "1",
+        "dark_green": "2",
+        "dark_aqua": "3",
+        "dark_red": "4",
+        "dark_purple": "5",
+        "gold": "6",
+        "gray": "7",
+        "dark_gray": "8",
+        "blue": "9",
+        "green": "a",
+        "aqua": "b",
+        "red": "c",
+        "light_purple": "d",
+        "yellow": "e",
+        "white": "f",
+        "obfuscated": "k",
+        "bold": "l",
+        "strikethrough": "m",
+        "underline": "n",
+        "italic": "o",
+        "reset": "r"
+    }
+
+    var text = '\u00A7r';
+    if(workComponents.bold){
+        text += '\u00A7l';
+    }
+    if(workComponents.italic){
+        text += '\u00A7o';
+    }
+    if(workComponents.underlined){
+        text += '\u00A7n';
+    }
+    if(workComponents.strikethrough){
+        text += '\u00A7m';
+    }
+    if(workComponents.obfuscated){
+        text += '\u00A7k';
+    }
+    if(workComponents.color){
+        text += '\u00A7' + codes[workComponents.color];
+    }
+    if(workComponents.text){
+        text += workComponents.text;
+    }
+    if(workComponents.extra){
+        workComponents.extra.forEach((e : string) => {
+            text += MinecraftTextCompToCodes(e);
+        })
+    }
+
+    return text;
+}
+
 /**
  * Converts text with & or § codes into colored HTML
  * @param text The text to format.
@@ -164,4 +229,4 @@ function dfNumber(num : number | string,accuray = 3){
     return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
 }
 
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML, dfNumber};
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};
