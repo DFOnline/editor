@@ -98,8 +98,9 @@ function decode(base64data : string){
     });
     var binData = new Uint8Array(uint);
     var data = inflate(binData);
-    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7');
 }
+
 function encode(codedata : string){
     var data = gzip(codedata);
     var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
@@ -158,6 +159,9 @@ function MinecraftTextCompToCodes(component : string | object) : string{
         text += '\u00A7k';
     }
     if(workComponents.color){
+        if(workComponents.color.startsWith('#')){
+            workComponents.color = '\u00A7x\u00A7' + workComponents.color.substr(1).split('').join('\u00A7');
+        }
         text += '\u00A7' + codes[workComponents.color];
     }
     if(workComponents.text){
@@ -203,21 +207,40 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
         'm': {css: 'text-decoration: line-through;', reset: false},
         'k': {css: 'animation: fadepulse 1s infinite alternate ease-in-out;', reset: false},
         'r': {css: 'color: #ffffff;', reset: true},
+        'x': {css: '', reset: true},
     };
-    var last = styleMap['r'].css
-    return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-OR].*?(?=[&§][\dA-FK-OR])|[&§][\dA-FK-OR].*/gi).map((str : string) => {
-            var newStr = str.replace(/^[&§][\dA-FK-OR]/gi,'');
+    var last = styleMap['r'].css;
+    var hexColor = 0;
+    return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-ORX].*?(?=[&§][\dA-FK-ORX])|[&§][\dA-FK-ORX].*/gi).map((str : string) => {
+            var newStr = str.replace(/^[&§][\dA-FK-ORX]/gi,'');
             var element = document.createElement('span');
             element.innerText = newStr;
             var style = styleMap[str[1] as 'r'];
-            if(style.reset){last = style.css;}
-            else{element.style.cssText = element.style.cssText + last; last = element.style.cssText + style.css;}
+            if(style.reset){
+                if(str[1] === 'x'){
+                    hexColor = 6;
+                    last = 'color: #';
+                }
+                else if(hexColor > 0){
+                    last += str[1];
+                    console.log(str[1]);
+                    if(hexColor === 1){
+                        last += ';';
+                    }
+                }
+                else last = style.css;
+            }
+            else{
+                element.style.cssText = element.style.cssText + last;
+                last = element.style.cssText + style.css;
+            }
             element.style.cssText = style.css + last;
             return element;
         }
     )
         .filter(x => x.innerText !== '')
 }
+
 
 /**
  * Edits a number to look like a df one, where there usually is a .0 after things.
