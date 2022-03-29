@@ -1,4 +1,4 @@
-import { codeutilities, encode } from "../../main/main";
+import { codeutilities, encodeTemplate } from "../../main/main";
 import type { SelectionBlock, Template } from "../template";
 
 window.onload = () => {
@@ -27,7 +27,7 @@ function generateTheComment(){
     codeutilities.send(
     JSON.stringify(
             {"type":"template","source":"DFOnline Comment Generator","data":
-                JSON.stringify({"name":"§6Comment","data":encode(JSON.stringify(code))})
+                JSON.stringify({"name":"§6Comment","data":encodeTemplate(JSON.stringify(code))})
             }
         )
     );

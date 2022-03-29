@@ -43,7 +43,7 @@ export class Context {
         contextMenus.splice(contextMenus.findIndex(x => x === this),1);
         this.html.remove();
     }
-    
+
     /**
      * You can do something like `element.onclick = e => Context.eventOpen(e)` to easily use this.
      * @param event The mouse event to get the position from
