@@ -1,5 +1,5 @@
-import { startup, decode, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encode, user } from "../main/main";
-import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
+import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
+import { Action, ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument} from "./template";
 import { parse } from "nbt-ts";
 
@@ -70,7 +70,7 @@ document.onkeydown = e => {
 let contextMenu : HTMLDivElement;
 let mouseInfo : HTMLDivElement;
 
-window.onload = () => { // when everything loads - this function is pretty hard to find lol.
+window.onload = async function() { // when everything loads - this function is pretty hard to find lol.
 	var start = startup();
 	mouseInfo = start.mouseInfo;
 	contextMenu = document.querySelector('div#context');
@@ -78,7 +78,15 @@ window.onload = () => { // when everything loads - this function is pretty hard 
 		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
 	}
 	if(sessionStorage.getItem('import')){
-		code = JSON.parse(decode(sessionStorage.getItem('import')));
+		var importTemplate = sessionStorage.getItem('import');
+		if(importTemplate.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/)){
+			console.log(sessionStorage.getItem('import'));
+			code = JSON.parse(decodeTemplate(importTemplate));
+		}
+		else{
+			code = JSON.parse(decodeTemplate((await fetch(`https://dfonline.dev/api/save/${importTemplate}`).then(response => response.json())).data));
+			snackbar('Grabbed template from server.');
+		}
 	}
 	rendBlocks();
 	contextMenu.onclick = () => {
@@ -90,10 +98,10 @@ window.onload = () => { // when everything loads - this function is pretty hard 
 	}
 	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
 
-	menuBar();
+	await menuBar();
 }
 
-function menuBar(){
+async function menuBar(){
 	document.querySelector<HTMLButtonElement>('button#file').onclick = e => {
 		e.stopPropagation();
 		var {left, bottom} = (e.target as HTMLButtonElement).getBoundingClientRect();
@@ -111,14 +119,17 @@ function menuBar(){
 		contextMenu.append(newTemplate);
 		var exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
 		exportTemplateButton.innerText = 'Export';
-		exportTemplateButton.onclick = () => { // a mess, anyway the menu for export.
+		exportTemplateButton.onclick = async () => { // a mess, anyway the menu for export.
 			let exportDiv = document.createElement('div');
+
 			var p = document.createElement('p');
-			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
+			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.\nIf you shift click the copy link button you should get a short link.`;
 			exportDiv.append(p);
+
 			let options = document.createElement('div');
 			options.style.display = 'grid';
 			options.style.width = 'fit-content'
+
 			var copyTemplate = document.createElement('button');
 			copyTemplate.innerText = "Copy Data";
 			copyTemplate.onclick = e => {
@@ -128,6 +139,7 @@ function menuBar(){
 				else navigator.clipboard.writeText(data.data);
 			}
 			options.append(copyTemplate);
+
 			var CodeUtilsSend = document.createElement('button');
 			CodeUtilsSend.innerText = 'Send to CodeUtilities';
 			CodeUtilsSend.disabled = !cuopen;
@@ -144,14 +156,19 @@ function menuBar(){
 				}
 			}
 			options.append(CodeUtilsSend);
+
 			var CopyLinkButton = document.createElement('button');
 			CopyLinkButton.innerText = 'Copy Link';
-			CopyLinkButton.onclick = e => {
+			CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
 				var href : string
 				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
 				else href = location.href;
 				var searchParams = new URLSearchParams(location.search);
-				searchParams.set('template',exportTemplate(JSON.stringify(code)).data);
+				var exportData = exportTemplate(JSON.stringify(code)).data;
+				if(e.shiftKey){
+					exportData = (await fetch('https://dfonline.dev/api/save',{'body':exportData,'method':'POST'}).then(res => res.json())).id;
+				}
+				searchParams.set('template',exportData);
 				navigator.clipboard.writeText(href + '?' + searchParams.toString());
 			}
 			options.append(CopyLinkButton);
@@ -974,7 +991,7 @@ function exportTemplate(code : string) : {data: string, author: string, name: st
 	if(user && user.name) name = user.name;
 	else name = 'DFOnline';
 	return ({
-		data: encode(code),
+		data: encodeTemplate(code), // lmao what I probably rename some variables and never saw this happen
 		author: name,
 		name: 'DFOnline Template', // proper name system planned later
 	})
