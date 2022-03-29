@@ -14,6 +14,6 @@
   },
   "scripts": {
     "test": "npx parcel \"src/**/*.html\" --no-cache --dist-dir ./docs --lazy",
-    "build": "npx parcel build \"src/**/*.html\" --dist-dir ./docs --no-source-maps"
+    "build": "npx parcel build \"src/**/*.html\" --no-source-maps"
   }
 }
