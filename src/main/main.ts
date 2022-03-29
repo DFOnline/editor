@@ -91,7 +91,7 @@ const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
 codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = true;}
 codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
-function decode(base64data : string){
+function decodeTemplate(base64data : string){
     var compressData = atob(base64data);
     var uint = compressData.split('').map(function(e) {
         return e.charCodeAt(0);
@@ -101,7 +101,7 @@ function decode(base64data : string){
     return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7');
 }
 
-function encode(codedata : string){
+function encodeTemplate(codedata : string){
     var data = gzip(codedata);
     var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
     return btoa(data2);
@@ -252,4 +252,4 @@ function dfNumber(num : number | string,accuray = 3){
     return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
 }
 
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encode, decode, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};
+export {codeutilities, cuopen, user, startup, login, menu, snackbar, encodeTemplate, decodeTemplate, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};
