@@ -252,4 +252,35 @@ function dfNumber(num : number | string,accuray = 3){
     return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
 }
 
+// if apiEndpoint is not set, it will use the default one
+if(sessionStorage.getItem('apiEndpoint') === null){
+    sessionStorage.setItem('apiEndpoint','https://dfonline.dev/api/');
+}
+
+document.addEventListener('keydown',(e) => {
+    if(e.key === 'D' && e.shiftKey && e.ctrlKey && e.altKey){
+        console.log('yah')
+        let devMenu = document.createElement('div');
+
+        let info = document.createElement('p');
+        info.innerText = 'This is the dev menu.<br>You can change the api endpoint here, but only if you know what you are doing.';
+
+        let apiEndpointLabel = document.createElement('label');
+        apiEndpointLabel.innerText = 'API Endpoint: ';
+
+        let apiEndpoint = document.createElement('input');
+        apiEndpoint.type = 'text';
+        apiEndpoint.value = sessionStorage.getItem('apiEndpoint');
+        apiEndpoint.oninput = () => {
+            sessionStorage.setItem('apiEndpoint',apiEndpoint.value);
+        };
+        apiEndpoint.placeholder = 'api endpoint';
+
+        apiEndpointLabel.appendChild(apiEndpoint);
+        devMenu.appendChild(apiEndpointLabel);
+
+        menu('Developer Menu',devMenu);
+    }
+})
+
 export {codeutilities, cuopen, user, startup, login, menu, snackbar, encodeTemplate, decodeTemplate, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};

@@ -84,7 +84,7 @@ window.onload = async function() { // when everything loads - this function is p
 			code = JSON.parse(decodeTemplate(importTemplate));
 		}
 		else{
-			code = JSON.parse(decodeTemplate((await fetch(`https://dfonline.dev/api/save/${importTemplate}`).then(response => response.json())).data));
+			code = JSON.parse(decodeTemplate((await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save/${importTemplate}`).then(response => response.json())).data));
 			snackbar('Grabbed template from server.');
 		}
 	}
@@ -166,7 +166,7 @@ async function menuBar(){
 				var searchParams = new URLSearchParams(location.search);
 				var exportData = exportTemplate(JSON.stringify(code)).data;
 				if(e.shiftKey){
-					exportData = (await fetch('https://dfonline.dev/api/save',{'body':exportData,'method':'POST'}).then(res => res.json())).id;
+					exportData = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportData,'method':'POST'}).then(res => res.json())).id;
 				}
 				searchParams.set('template',exportData);
 				navigator.clipboard.writeText(href + '?' + searchParams.toString());
