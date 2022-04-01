@@ -78,6 +78,8 @@ html, body {
     span {
         margin: auto;
         font-size: calc(min(5vh,10vw) - 1vw);
+        white-space: nowrap;
+        font-family: 'Courier New', Courier, monospace;
     }
     img {
         margin: auto;
