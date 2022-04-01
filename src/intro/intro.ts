@@ -1,3 +1,4 @@
+import { version } from '../../package.json';
 // import { user } from '../main/main'; solarlint hates me for commeting cod
 
 // var params = new URLSearchParams(window.location.search); so what I did was put some stuff here
@@ -13,6 +14,7 @@
 // }
 
 window.onload = async () => {
+    document.getElementById('ver').innerText += " " + version;
     var animate : HTMLDivElement = document.querySelector('#animate');
     animate.classList.add('show');
     animate.onanimationend = async () => {
@@ -30,4 +32,4 @@ window.onload = async () => {
 
 function sleep(ms : number) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
