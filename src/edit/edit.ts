@@ -4,7 +4,7 @@ import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, S
 import { parse } from "nbt-ts";
 
 let ActDB : ActionDump
-fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
+fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
 				ActDB = data;
