@@ -72,7 +72,7 @@ export interface Argument {
 
 // Item Code ========================================================
 
-export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag
+export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
 
 export interface Number {
     id: 'num';
@@ -176,4 +176,43 @@ export interface BlockTag {
         action: string;
         block: BlockID;
     }
+}
+
+export interface ChestItem {
+    id: 'item';
+    data: {
+        item: string;
+    }
+}
+
+// copilot just generating minecraft stuff.
+export interface ParsedItem {
+    name: string;
+    id: string;
+    Count: NbtValue<number>;
+    tag: {
+        display?: {
+            Name: string;
+            Lore: string[];
+        },
+        enchantments?: {
+            [key: string]: {
+                id: number | string;
+                lvl: number;
+            };
+        },
+        unbreakable?: boolean;
+        hideFlags?: number;
+        attributes?: {
+            [key: string]: {
+                name: string;
+                value: string;
+                slot: string;
+                id: string;
+            };
+        };
+    }
+}
+export interface NbtValue<t> {
+    value: t;
 }
