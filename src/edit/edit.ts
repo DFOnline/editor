@@ -2,6 +2,7 @@ import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, 
 import { Action, ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument} from "./template";
 import { parse } from "nbt-ts";
+import itemnames from "./itemnames.json"
 
 let ActDB : ActionDump
 fetch('https://webbot.georgerng.repl.co/db') // Gets ?actiondump.
@@ -880,12 +881,15 @@ function chestMenu(id : number){
 						console.log(data);
 
 						if(data.tag){
+							var ItemName = document.createElement('span');
+							mouseInfo.append(itemnames[data.id.replace("minecraft:","")]);
 
 								if(data.tag.display){
 									if(data.tag.display.Name){
 									var ItemName = document.createElement('span');
 									minecraftColorHTML(MinecraftTextCompToCodes(data.tag.display.Name)).forEach(e => ItemName.append(e));
 
+									mouseInfo.children[0].remove();
 									mouseInfo.append(ItemName);
 								}
 
