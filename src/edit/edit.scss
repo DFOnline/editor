@@ -110,7 +110,7 @@ $codeBlockSize: min(300px,80vh);
     }
     .item {
         width:unset;
-        display: block;
+        display: flex;
         position: absolute;
         $add: -3%;
         left: calc(($add / 2) * -1);
@@ -118,6 +118,16 @@ $codeBlockSize: min(300px,80vh);
         width: calc(100% + $add);
         height: calc(100% + $add);
         background-size: cover;
+        > span {
+            width: 100%;
+            align-self: flex-end;
+            text-align: end;
+            font-family: "minecraft-ten-regular";
+            height: min-content;
+            position: relative;
+            bottom: -10%;
+            font-size: larger;
+        }
     }
 }
 

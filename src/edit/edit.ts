@@ -1,7 +1,8 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { Action, ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem} from "./template";
 import { parse } from "nbt-ts";
+import itemNames from './itemnames.json';
 
 let ActDB : ActionDump
 fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
@@ -675,8 +676,13 @@ function chestMenu(id : number){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PRISMARINE_SHARD.png)';
 					}
 					else if (item.item.id === 'item'){
-						var data = parse(item.item.data.item) as any;
+						var data = parse(item.item.data.item) as unknown as ParsedItem;
 						itemElement.style.backgroundImage = `url(https://dfonline.dev/public/images/${data.id.toUpperCase().replace('MINECRAFT:','')}.png)`;
+						if(data.Count.value > 1){
+							var count = document.createElement('span');
+							count.innerText = String(data.Count.value);
+							itemElement.append(count);
+						}
 					}
 					else if (item.item.id === 'bl_tag'){
 						try{
@@ -876,31 +882,35 @@ function chestMenu(id : number){
 						})
 					}
 					else if(item.item.id === 'item'){
-						var data = parse(item.item.data.item) as any;
+						var data = parse(item.item.data.item) as unknown as ParsedItem;
 						console.log(data);
 
-						if(data.tag){
-
-								if(data.tag.display){
-									if(data.tag.display.Name){
-									var ItemName = document.createElement('span');
-									minecraftColorHTML(MinecraftTextCompToCodes(data.tag.display.Name)).forEach(e => ItemName.append(e));
-
-									mouseInfo.append(ItemName);
-								}
-
-								if(data.tag.display.Lore && data.tag.display.Lore.length > 0){
-									mouseInfo.append(document.createElement('hr'));
-									data.tag.display.Lore.forEach((l : string) => {
-										var lore = document.createElement('span');
-										minecraftColorHTML(MinecraftTextCompToCodes(l)).forEach(e => lore.append(e));
-										mouseInfo.append(lore);
-									})
-								}
-							}
-
-							mouseInfo.append(document.createElement('hr'));
+						if(!data.tag){
+							data.tag = {};
 						}
+
+
+						var ItemName = document.createElement('span');
+						if(data.tag.display && data.tag.display.Name){
+							minecraftColorHTML(MinecraftTextCompToCodes(data.tag.display.Name)).forEach(e => ItemName.append(e));
+
+							mouseInfo.append(ItemName);
+						}
+						else {
+							ItemName.innerText = (itemNames as any)[data.id.toLowerCase().replace('minecraft:', '')];
+							mouseInfo.append(ItemName);
+						}
+
+						if(data.tag.display && data.tag.display.Lore && data.tag.display.Lore.length > 0){
+							data.tag.display.Lore.forEach((l : string) => {
+								var lore = document.createElement('span');
+								minecraftColorHTML(MinecraftTextCompToCodes(l)).forEach(e => lore.append(e));
+								mouseInfo.append(lore);
+							})
+						}
+
+						mouseInfo.append(document.createElement('hr'));
+
 
 						var ItemType = document.createElement('span');
 						ItemType.innerText = data.id;
