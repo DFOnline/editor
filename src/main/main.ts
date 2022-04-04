@@ -44,6 +44,7 @@ function menu(title : string, content : HTMLElement = document.createElement('sp
     (document.activeElement as HTMLElement).blur()
     bg.appendChild(screen);
     (document.getElementById('menus') as HTMLDivElement).appendChild(bg);
+    return bg;
 }
 
 const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined

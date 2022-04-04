@@ -1,6 +1,6 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { Action, ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 
@@ -571,15 +571,16 @@ function chestMenu(id : number){
 	if(block.args !== undefined){
 		var menuDiv = document.createElement('div');
 		menuDiv.id = 'chest';
-		[...Array(27).keys()].forEach((x) => { // each slot
+		[...Array(27).keys()].forEach((slotID) => { // each slot
 			var slot = document.createElement('div');
 			slot.classList.add('slot');
-			const itemIndex = block.args.items.findIndex(i => i.slot == x)
+			const itemIndex = block.args.items.findIndex(i => i.slot == slotID)
 			var item = (block.args.items[itemIndex]);
 			var itemElement = document.createElement('div');
 			itemElement.style.backgroundImage = "";
 			if(item){ // if there in an item
 				slot.id = String(itemIndex);
+				slot.classList.add('notEmpty');
 				if(item.item.id === 'bl_tag'){itemElement.draggable = false; itemElement.ondragstart = e => {e.preventDefault(); return false;}}
 				else { // events basically
 					itemElement.draggable = true;
@@ -948,21 +949,92 @@ function chestMenu(id : number){
 				}
 			}
 			else{
-				itemElement.id = 'empty' + String(x);
+				itemElement.id = 'empty' + String(slotID);
+				itemElement.classList.add('empty');
 				itemElement.ondragover = e => e.preventDefault();
 				itemElement.ondrop = event => {
 					var target = event.target as HTMLDivElement
 					block.args.items[userMeta.value].slot = Number(target.id.replace('empty',''));
 					chestMenu(id);
 				}
+				itemElement.onclick = (e) => {
+					userMeta.value = slotID;
+
+					e.preventDefault();
+					e.stopPropagation();
+
+					contextMenu.innerHTML = '';
+					contextMenu.style.display = 'block';
+					contextMenu.style.left = e.clientX + 'px';
+					contextMenu.style.top = e.clientY + 'px';
+
+					let workItem = (item : Item) => {
+						block.args.items.push({
+							slot: slotID,
+							item: item
+						});
+						var menu = chestMenu(id);
+
+						setTimeout(() => {
+							menu.querySelectorAll<HTMLDivElement>('*.slot > .item')[slotID].oncontextmenu(e);
+							setTimeout(() => {
+								userMeta.ctxKeys['a'].click();
+							}, 0);
+						});
+					}
+
+					let varItem = document.createElement('button');
+					varItem.classList.add('newValue');
+					varItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/MAGMA_CREAM.png")';
+					varItem.onclick = () => {
+						var newItem : Variable = {
+							id: 'var',
+							data: {
+								scope: 'unsaved',
+								name: '',
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(varItem);
+
+					let textItem = document.createElement('button');
+					textItem.classList.add('newValue');
+					textItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/BOOK.png")';
+					textItem.onclick = () => {
+						var newItem : Text = {
+							id: 'txt',
+							data: {
+								name: '',
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(textItem);
+
+					let numItem = document.createElement('button');
+					numItem.classList.add('newValue');
+					numItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/SLIME_BALL.png")';
+					numItem.onclick = () => {
+						var newItem : DFNumber = {
+							id: 'num',
+							data: {
+								name: '',
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(numItem);
+				}
+				itemElement.oncontextmenu = itemElement.onclick;
 			}
 			itemElement.classList.add('item')
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
 		})
 		var chestDiv = document.querySelector('#chest');
-		if(chestDiv) chestDiv.parentElement.replaceChild(menuDiv,chestDiv);
-		else menu('Chest',menuDiv);
+		if(chestDiv) {chestDiv.parentElement.replaceChild(menuDiv,chestDiv); return menuDiv;}
+		else return menu('Chest',menuDiv);
 	}
 }
 
