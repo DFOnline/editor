@@ -1,6 +1,6 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 
@@ -632,6 +632,113 @@ function chestMenu(id : number){
 									contextMenu.append(value);
 									value.focus()
 								}
+								else if(item.item.id === 'loc'){
+									var locationInput = document.createElement('div');
+									locationInput.onclick = e => e.stopPropagation();
+									locationInput.onkeydown = e => {
+										console.log(e);
+										if(e.key === 'Enter'){
+											(item.item as unknown as DFLocation).data.loc.x = Number(xInput.value);
+											(item.item as unknown as DFLocation).data.loc.y = Number(yInput.value);
+											(item.item as unknown as DFLocation).data.loc.z = Number(zInput.value);
+											(item.item as unknown as DFLocation).data.loc.pitch = Number(pitchInput.value);
+											(item.item as unknown as DFLocation).data.loc.yaw = Number(yawInput.value);
+											contextMenu.click();
+										}
+										if(e.key === 'Escape'){
+											contextMenu.click();
+										}
+									}
+									locationInput.style.display = 'grid';
+									locationInput.style.gridTemplateRows = '1fr 1fr 1fr 1fr';
+
+									var xLabel = document.createElement('label');
+									xLabel.innerHTML = 'X: ';
+									var xInput = document.createElement('input');
+									xInput.type = 'number';
+									xInput.value = String(item.item.data.loc.x);
+									xLabel.append(xInput);
+									locationInput.append(xLabel);
+
+									var yLabel = document.createElement('label');
+									yLabel.innerHTML = 'Y: ';
+									var yInput = document.createElement('input');
+									yInput.type = 'number';
+									yInput.value = String(item.item.data.loc.y);
+									yLabel.append(yInput);
+									locationInput.append(yLabel);
+
+									var zLabel = document.createElement('label');
+									zLabel.innerHTML = 'Z: ';
+									var zInput = document.createElement('input');
+									zInput.type = 'number';
+									zInput.value = String(item.item.data.loc.z);
+									zLabel.append(zInput);
+									locationInput.append(zLabel);
+
+									var pitchLabel = document.createElement('label');
+									pitchLabel.innerHTML = 'Pitch: ';
+									var pitchInput = document.createElement('input');
+									pitchInput.type = 'number';
+									pitchInput.value = String(item.item.data.loc.pitch);
+									pitchLabel.append(pitchInput);
+									locationInput.append(pitchLabel);
+
+									var yawLabel = document.createElement('label');
+									yawLabel.innerHTML = 'Yaw: ';
+									var yawInput = document.createElement('input');
+									yawInput.type = 'number';
+									yawInput.value = String(item.item.data.loc.yaw);
+									yawLabel.append(yawInput);
+									locationInput.append(yawLabel);
+
+									contextMenu.append(locationInput);
+									xLabel.focus();
+								}
+								else if(item.item.id === 'vec'){
+									var vectorEdit = document.createElement('div');
+									vectorEdit.onclick = e => e.stopPropagation();
+									vectorEdit.onkeydown = e => {
+										if(e.key === 'Enter'){
+											(item.item as unknown as Vector).data.x = Number(xVecInput.value);
+											(item.item as unknown as Vector).data.y = Number(yVecInput.value);
+											(item.item as unknown as Vector).data.z = Number(zVecInput.value);
+											contextMenu.click();
+										}
+										if(e.key === 'Escape'){
+											contextMenu.click();
+										}
+									}
+									vectorEdit.style.display = 'grid';
+									vectorEdit.style.gridTemplateRows = '1fr 1fr 1fr';
+
+									var xVecLabel = document.createElement('label');
+									xVecLabel.innerHTML = 'X: ';
+									var xVecInput = document.createElement('input');
+									xVecInput.type = 'number';
+									xVecInput.value = String(item.item.data.x);
+									xVecLabel.append(xVecInput);
+									vectorEdit.append(xVecLabel);
+
+									var yVecLabel = document.createElement('label');
+									yVecLabel.innerHTML = 'Y: ';
+									var yVecInput = document.createElement('input');
+									yVecInput.type = 'number';
+									yVecInput.value = String(item.item.data.y);
+									yVecLabel.append(yVecInput);
+									vectorEdit.append(yVecLabel);
+
+									var zVecLabel = document.createElement('label');
+									zVecLabel.innerHTML = 'Z: ';
+									var zVecInput = document.createElement('input');
+									zVecInput.type = 'number';
+									zVecInput.value = String(item.item.data.z);
+									zVecLabel.append(zVecInput);
+									vectorEdit.append(zVecLabel);
+
+									contextMenu.append(vectorEdit);
+									xVecLabel.focus();
+								}
 							})
 						}
 						userMeta.ctxKeys['a'] = valueButton;
@@ -955,7 +1062,7 @@ function chestMenu(id : number){
 					chestMenu(id);
 				}
 			}
-			else{
+			else{ // if there isn't an item.
 				itemElement.id = 'empty' + String(slotID);
 				itemElement.classList.add('empty');
 				itemElement.ondragover = e => e.preventDefault();
@@ -1032,6 +1139,43 @@ function chestMenu(id : number){
 						workItem(newItem);
 					}
 					contextMenu.append(numItem);
+
+					let locItem = document.createElement('button');
+					locItem.classList.add('newValue');
+					locItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PAPER.png")';
+					locItem.onclick = () => {
+						var newItem : DFLocation = {
+							id: 'loc',
+							data: {
+								isBlock: false,
+								loc: {
+									x: 0,
+									y: 0,
+									z: 0,
+									pitch: 0,
+									yaw: 0
+								},
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(locItem);
+
+					let vecItem = document.createElement('button');
+					vecItem.classList.add('newValue');
+					vecItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PRISMARINE_SHARD.png")';
+					vecItem.onclick = () => {
+						var newItem : Vector = {
+							id: 'vec',
+							data: {
+								x: 0,
+								y: 0,
+								z: 0,
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(vecItem);
 				}
 				itemElement.oncontextmenu = itemElement.onclick;
 			}
