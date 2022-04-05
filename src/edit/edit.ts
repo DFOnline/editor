@@ -1,5 +1,5 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
-import { Action, ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
+import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
@@ -699,7 +699,7 @@ function chestMenu(id : number){
 						itemElement.classList.add('fadepulse');
 					}
 				}
-				itemElement.onmousemove = (e) => {
+				itemElement.onmousemove = () => {
 					mouseInfo.style.display = 'grid';
 					mouseInfo.innerHTML = '';
 					if (item.item.id === 'num' || item.item.id === 'txt') {
@@ -940,9 +940,16 @@ function chestMenu(id : number){
 						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
 					}
 					else if(item.item.id === 'var'){
-						if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
-						else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
-						else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
+						// swap through the options
+						if(!e.shiftKey){
+							if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
+							else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
+							else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
+						} else { // do it in the other order
+							if(item.item.data.scope === 'unsaved') item.item.data.scope = 'local';
+							else if(item.item.data.scope === 'saved') item.item.data.scope = 'unsaved';
+							else if(item.item.data.scope === 'local') item.item.data.scope = 'saved';
+						}
 					}
 					itemElement.onmousemove(e);
 					chestMenu(id);
