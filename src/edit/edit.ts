@@ -124,7 +124,7 @@ async function menuBar(){
 			let exportDiv = document.createElement('div');
 
 			var p = document.createElement('p');
-			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.\nIf you shift click the copy link button you should get a short link.`;
+			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
 			exportDiv.append(p);
 
 			let options = document.createElement('div');
@@ -166,13 +166,24 @@ async function menuBar(){
 				else href = location.href;
 				var searchParams = new URLSearchParams(location.search);
 				var exportData = exportTemplate(JSON.stringify(code)).data;
-				if(e.shiftKey){
-					exportData = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportData,'method':'POST'}).then(res => res.json())).id;
-				}
 				searchParams.set('template',exportData);
 				navigator.clipboard.writeText(href + '?' + searchParams.toString());
 			}
 			options.append(CopyLinkButton);
+
+			var CopyShortLinkButton = document.createElement('button');
+			CopyShortLinkButton.innerText = 'Copy Short Link';
+			CopyShortLinkButton.onclick = async e => {
+				var href : string
+				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
+				else href = location.href;
+				var searchParams = new URLSearchParams(location.search);
+				var exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
+				searchParams.set('template',exportData);
+				navigator.clipboard.writeText(href + '?' + searchParams.toString());
+			}
+			options.append(CopyShortLinkButton);
+
 			exportDiv.append(options);
 			menu('Export',exportDiv);
 		}
@@ -566,6 +577,11 @@ function setAction(index: number, value: string, ignoreInvalidAction = false){
 	else throw new RangeError(`Block ${index} doesn't exist.`)
 }
 
+/**
+ * Opens a chest menu. If one is already open the previous one is overwritted to skip any animations.
+ * @param id The id of the block to open the chest of.
+ * @returns The menu element opened.
+ */
 function chestMenu(id : number){
 	var block : SubActionBlock | SelectionBlock = code.blocks[id] as any;
 	if(block.args !== undefined){
