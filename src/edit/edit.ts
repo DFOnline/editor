@@ -1,9 +1,14 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
+import { flatten, unflatten } from 'flat';
 
+type tree = {
+	[key: string]: tree | string;
+}
+let Sounds : tree
 let ActDB : ActionDump
 fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
@@ -12,7 +17,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				rendBlocks();
 				var blockPicker = document.getElementById('blocks');
-				ActDB.codeblocks.forEach(block => {
+				ActDB.codeblocks.forEach(block => { // placing blocks menu
 					var blockDiv = document.createElement('div');
 					blockDiv.draggable = true;
 					blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
@@ -30,9 +35,17 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 					}
 					blockPicker.appendChild(blockDiv);
 				})
+				Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 			})
-			.catch(() => {
-				snackbar('An error occurred whilst getting required data.')
+			.catch(e => {
+				// if it is 500, it means the backend server is down.
+				if(e.status === 500){
+					snackbar('Backend server is down. Please try again later.')
+				}
+				else{
+					snackbar('An unexpected backend error occured. Please try again later.')
+				}
+				console.error(e);
 			})
 let userMeta:
 {"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
@@ -754,6 +767,85 @@ function chestMenu(id : number){
 
 									contextMenu.append(vectorEdit);
 									xVecLabel.focus();
+								}
+								else if(item.item.id === 'snd'){
+									const soundEdit = document.createElement('div');
+									soundEdit.onclick = e => e.stopPropagation();
+									soundEdit.onkeydown = e => {
+										if(e.key === 'Enter' || e.key === 'Escape'){
+											contextMenu.click();
+										}
+									}
+									soundEdit.style.display = 'grid';
+									soundEdit.style.gridTemplateRows = '1fr 1fr 1fr';
+
+									const soundValue = document.createElement('button');
+									soundValue.innerHTML = 'Select Sound';
+									soundValue.onclick = () => { // Select sound menu here because I am always looking for this piece of code.
+										function soundTab(path : string[] = []){
+											contextMenu.innerHTML = '';
+											const soundSelect = document.createElement('div');
+											soundSelect.style.display = 'grid';
+											
+											let sounds = Sounds;
+											for(const element of path){
+												sounds = sounds[element] as tree;
+											}
+											Object.entries(sounds).forEach(([key, value]) => {
+												const button = document.createElement('button');
+												button.innerHTML = key;
+												button.onclick = e => {
+													e.stopPropagation();
+													if(typeof value === 'string'){
+														(item.item as unknown as Sound).data.sound = value;
+														soundValue.innerHTML = value;
+														contextMenu.click();
+													}
+													else{
+														soundTab([...path, key]);
+													}
+												}
+												soundSelect.append(button);
+											});
+											contextMenu.append(soundSelect);
+										}
+
+										soundTab();
+									}
+									soundEdit.append(soundValue);
+
+									const pitchLabel = document.createElement('label');
+									pitchLabel.innerHTML = 'Pitch: ';
+									const pitchInput = document.createElement('input');
+									pitchInput.type = 'number';
+									pitchInput.value = String(item.item.data.pitch);
+									// set the input to be limited from 0 to 2
+									pitchInput.oninput = () => {
+										if(Number(pitchInput.value) < 0){
+											pitchInput.value = '0';
+										}
+										else if(Number(pitchInput.value) > 2){
+											pitchInput.value = '2';
+										}
+
+										(item.item as unknown as Sound).data.pitch = Number(pitchInput.value);
+									}
+									pitchLabel.append(pitchInput);
+									soundEdit.append(pitchLabel);
+
+									const volumeLabel = document.createElement('label');
+									volumeLabel.innerHTML = 'Volume: ';
+									const volumeInput = document.createElement('input');
+									volumeInput.type = 'number';
+									volumeInput.value = String(item.item.data.vol);
+									// on input save the value to the item
+									volumeInput.oninput = () => {
+										(item.item as unknown as Sound).data.vol = Number(volumeInput.value);
+									}
+									volumeLabel.append(volumeInput);
+									soundEdit.append(volumeLabel);
+
+									contextMenu.append(soundEdit);
 								}
 							})
 						}
