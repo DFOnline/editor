@@ -3,6 +3,8 @@ import type { BlockID } from "./template";
 export interface ActionDump {
     codeblocks: CodeBlock[]
     actions: Action[]
+    soundCategories: SoundCategory[]
+    sounds: Sound[]
 }
 export default ActionDump
 export interface CodeBlock {
@@ -32,6 +34,19 @@ export interface Tag {
     defaultOption: string;
     alaises: Array<any>
 }
+
+
+export interface SoundCategory {
+    identifier: string;
+    icon: Icon;
+    hasSubCategories: boolean;
+}
+
+export interface Sound {
+    sound: string;
+    icon: Icon;
+}
+
 
 export type CodeBlockIdentifier = BlockID;
 export type CodeBlockName = "PLAYER ACTION" | "IF PLAYER" | "START PROCESS" | "CALL FUNCTION" | "CONTROL" | "SET VARIABLE" | "ENTITY EVENT" | "PLAYER EVENT" | "FUNCTION" | "IF ENTITY" | "ENTITY ACTION" | "IF VARIABLE" | "SELECT OBJECT" | "GAME ACTION" | "ELSE" | "PROCESS" | "REPEAT" | "IF GAME";
