@@ -797,7 +797,9 @@ function chestMenu(id : number){
 												button.onclick = e => {
 													e.stopPropagation();
 													if(typeof value === 'string'){
-														(item.item as unknown as Sound).data.sound = value;
+														// get the new name from the icon name, which df uses for some reason.
+														const newSound = ActDB.sounds.find(s => s.sound === value).icon.name;
+														(item.item as unknown as Sound).data.sound = newSound;
 														soundValue.innerHTML = value;
 														contextMenu.click();
 													}

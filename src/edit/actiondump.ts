@@ -23,6 +23,7 @@ export interface Action {
 export interface Icon {
     material: string;
     description: string;
+    name: string;
 }
 export interface Tag {
     name: string;
