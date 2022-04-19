@@ -147,8 +147,17 @@ html,body {
     top: 0px;
     left: 0px;
     border-radius: $value;
+    $maxHeight: 400px;
+    max-height: $maxHeight;
+    overflow-y: auto;
+    overflow-x: clip;
+    width: fit-content;
     div {
+        max-height: $maxHeight;
+        overflow-y: auto;
+        overflow-x: clip;
         display: grid;
+        width: fit-content;
     }
     button {
         margin: 0;
