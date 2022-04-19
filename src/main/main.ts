@@ -236,6 +236,9 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
                 last = element.style.cssText + style.css;
             }
             element.style.cssText = style.css + last;
+            if(font){
+                element.style.fontFamily = font;
+            }
             return element;
         }
     )
