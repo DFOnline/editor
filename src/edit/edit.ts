@@ -3,7 +3,7 @@ import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump
 import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
-import { flatten, unflatten } from 'flat';
+import { unflatten } from 'flat';
 
 type tree = {
 	[key: string]: tree | string;
