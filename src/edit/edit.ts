@@ -75,7 +75,7 @@ document.onkeydown = e => {
 	}
 }
 
-// document.onkeyup = e => { Remove this commented out code BLAH BLAH SHUT UP SONARLINT I DO NOT CARE ABOUT THE STUPID COMMENTED CODE WARNING WHAT DO YOU HAVE AGAISNT COMMENETED CODE
+// document.onkeyup = e => {
 // 	if (e.key === "Alt") {
 // 		e.preventDefault();
 // 	}
