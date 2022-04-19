@@ -628,6 +628,7 @@ function chestMenu(id : number){
 					}
 					itemElement.oncontextmenu = e => { // the right click menu :D
 						e.preventDefault();
+						userMeta.value = Number((e.target as HTMLDivElement).parentElement.id);
 						contextMenu.innerHTML = '';
 						contextMenu.style.left = String(e.clientX) + 'px';
 						contextMenu.style.top = String(e.clientY) + 'px';
@@ -857,8 +858,7 @@ function chestMenu(id : number){
 						var deleteButton = document.createElement('button');
 						deleteButton.innerHTML = '<u>D</u>elete';
 						deleteButton.onclick = event => {
-
-							block.args.items.splice(Number((event.target as HTMLDivElement).parentElement.id),1);
+							block.args.items.splice(userMeta.value,1);
 							chestMenu(id)
 						}
 						userMeta.ctxKeys['d'] = deleteButton;
