@@ -1172,7 +1172,7 @@ function chestMenu(id : number){
 					chestMenu(id);
 				}
 			}
-			else{ // if there isn't an item.
+			else { // if there isn't an item.
 				itemElement.id = 'empty' + String(slotID);
 				itemElement.classList.add('empty');
 				itemElement.ondragover = e => e.preventDefault();
@@ -1207,7 +1207,7 @@ function chestMenu(id : number){
 						});
 					}
 
-					let varItem = document.createElement('button');
+					const varItem = document.createElement('button');
 					varItem.classList.add('newValue');
 					varItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/MAGMA_CREAM.png")';
 					varItem.onclick = () => {
@@ -1222,7 +1222,7 @@ function chestMenu(id : number){
 					}
 					contextMenu.append(varItem);
 
-					let textItem = document.createElement('button');
+					const textItem = document.createElement('button');
 					textItem.classList.add('newValue');
 					textItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/BOOK.png")';
 					textItem.onclick = () => {
@@ -1236,7 +1236,7 @@ function chestMenu(id : number){
 					}
 					contextMenu.append(textItem);
 
-					let numItem = document.createElement('button');
+					const numItem = document.createElement('button');
 					numItem.classList.add('newValue');
 					numItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/SLIME_BALL.png")';
 					numItem.onclick = () => {
@@ -1250,7 +1250,7 @@ function chestMenu(id : number){
 					}
 					contextMenu.append(numItem);
 
-					let locItem = document.createElement('button');
+					const locItem = document.createElement('button');
 					locItem.classList.add('newValue');
 					locItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PAPER.png")';
 					locItem.onclick = () => {
@@ -1271,7 +1271,7 @@ function chestMenu(id : number){
 					}
 					contextMenu.append(locItem);
 
-					let vecItem = document.createElement('button');
+					const vecItem = document.createElement('button');
 					vecItem.classList.add('newValue');
 					vecItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PRISMARINE_SHARD.png")';
 					vecItem.onclick = () => {
@@ -1286,6 +1286,22 @@ function chestMenu(id : number){
 						workItem(newItem);
 					}
 					contextMenu.append(vecItem);
+
+					const soundItem = document.createElement('button');
+					soundItem.classList.add('newValue');
+					soundItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAUTILUS_SHELL.png")';
+					soundItem.onclick = () => {
+						var newItem : Sound = {
+							id: 'snd',
+							data: {
+								sound: '',
+								vol: 2,
+								pitch: 1,
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(soundItem);
 				}
 				itemElement.oncontextmenu = itemElement.onclick;
 			}
