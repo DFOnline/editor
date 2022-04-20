@@ -171,12 +171,14 @@ async function menuBar(){
 			}
 			options.append(CodeUtilsSend);
 
+
+
 			var CopyLinkButton = document.createElement('button');
 			CopyLinkButton.innerText = 'Copy Link';
 			CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
 				var href : string
 				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
-				else href = location.href;
+				else href = location.origin + '/edit/';
 				var searchParams = new URLSearchParams(location.search);
 				var exportData = exportTemplate(JSON.stringify(code)).data;
 				searchParams.set('template',exportData);
@@ -189,7 +191,7 @@ async function menuBar(){
 			CopyShortLinkButton.onclick = async e => {
 				var href : string
 				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
-				else href = location.href;
+				else href = location.origin + '/edit/';
 				var searchParams = new URLSearchParams(location.search);
 				var exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
 				searchParams.set('template',exportData);
@@ -857,7 +859,7 @@ function chestMenu(id : number){
 						contextMenu.append(document.createElement('hr'));
 						var deleteButton = document.createElement('button');
 						deleteButton.innerHTML = '<u>D</u>elete';
-						deleteButton.onclick = event => {
+						deleteButton.onclick = () => {
 							block.args.items.splice(userMeta.value,1);
 							chestMenu(id)
 						}
