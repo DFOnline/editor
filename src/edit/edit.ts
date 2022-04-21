@@ -1264,7 +1264,7 @@ function chestMenu(id : number){
 					contextMenu.style.left = e.clientX + 'px';
 					contextMenu.style.top = e.clientY + 'px';
 
-					let workItem = (item : Item) => {
+					const workItem = (item : Item) => {
 						block.args.items.push({
 							slot: slotID,
 							item: item
@@ -1374,6 +1374,21 @@ function chestMenu(id : number){
 						workItem(newItem);
 					}
 					contextMenu.append(soundItem);
+
+					const gameValueItem = document.createElement('button');
+					gameValueItem.classList.add('newValue');
+					gameValueItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAME_TAG.png")';
+					gameValueItem.onclick = () => {
+						var newItem : GameValue = {
+							id: 'g_val',
+							data: {
+								target: 'Default',
+								type: '',
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(gameValueItem);
 				}
 				itemElement.oncontextmenu = itemElement.onclick;
 			}
