@@ -5,6 +5,8 @@ export interface ActionDump {
     actions: Action[]
     soundCategories: SoundCategory[]
     sounds: Sound[]
+    gameValueCategories: GameValueCategory[]
+    gameValues: GameValue[]
 }
 export default ActionDump
 export interface CodeBlock {
@@ -48,6 +50,18 @@ export interface Sound {
     icon: Icon;
 }
 
+
+export interface GameValueCategory {
+    identifier: string;
+    guiSlot: number;
+    icon: Icon;
+}
+
+export interface GameValue {
+    aliases: string[];
+    category: string;
+    icon: Icon;
+}
 
 export type CodeBlockIdentifier = BlockID;
 export type CodeBlockName = "PLAYER ACTION" | "IF PLAYER" | "START PROCESS" | "CALL FUNCTION" | "CONTROL" | "SET VARIABLE" | "ENTITY EVENT" | "PLAYER EVENT" | "FUNCTION" | "IF ENTITY" | "ENTITY ACTION" | "IF VARIABLE" | "SELECT OBJECT" | "GAME ACTION" | "ELSE" | "PROCESS" | "REPEAT" | "IF GAME";

@@ -1,6 +1,6 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 import { unflatten } from 'flat';
@@ -851,6 +851,74 @@ function chestMenu(id : number){
 									soundEdit.append(volumeLabel);
 
 									contextMenu.append(soundEdit);
+								}
+								else if(item.item.id === 'g_val'){
+									const gameValueEdit = document.createElement('div');
+									gameValueEdit.style.display = 'grid';
+									gameValueEdit.style.gridTemplateRows = '1fr 1fr';
+
+									const selectValueButton = document.createElement('button');
+									selectValueButton.innerHTML = 'Select Value';
+									selectValueButton.onclick = e => {
+										e.stopPropagation();
+										contextMenu.innerHTML = '';
+
+										const selectValue = document.createElement('div');
+										selectValue.style.display = 'grid';
+										ActDB.gameValueCategories.forEach(category => {
+											const button = document.createElement('button');
+											button.innerHTML = category.icon.name;
+											button.onclick = e => {
+												selectValue.innerHTML = '';
+												e.stopPropagation();
+												ActDB.gameValues.forEach(value => {
+													if(value.category === category.identifier){
+														const valueButton = document.createElement('button');
+														valueButton.innerHTML = value.icon.name;
+														valueButton.onclick = () => {
+															(item.item as unknown as GameValue).data.type = value.icon.name;
+															contextMenu.click();
+														}
+														selectValue.append(valueButton);
+													}
+												});
+											}
+											selectValue.append(button);
+
+											contextMenu.append(selectValue);
+										});
+									}
+									gameValueEdit.append(selectValueButton);
+
+									const targetLabel = document.createElement('label');
+									targetLabel.innerHTML = 'Selection: ';
+									targetLabel.onclick = e => e.stopPropagation();
+									const targetInput = document.createElement('select');
+									targetInput.onchange = e => {
+										e.stopPropagation();
+										(item.item as unknown as GameValue).data.target = (targetInput.value as g_valSelection);
+									}
+									SelectionValues.forEach(s => {
+										// ignore the empty and "AllPlayers" selections
+										if(s !== 'AllPlayers' && s !== ''){
+											const option = document.createElement('option');
+											option.value = s;
+											option.innerHTML = s;
+											// LastEntity has a custom display name of "Last-Spawned Entity"
+											if(s === 'LastEntity'){
+												option.innerHTML = 'Last-Spawned Entity';
+											}
+											if(s === (item.item as unknown as GameValue).data.target){
+												option.selected = true;
+											}
+											targetInput.append(option);
+										}
+									});
+									targetInput.value = (item.item as unknown as GameValue).data.target;
+									targetLabel.append(targetInput);
+									gameValueEdit.append(targetLabel);
+
+									contextMenu.append(gameValueEdit);
 								}
 							})
 						}
