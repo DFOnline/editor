@@ -866,26 +866,28 @@ function chestMenu(id : number){
 										const selectValue = document.createElement('div');
 										selectValue.style.display = 'grid';
 										ActDB.gameValueCategories.forEach(category => {
-											const button = document.createElement('button');
-											button.innerHTML = category.icon.name;
-											button.onclick = e => {
-												selectValue.innerHTML = '';
-												e.stopPropagation();
-												ActDB.gameValues.forEach(value => {
-													if(value.category === category.identifier){
-														const valueButton = document.createElement('button');
-														valueButton.innerHTML = value.icon.name;
-														valueButton.onclick = () => {
-															(item.item as unknown as GameValue).data.type = value.icon.name;
-															contextMenu.click();
+											if(category.icon.name.includes('Values')){
+												const button = document.createElement('button');
+												button.innerHTML = category.icon.name;
+												button.onclick = e => {
+													selectValue.innerHTML = '';
+													e.stopPropagation();
+													ActDB.gameValues.forEach(value => {
+														if(value.category === category.identifier){
+															const valueButton = document.createElement('button');
+															valueButton.innerHTML = value.icon.name;
+															valueButton.onclick = () => {
+																(item.item as unknown as GameValue).data.type = value.icon.name;
+																contextMenu.click();
+															}
+															selectValue.append(valueButton);
 														}
-														selectValue.append(valueButton);
-													}
-												});
-											}
-											selectValue.append(button);
+													});
+												}
+												selectValue.append(button);
 
-											contextMenu.append(selectValue);
+												contextMenu.append(selectValue);
+											}
 										});
 									}
 									gameValueEdit.append(selectValueButton);
