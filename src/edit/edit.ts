@@ -922,6 +922,236 @@ function chestMenu(id : number){
 
 									contextMenu.append(gameValueEdit);
 								}
+								else if(item.item.id === 'part'){
+									const partEdit = document.createElement('div');
+									partEdit.style.display = 'grid';
+
+									const selectPartButton = document.createElement('button');
+									selectPartButton.innerHTML = 'Select Particle';
+									selectPartButton.onclick = e => {
+										partEdit.innerHTML = '';
+										e.stopPropagation();
+										const categories = [
+											"Ambient Particles",
+											"Entity Behavior Particles",
+											"Ambient Entity Particles",
+											"Entity Attack Particles",
+											"Liquid Particles",
+											"Ambient Block Particles",
+											"Block Behavior Particles"
+										];
+										categories.forEach(category => {
+											const categoryButton = document.createElement('button');
+											categoryButton.innerHTML = category;
+											categoryButton.onclick = e => {
+												e.stopPropagation();
+												partEdit.innerHTML = '';
+												// all the particles are in particleCategories for some reason.
+												ActDB.particleCategories.forEach(particle => {
+													if(particle.category === category){
+														const particleButton = document.createElement('button');
+														particleButton.innerHTML = particle.icon.name;
+														particleButton.onclick = () => {
+															(item.item as unknown as Particle).data.particle = particle.icon.name;
+															contextMenu.click();
+														}
+														partEdit.append(particleButton);
+													}
+												});
+											}
+											partEdit.append(categoryButton);
+										});
+									}
+									partEdit.append(selectPartButton);
+									
+									partEdit.append(document.createElement('hr'));
+
+									const amountLabel = document.createElement('label');
+									amountLabel.innerHTML = 'Amount: ';
+									amountLabel.onclick = e => e.stopPropagation();
+									const amountInput = document.createElement('input');
+									amountInput.type = 'number';
+									amountInput.value = String((item.item as unknown as Particle).data.cluster.amount);
+									amountInput.onchange = () => {
+										(item.item as unknown as Particle).data.cluster.amount = Number(amountInput.value);
+									}
+									amountLabel.append(amountInput);
+									partEdit.append(amountLabel);
+
+									const spreadLabel = document.createElement('label');
+									spreadLabel.innerHTML = 'Spread: ';
+									spreadLabel.onclick = e => e.stopPropagation();
+									spreadLabel.style.display = 'flex';
+									const spreadInputs = document.createElement('div');
+									spreadInputs.style.display = 'flex';
+									const spreadHorInput = document.createElement('input');
+									spreadHorInput.type = 'number';
+									spreadHorInput.value = String((item.item as unknown as Particle).data.cluster.horizontal);
+									spreadHorInput.onchange = () => {
+										(item.item as unknown as Particle).data.cluster.horizontal = Number(spreadHorInput.value);
+									}
+									spreadInputs.append(spreadHorInput);
+									const spreadVerInput = document.createElement('input');
+									spreadVerInput.type = 'number';
+									spreadVerInput.value = String((item.item as unknown as Particle).data.cluster.vertical);
+									spreadVerInput.onchange = () => {
+										(item.item as unknown as Particle).data.cluster.vertical = Number(spreadVerInput.value);
+									}
+									spreadInputs.append(spreadVerInput);
+									spreadLabel.append(spreadInputs);
+									partEdit.append(spreadLabel);
+
+									const dbParticle = ActDB.particleCategories.find(particle => particle.icon.name === (item.item as Particle).data.particle);
+
+									if(dbParticle.fields.length > 0){
+										partEdit.append(document.createElement('hr'));
+										if(dbParticle.fields.includes('Color')){
+											const colorLabel = document.createElement('label');
+											colorLabel.innerHTML = 'Color: ';
+											colorLabel.onclick = e => e.stopPropagation();
+											const colorInput = document.createElement('input');
+											colorInput.type = 'color';
+											colorInput.value = item.item.data.data.rgb.toString(16);
+											colorInput.onchange = () => {
+												(item.item as Particle).data.data.rgb = parseInt(colorInput.value.replace('#', ''), 16);
+											}
+											colorLabel.append(colorInput);
+											partEdit.append(colorLabel);
+										}
+										if(dbParticle.fields.includes('Color Variation')){
+											const colorVariationLabel = document.createElement('label');
+											colorVariationLabel.innerHTML = 'Color Variation: ';
+											colorVariationLabel.onclick = e => e.stopPropagation();
+											const colorVariationInput = document.createElement('input');
+											colorVariationInput.type = 'number';
+											colorVariationInput.value = String(item.item.data.data.colorVariation);
+											colorVariationInput.onchange = () => {
+												// it's a percentage so limit it as such
+												let returnValue = true;
+												if(Number(colorVariationInput.value) > 100){
+													colorVariationInput.value = '100';
+													returnValue = false;
+												}
+												if(Number(colorVariationInput.value) < 0){
+													colorVariationInput.value = '0';
+													returnValue = false;
+												}
+												(item.item as Particle).data.data.colorVariation = Number(colorVariationInput.value);
+												return returnValue;
+											}
+											colorVariationLabel.append(colorVariationInput);
+											partEdit.append(colorVariationLabel);
+										}
+
+										if(dbParticle.fields.includes('Motion')){
+											const MotionLabel = document.createElement('label');
+											MotionLabel.innerHTML = 'Motion: ';
+											MotionLabel.onclick = e => e.stopPropagation();
+											MotionLabel.style.display = 'flex';
+											const MotionInputs = document.createElement('div');
+											MotionInputs.style.display = 'flex';
+											const MotionXInput = document.createElement('input');
+											MotionXInput.type = 'number';
+											MotionXInput.value = String(item.item.data.data.x);
+											MotionXInput.onchange = () => {
+												(item.item as Particle).data.data.x = Number(MotionXInput.value);
+											}
+											MotionInputs.append(MotionXInput);
+											const MotionYInput = document.createElement('input');
+											MotionYInput.type = 'number';
+											MotionYInput.value = String(item.item.data.data.y);
+											MotionYInput.onchange = () => {
+												(item.item as Particle).data.data.y = Number(MotionYInput.value);
+											}
+											MotionInputs.append(MotionYInput);
+											const MotionZInput = document.createElement('input');
+											MotionZInput.type = 'number';
+											MotionZInput.value = String(item.item.data.data.z);
+											MotionZInput.onchange = () => {
+												(item.item as Particle).data.data.z = Number(MotionZInput.value);
+											}
+											MotionInputs.append(MotionZInput);
+											MotionLabel.append(MotionInputs);
+											partEdit.append(MotionLabel);
+										}
+										if(dbParticle.fields.includes('Motion Variation')){
+											const MotionVariationLabel = document.createElement('label');
+											MotionVariationLabel.innerHTML = 'Motion Variation: ';
+											MotionVariationLabel.onclick = e => e.stopPropagation();
+											const MotionVariationInput = document.createElement('input');
+											MotionVariationInput.type = 'number';
+											MotionVariationInput.value = String(item.item.data.data.motionVariation);
+											MotionVariationInput.onchange = e => {
+												// it's a percentage, so limit it to such
+												let returnValue = true;
+												if(Number(MotionVariationInput.value) > 100){
+													MotionVariationInput.value = '100';
+													e.preventDefault();
+													returnValue = false;
+												}
+												if(Number(MotionVariationInput.value) < 0){
+													MotionVariationInput.value = '0';
+													e.preventDefault();
+													returnValue = false;
+												}
+												(item.item as Particle).data.data.motionVariation = Number(MotionVariationInput.value);
+												return returnValue;
+											}
+											MotionVariationLabel.append(MotionVariationInput);
+											partEdit.append(MotionVariationLabel);
+										}
+
+										if(dbParticle.fields.includes('Size')){
+											const SizeLabel = document.createElement('label');
+											SizeLabel.innerHTML = 'Size: ';
+											SizeLabel.onclick = e => e.stopPropagation();
+											const SizeInput = document.createElement('input');
+											SizeInput.type = 'number';
+											SizeInput.value = String(item.item.data.data.size);
+											SizeInput.onchange = () => {
+												(item.item as Particle).data.data.size = Number(SizeInput.value);
+											}
+											SizeLabel.append(SizeInput);
+											partEdit.append(SizeLabel);
+										}
+										if(dbParticle.fields.includes('Size Variation')){
+											const SizeVariationLabel = document.createElement('label');
+											SizeVariationLabel.innerHTML = 'Size Variation: ';
+											SizeVariationLabel.onclick = e => e.stopPropagation();
+											const SizeVariationInput = document.createElement('input');
+											SizeVariationInput.type = 'number';
+											SizeVariationInput.value = String(item.item.data.data.sizeVariation);
+											SizeVariationInput.onchange = () => {
+												// it's a percentage, so limit it to such
+												if(Number(SizeVariationInput.value) > 100){
+													SizeVariationInput.value = '100';
+												}
+												if(Number(SizeVariationInput.value) < 0){
+													SizeVariationInput.value = '0';
+												}
+												(item.item as Particle).data.data.sizeVariation = Number(SizeVariationInput.value);
+											}
+											SizeVariationLabel.append(SizeVariationInput);
+											partEdit.append(SizeVariationLabel);
+										}
+
+										if(dbParticle.fields.includes('Material')){
+											const MaterialLabel = document.createElement('label');
+											MaterialLabel.innerHTML = 'Material: ';
+											MaterialLabel.onclick = e => e.stopPropagation();
+											const MaterialInput = document.createElement('input');
+											MaterialInput.type = 'text';
+											MaterialInput.value = String(item.item.data.data.material);
+											MaterialInput.onchange = () => {
+												(item.item as Particle).data.data.material = MaterialInput.value;
+											}
+											MaterialLabel.append(MaterialInput);
+											partEdit.append(MaterialLabel);
+										}
+									}
+
+									contextMenu.append(partEdit);
+								}
 							})
 						}
 						userMeta.ctxKeys['a'] = valueButton;
