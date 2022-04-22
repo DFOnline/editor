@@ -1,6 +1,6 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection, Particle} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 import { unflatten } from 'flat';
@@ -1127,29 +1127,39 @@ function chestMenu(id : number){
 						var spread = document.createElement('span');
 						spread.innerText = 'Spread: ' + dfNumber(item.item.data.cluster.horizontal) + ' ' + dfNumber(item.item.data.cluster.vertical); // string templates go brrrrr // tbh this is mostly function so I think a string template would look worse but atleast I mention as such in a massive line to make mild refrence to the existance to string litterals, their often place in strings generated like this and their still uselessness here despite what they are usefull for.
 						mouseInfo.append(spread);
-						if(item.item.data.data.motionVariation !== undefined || item.item.data.data.colorVariation !== undefined || item.item.data.data.material !== undefined){
+
+						const dbParticle = ActDB.particleCategories.find(particle => particle.particle === (item.item as Particle).data.particle);
+						// if the fields length has anything
+						if(dbParticle.fields.length > 0){
 							mouseInfo.append(document.createElement('hr'));
-							if(item.item.data.data.motionVariation !== undefined){
-								var motion = document.createElement('span');
+							
+							if(dbParticle.fields.includes('Motion')){
+								const motion = document.createElement('span');
 								motion.innerText = `Motion: ${dfNumber(item.item.data.data.x)} ${dfNumber(item.item.data.data.y)} ${dfNumber(item.item.data.data.z)}`;
 								motion.style.color = '#2affaa';
 								mouseInfo.append(motion);
-								var motionVariation = document.createElement('span');
+							}
+							if(dbParticle.fields.includes('Motion Variation')){
+								const motionVariation = document.createElement('span');
 								motionVariation.innerText = 'Motion Variation: ' + String(item.item.data.data.motionVariation) + '%';
 								mouseInfo.append(motionVariation);
 							}
-							if(item.item.data.data.colorVariation !== undefined){
-								var color = document.createElement('span');
+
+							if(dbParticle.fields.includes('Color')){
+								const color = document.createElement('span');
 								const colorHex = item.item.data.data.rgb.toString(16).toUpperCase(); // the color as #BLABLA
 								color.innerText = 'Color: ' + colorHex;
 								color.style.color = '#' + colorHex;
 								mouseInfo.append(color);
-								var colorVariation = document.createElement('span');
+							}
+							if(dbParticle.fields.includes('Color Variation')){
+								const colorVariation = document.createElement('span');
 								colorVariation.innerText = 'Color Variation: ' + String(item.item.data.data.colorVariation) + '%';
 								mouseInfo.append(colorVariation);
 							}
-							if(item.item.data.data.material !== undefined){
-								var material = document.createElement('span');
+
+							if(dbParticle.fields.includes('Material')){
+								const material = document.createElement('span');
 								material.innerText = 'Material: ' + item.item.data.data.material.toLowerCase();
 								mouseInfo.append(material);
 							}
