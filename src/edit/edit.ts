@@ -988,7 +988,7 @@ function chestMenu(id : number){
 						itemElement.classList.add('fadepulse');
 					}
 				}
-				itemElement.onmousemove = () => {
+				itemElement.onmousemove = () => { // tooltips (that are regenerated whenever you move your mouse over an item)
 					mouseInfo.style.display = 'grid';
 					mouseInfo.innerHTML = '';
 					if (item.item.id === 'num' || item.item.id === 'txt') {
@@ -1128,7 +1128,7 @@ function chestMenu(id : number){
 						spread.innerText = 'Spread: ' + dfNumber(item.item.data.cluster.horizontal) + ' ' + dfNumber(item.item.data.cluster.vertical); // string templates go brrrrr // tbh this is mostly function so I think a string template would look worse but atleast I mention as such in a massive line to make mild refrence to the existance to string litterals, their often place in strings generated like this and their still uselessness here despite what they are usefull for.
 						mouseInfo.append(spread);
 
-						const dbParticle = ActDB.particleCategories.find(particle => particle.particle === (item.item as Particle).data.particle);
+						const dbParticle = ActDB.particleCategories.find(particle => particle.icon.name === (item.item as Particle).data.particle);
 						// if the fields length has anything
 						if(dbParticle.fields.length > 0){
 							mouseInfo.append(document.createElement('hr'));
