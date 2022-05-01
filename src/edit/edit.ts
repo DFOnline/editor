@@ -1153,6 +1153,75 @@ function chestMenu(id : number){
 
 									contextMenu.append(partEdit);
 								}
+								else if(item.item.id === 'pot'){
+									const potionEdit = document.createElement('div');
+									potionEdit.style.display = 'grid';
+
+									const potionTypeButton = document.createElement('button');
+									potionTypeButton.innerHTML = 'Set Potion';
+									potionTypeButton.onclick = e => {
+										e.stopPropagation();
+										potionEdit.innerHTML = '';
+										ActDB.potions.forEach(potion => {
+											const potionTypeButton = document.createElement('button');
+											potionTypeButton.innerHTML = potion.icon.name;
+											potionTypeButton.onclick = () => {
+												potionEdit.append(potionTypeButton);
+												potionEdit.append(potionEdit);
+												(item.item as Potion).data.pot = potion.icon.name;
+											}
+											potionEdit.append(potionTypeButton);
+										});
+									}
+									potionEdit.append(potionTypeButton);
+
+									const potionAmplifierLabel = document.createElement('label');
+									potionAmplifierLabel.innerHTML = 'Amplifier: ';
+									potionAmplifierLabel.onclick = e => e.stopPropagation();
+									const potionAmplifierInput = document.createElement('input');
+									potionAmplifierInput.type = 'number';
+									potionAmplifierInput.value = String(item.item.data.amp);
+									potionAmplifierInput.onchange = () => {
+										// it's limited between -255 and 255
+										if(Number(potionAmplifierInput.value) > 255){
+											potionAmplifierInput.value = '255';
+										}
+										if(Number(potionAmplifierInput.value) < -255){
+											potionAmplifierInput.value = '-255';
+										}
+										(item.item as Potion).data.amp = Number(potionAmplifierInput.value);
+									}
+									potionAmplifierLabel.append(potionAmplifierInput);
+									potionEdit.append(potionAmplifierLabel);
+								
+									const potionDurationLabel = document.createElement('label');
+									potionDurationLabel.innerHTML = 'Duration: ';
+									potionDurationLabel.onclick = e => e.stopPropagation();
+									const potionDurationInput = document.createElement('input');
+									potionDurationInput.type = 'number';
+									potionDurationInput.value = String(item.item.data.dur);
+									potionDurationInput.onchange = () => {
+										// it can't be negetive
+										if(Number(potionDurationInput.value) < 0){
+											potionDurationInput.value = '0';
+										}
+										(item.item as Potion).data.dur = Number(potionDurationInput.value);
+									}
+									potionDurationLabel.append(potionDurationInput);
+									potionEdit.append(potionDurationLabel);
+
+									const potionDurationInfo = document.createElement('p');
+									potionDurationInfo.innerText = 'Duration is in ticks, where 20 ticks is a second.\nThat means seconds × 20 = ticks.';
+									potionDurationInfo.style.fontSize = '0.8em';
+									potionDurationInfo.style.margin = '0';
+									potionDurationInfo.style.marginTop = '0.5em';
+									potionDurationInfo.style.padding = '0';
+									potionDurationInfo.style.fontStyle = 'italic';
+									potionDurationInfo.style.color = '#888';
+									potionEdit.append(potionDurationInfo);
+
+									contextMenu.append(potionEdit);
+								}
 							})
 						}
 						userMeta.ctxKeys['a'] = valueButton;
