@@ -190,11 +190,12 @@ async function menuBar(){
 			CopyShortLinkButton.innerText = 'Copy Short Link';
 			CopyShortLinkButton.onclick = async e => {
 				var href : string
-				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
+				if(e.ctrlKey) href = 'https://dfonline.dev/edit/';
+				else if(e.shiftKey) href = 'https://diamondfire.gitlab.io/template/';
 				else href = location.origin + '/edit/';
 				var searchParams = new URLSearchParams(location.search);
 				var exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
-				searchParams.set('template',exportData);
+				searchParams.set(e.shiftKey ? 't' : 'template',e.shiftKey ? 'dfo:' + exportData : exportData);
 				navigator.clipboard.writeText(href + '?' + searchParams.toString());
 			}
 			options.append(CopyShortLinkButton);
