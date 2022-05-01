@@ -1,6 +1,6 @@
 import { startup, decodeTemplate, menu, minecraftColorHTML, dfNumber, snackbar, codeutilities, cuopen, encodeTemplate, user, MinecraftTextCompToCodes } from "../main/main";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
-import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection, Particle} from "./template";
+import { Template, Block, SelectionBlock, SubActionBlock, BlockTag, DataBlock, SelectionBlocks, SelectionValues, Target, Bracket, BracketType, VarScope, PlacedBlock, Argument, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection, Particle, Potion} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 import { unflatten } from 'flat';
@@ -1630,6 +1630,22 @@ function chestMenu(id : number){
 						workItem(newItem);
 					}
 					contextMenu.append(gameValueItem);
+
+					const potionItem = document.createElement('button');
+					potionItem.classList.add('newValue');
+					potionItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/DRAGON_BREATH.png")';
+					potionItem.onclick = () => {
+						var newItem : Potion = {
+							id: 'pot',
+							data: {
+								amp: 0,
+								dur: 1000000,
+								pot: 'Speed',
+							}
+						}
+						workItem(newItem);
+					}
+					contextMenu.append(potionItem);
 				}
 				itemElement.oncontextmenu = itemElement.onclick;
 			}
