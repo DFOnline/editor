@@ -8,6 +8,7 @@ export interface ActionDump {
     gameValueCategories: GameValueCategory[];
     gameValues: GameValue[];
     particleCategories: ParticleCategory[];
+    potions: Potion[];
 }
 export default ActionDump
 export interface CodeBlock {
@@ -64,6 +65,11 @@ export interface GameValue {
     icon: Icon;
 }
 
+
+export interface Potion {
+    potion: string;
+    icon: Icon;
+}
 
 export interface ParticleCategory {
     particle: string;
