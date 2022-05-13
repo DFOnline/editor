@@ -283,8 +283,29 @@ document.addEventListener('keydown',(e) => {
         apiEndpointLabel.appendChild(apiEndpoint);
         devMenu.appendChild(apiEndpointLabel);
 
+        devMenu.append(document.createElement('br'));
+
+        const developerModeToggleLabel = document.createElement('label');
+        developerModeToggleLabel.innerText = 'Developer Mode ';
+        const developerModeToggle = document.createElement('input');
+        developerModeToggle.type = 'checkbox';
+        developerModeToggle.checked = sessionStorage.getItem('developerMode') === 'true';
+        developerModeToggle.onchange = () => {
+            sessionStorage.setItem('developerMode',developerModeToggle.checked.toString());
+        };
+        developerModeToggleLabel.appendChild(developerModeToggle);
+        devMenu.appendChild(developerModeToggleLabel);
+
         menu('Developer Menu',devMenu);
     }
 })
+
+/**
+ * Gets if the developer mode, which can be set in the dev menu.
+ * @returns If the developer mode is enabled or not.
+ */
+export function isDeveloperMode() : boolean{
+    return sessionStorage.getItem('developerMode') === 'true';
+}
 
 export {codeutilities, cuopen, user, startup, login, menu, snackbar, encodeTemplate, decodeTemplate, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};
