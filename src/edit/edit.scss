@@ -7,6 +7,8 @@
 
 $codeBlockSize: min(300px,80vh);
 #codeBlocks {
+    height: 100vh;
+    overflow: hidden;
     margin-top: 31px;
     display: flex;
     .block {

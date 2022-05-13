@@ -277,8 +277,8 @@ async function menuBar(){
 
 function rendBlocks(){ // look at this mess // on second thoughts don't, is even painfull for me to look at. // on third thoughts you can collapse most of the painfull stuff I never wish to look at again.
 	console.groupCollapsed('REND BLOCKS');
-	var codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
-	var messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
+	const codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
+	const messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
 	codeSpace.innerHTML = `<!-- ${messages[Math.floor(Math.random() * messages.length)]} -->`; // hi
 	code.blocks.forEach((block,i) => {
 		console.log(block);
@@ -287,8 +287,9 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		blockDiv.id = 'block' + String(i);
 		blockDiv.draggable = true;
 		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
-		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault()}};
+		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
 		blockDiv.addEventListener('drop',e => { // pain and when you drop on a codeblock
+			e.stopPropagation();
 
 			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
 			var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
@@ -522,8 +523,9 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 
 	var end = document.createElement('div')
 	end.classList.add('block');
-	end.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault()}};
-	end.ondrop = () => {
+	end.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
+	end.ondrop = e => {
+		e.stopPropagation();
 		if(userMeta.type === 'block'){
 			code.blocks.push(code.blocks[userMeta.value]);
 			code.blocks.splice(userMeta.value,1);
@@ -535,6 +537,15 @@ function rendBlocks(){ // look at this mess // on second thoughts don't, is even
 		}
 	}
 	codeSpace.append(end);
+
+	codeSpace.ondragover = e => {if(userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
+	codeSpace.ondrop = e => {
+		e.stopPropagation();
+		if(userMeta.type === 'newBlock'){
+			code.blocks.push(userMeta.value);
+			rendBlocks();
+		}
+	}
 
 	console.groupEnd();
 }
@@ -1466,6 +1477,7 @@ function chestMenu(id : number){
 						}
 					}
 					else if (item.item.id === 'bl_tag'){
+						console.log(item);
 						const tag = findBlockTagOption(block.block, block.action, item.item.data.tag, item.item.data.option);
 						const tags = findBlockTag(block.block, block.action, item.item.data.tag);
 						var tagName = document.createElement('span');
