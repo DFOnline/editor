@@ -312,14 +312,14 @@ export function chestMenu(id : number){
 										ActDB.gameValueCategories.forEach(category => {
 											if(category.icon.name.includes('Values')){
 												const button = document.createElement('button');
-												button.innerHTML = category.icon.name;
+												button.innerHTML = minecraftColorHTML(category.icon.name)[0].outerHTML;
 												button.onclick = e => {
 													selectValue.innerHTML = '';
 													e.stopPropagation();
 													ActDB.gameValues.forEach(value => {
 														if(value.category === category.identifier){
 															const valueButton = document.createElement('button');
-															valueButton.innerHTML = value.icon.name;
+															valueButton.innerHTML = minecraftColorHTML(value.icon.name)[0].outerHTML;
 															valueButton.onclick = () => {
 																(item.item as unknown as GameValue).data.type = stripColours(value.icon.name);
 																contextMenu.click();
@@ -609,7 +609,7 @@ export function chestMenu(id : number){
 										potionEdit.innerHTML = '';
 										ActDB.potions.forEach(potion => {
 											const potionTypeButton = document.createElement('button');
-											potionTypeButton.innerHTML = potion.icon.name;
+											potionTypeButton.innerHTML = minecraftColorHTML(potion.icon.name)[0].outerHTML;
 											potionTypeButton.onclick = () => {
 												potionEdit.append(potionTypeButton);
 												(item.item as Potion).data.pot = stripColours(potion.icon.name);
