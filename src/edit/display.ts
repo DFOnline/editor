@@ -26,7 +26,31 @@ export function chestMenu(id : number){
 			if(item){ // if there in an item
 				slot.id = String(itemIndex);
 				slot.classList.add('notEmpty');
-				if(item.item.id === 'bl_tag'){itemElement.draggable = false; itemElement.ondragstart = e => {e.preventDefault(); return false;}}
+				if(item.item.id === 'bl_tag'){
+					itemElement.draggable = false;
+					itemElement.ondragstart = e => {e.preventDefault();
+						return false;
+					};
+					itemElement.oncontextmenu = e => {
+						e.preventDefault();
+						userMeta.value = Number((e.target as HTMLDivElement).parentElement.id);
+						contextMenu.innerHTML = '';
+						contextMenu.style.left = String(e.clientX) + 'px';
+						contextMenu.style.top = String(e.clientY) + 'px';
+						contextMenu.style.display = 'grid';
+						contextMenu.focus();
+						const tags = findBlockTag(block.block, block.action, (item.item as BlockTag).data.tag);
+						tags.options.forEach(o => {
+							const option = document.createElement('button');
+							option.innerText = o.name;
+							option.onclick = () => {
+								(item.item as BlockTag).data.option = o.name;
+								chestMenu(id);
+							};
+							contextMenu.appendChild(option);
+						});
+					}
+				}
 				else { // events basically
 					itemElement.draggable = true;
 					itemElement.ondragstart = event => {
@@ -948,11 +972,11 @@ export function chestMenu(id : number){
 				}
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
 				itemElement.onclick = (e) => {
-					if(item.item.id === 'bl_tag'){
-						const tag = findBlockTag(block.block,block.action,item.item.data.tag);
-						item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
-					}
-					else if(item.item.id === 'var'){
+					// if(item.item.id === 'bl_tag'){
+					// 	const tag = findBlockTag(block.block,block.action,item.item.data.tag);
+					// 	item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
+					// }
+					/*else*/ if(item.item.id === 'var'){
 						// swap through the options
 						if(!e.shiftKey){
 							if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
