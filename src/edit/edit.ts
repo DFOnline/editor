@@ -3,7 +3,7 @@ import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump
 import type { Template, SelectionBlock, SubActionBlock, DataBlock, VarScope, PlacedBlock, Argument} from "./template";
 import { unflatten } from 'flat';
 
-import { rendBlocks } from "./display"
+import { rendBlocks } from "./display";
 
 export type tree = {
 	[key: string]: tree | string;
