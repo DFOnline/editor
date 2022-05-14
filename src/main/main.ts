@@ -1,12 +1,12 @@
 import { inflate, gzip } from "pako";
 
-let cuopen = false;
+export let cuopen = false;
 
 /**
  * Shows a popup like the one saying "Couldn't connect to codeutilties"
  * @param message A message to show in the popup
  */
-function snackbar(message : string){
+export function snackbar(message : string){
     var bar = document.createElement('span')
     bar.innerText = message
     bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}}
@@ -20,7 +20,7 @@ function snackbar(message : string){
  * @param title The title of the menu
  * @param content HTMLElement object of what the menu should contain
  */
-function menu(title : string, content : HTMLElement = document.createElement('span')){
+export function menu(title : string, content : HTMLElement = document.createElement('span')){
     var bg = document.createElement('div');
     bg.classList.add('background');
     setTimeout(() => {
@@ -47,13 +47,13 @@ function menu(title : string, content : HTMLElement = document.createElement('sp
     return bg;
 }
 
-const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
+export const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
 /**
  * Login to DFOnline server with Username and Password.
  * @param name Username
  * @param auth Password
  */
-function login(name : string, auth : string){
+export function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ function login(name : string, auth : string){
  * A function which does the start up activity for all pages, and returns some data.
  * @returns MouseInfo (HTMLElement, what I use for tooltips) urlParams (self generated data for the URL)
  */
-function startup(){
+export function startup(){
     let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
     document.body.onmousemove = e => {
         mouseInfo.style.top = String(e.clientY + 10) + 'px';
@@ -88,11 +88,11 @@ function startup(){
     return {urlParams,mouseInfo}
 }
 
-const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
+export const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
 codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = true;}
 codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
-function decodeTemplate(base64data : string){
+export function decodeTemplate(base64data : string){
     var compressData = atob(base64data);
     var uint = compressData.split('').map(function(e) {
         return e.charCodeAt(0);
@@ -102,13 +102,13 @@ function decodeTemplate(base64data : string){
     return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7');
 }
 
-function encodeTemplate(codedata : string){
+export function encodeTemplate(codedata : string){
     var data = gzip(codedata);
     var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
     return btoa(data2);
 }
 
-function MinecraftTextCompToCodes(component : string | object) : string{
+export function MinecraftTextCompToCodes(component : string | object) : string{
     let workComponents : any;
     if(typeof component == 'string'){
         workComponents = JSON.parse(component);
@@ -184,7 +184,7 @@ function MinecraftTextCompToCodes(component : string | object) : string{
  * @param font The font to use, when unused it will just not change the font.
  * @returns An array of span elements which use css to add the formatting.
  */
-function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
+export function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : Array<HTMLSpanElement>{
     const styleMap = {
         '0': {css: 'color: #000000;', reset: true},
         '1': {css: 'color: #0000aa;', reset: true},
@@ -252,7 +252,7 @@ function minecraftColorHTML(text : string, defaultColor = '§r',font?:string) : 
  * @param accuray How many digits
  * @returns A number with edits applied
  */
-function dfNumber(num : number | string,accuray = 3){
+export function dfNumber(num : number | string,accuray = 3){
     return Number(num).toPrecision(accuray).replace(/(?<=.\d)0$/,'');
 }
 
@@ -307,5 +307,3 @@ document.addEventListener('keydown',(e) => {
 export function isDeveloperMode() : boolean{
     return sessionStorage.getItem('developerMode') === 'true';
 }
-
-export {codeutilities, cuopen, user, startup, login, menu, snackbar, encodeTemplate, decodeTemplate, minecraftColorHTML, MinecraftTextCompToCodes, dfNumber};
