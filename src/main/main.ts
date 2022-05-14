@@ -108,6 +108,10 @@ export function encodeTemplate(codedata : string){
     return btoa(data2);
 }
 
+export function stripColours(text : string){
+    return text.replace(/[&§][\dA-FK-ORX]/gi,'');
+}
+
 export function MinecraftTextCompToCodes(component : string | object) : string{
     let workComponents : any;
     if(typeof component == 'string'){

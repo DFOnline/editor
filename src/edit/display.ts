@@ -1,4 +1,4 @@
-import { menu, minecraftColorHTML, dfNumber, MinecraftTextCompToCodes, isDeveloperMode } from "../main/main";
+import { menu, minecraftColorHTML, dfNumber, MinecraftTextCompToCodes, isDeveloperMode, stripColours } from "../main/main";
 import { SelectionBlock, SubActionBlock, BlockTag, SelectionValues, ParsedItem, Item, Variable, Text, Number as DFNumber, Location as DFLocation, Vector, Sound, GameValue, g_valSelection, Particle, Potion, Block, BracketType, Bracket, DataBlock, Target, SelectionBlocks} from "./template";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
@@ -26,7 +26,7 @@ export function chestMenu(id : number){
 			if(item){ // if there in an item
 				slot.id = String(itemIndex);
 				slot.classList.add('notEmpty');
-				if(item.item.id === 'bl_tag'){
+				if(item.item.id === 'bl_tag'){ // block tags
 					itemElement.draggable = false;
 					itemElement.ondragstart = e => {e.preventDefault();
 						return false;
@@ -51,7 +51,7 @@ export function chestMenu(id : number){
 						});
 					}
 				}
-				else { // events basically
+				else { // events on general items.
 					itemElement.draggable = true;
 					itemElement.ondragstart = event => {
 		 				userMeta.type = 'item';
@@ -74,11 +74,13 @@ export function chestMenu(id : number){
 						contextMenu.style.top = String(e.clientY) + 'px';
 						contextMenu.style.display = 'grid';
 						contextMenu.focus();
+
 						var valueButton = document.createElement('button');
 						valueButton.innerHTML = 'V<u>a</u>lue'
 						valueButton.onclick = () => { // main value
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
+
 								if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){
 									var value = document.createElement('input');
 									value.value = item.item.data.name;
@@ -102,6 +104,7 @@ export function chestMenu(id : number){
 									contextMenu.append(value);
 									value.focus()
 								}
+
 								else if(item.item.id === 'loc'){
 									var locationInput = document.createElement('div');
 									locationInput.onclick = e => e.stopPropagation();
@@ -165,6 +168,7 @@ export function chestMenu(id : number){
 									contextMenu.append(locationInput);
 									xLabel.focus();
 								}
+
 								else if(item.item.id === 'vec'){
 									var vectorEdit = document.createElement('div');
 									vectorEdit.onclick = e => e.stopPropagation();
@@ -209,6 +213,7 @@ export function chestMenu(id : number){
 									contextMenu.append(vectorEdit);
 									xVecLabel.focus();
 								}
+
 								else if(item.item.id === 'snd'){
 									const soundEdit = document.createElement('div');
 									soundEdit.onclick = e => e.stopPropagation();
@@ -240,7 +245,7 @@ export function chestMenu(id : number){
 													if(typeof value === 'string'){
 														// get the new name from the icon name, which df uses for some reason.
 														const newSound = ActDB.sounds.find(s => s.sound === value).icon.name;
-														(item.item as unknown as Sound).data.sound = newSound;
+														(item.item as unknown as Sound).data.sound = stripColours(newSound);
 														soundValue.innerHTML = value;
 														contextMenu.click();
 													}
@@ -290,6 +295,7 @@ export function chestMenu(id : number){
 
 									contextMenu.append(soundEdit);
 								}
+
 								else if(item.item.id === 'g_val'){
 									const gameValueEdit = document.createElement('div');
 									gameValueEdit.style.display = 'grid';
@@ -315,7 +321,7 @@ export function chestMenu(id : number){
 															const valueButton = document.createElement('button');
 															valueButton.innerHTML = value.icon.name;
 															valueButton.onclick = () => {
-																(item.item as unknown as GameValue).data.type = value.icon.name;
+																(item.item as unknown as GameValue).data.type = stripColours(value.icon.name);
 																contextMenu.click();
 															}
 															selectValue.append(valueButton);
@@ -360,6 +366,7 @@ export function chestMenu(id : number){
 
 									contextMenu.append(gameValueEdit);
 								}
+
 								else if(item.item.id === 'part'){
 									const partEdit = document.createElement('div');
 									partEdit.style.display = 'grid';
@@ -590,6 +597,7 @@ export function chestMenu(id : number){
 
 									contextMenu.append(partEdit);
 								}
+
 								else if(item.item.id === 'pot'){
 									const potionEdit = document.createElement('div');
 									potionEdit.style.display = 'grid';
@@ -604,7 +612,7 @@ export function chestMenu(id : number){
 											potionTypeButton.innerHTML = potion.icon.name;
 											potionTypeButton.onclick = () => {
 												potionEdit.append(potionTypeButton);
-												(item.item as Potion).data.pot = potion.icon.name;
+												(item.item as Potion).data.pot = stripColours(potion.icon.name);
 											}
 											potionEdit.append(potionTypeButton);
 										});
@@ -663,6 +671,7 @@ export function chestMenu(id : number){
 						userMeta.ctxKeys['a'] = valueButton;
 						contextMenu.append(valueButton);
 						contextMenu.append(document.createElement('hr'));
+
 						var deleteButton = document.createElement('button');
 						deleteButton.innerHTML = '<u>D</u>elete';
 						deleteButton.onclick = () => {
