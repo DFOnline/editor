@@ -604,7 +604,6 @@ export function chestMenu(id : number){
 											potionTypeButton.innerHTML = potion.icon.name;
 											potionTypeButton.onclick = () => {
 												potionEdit.append(potionTypeButton);
-												potionEdit.append(potionEdit);
 												(item.item as Potion).data.pot = potion.icon.name;
 											}
 											potionEdit.append(potionTypeButton);
