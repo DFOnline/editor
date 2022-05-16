@@ -262,7 +262,7 @@ export function dfNumber(num : number | string,accuray = 3){
 
 // if apiEndpoint is not set, it will use the default one
 if(sessionStorage.getItem('apiEndpoint') === null){
-    sessionStorage.setItem('apiEndpoint','https://dfonline.dev/api/');
+    sessionStorage.setItem('apiEndpoint','https://dfonline-backend.georgerng.repl.co/api/'); // if you don't want IP logging I will run the backend on replit so you can know that "I am not running different code" then on the repo. // Next up is a another repl which is a static server so you can't think that the main website is logging you (it's a static in it self) and create a domain record to lead to that instead of the static set up by the host.
 }
 
 document.addEventListener('keydown',(e) => {
