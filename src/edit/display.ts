@@ -88,6 +88,7 @@ export function chestMenu(id : number){
 										if(e.key === 'Enter'){
 											if(!e.shiftKey){
 												(item.item.data as {name: string}).name = value.value;
+												chestMenu(id);
 												contextMenu.click();
 											}
 											else{
@@ -683,11 +684,16 @@ export function chestMenu(id : number){
 					}
 				}
 				{ // the textures. epic
+					var count;
 					if(item.item.id === 'txt'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
 					}
 					else if(item.item.id === 'num'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/SLIME_BALL.png)';
+						count = document.createElement('span');
+						count.innerText = item.item.data.name;
+						count.style.color = "rgb(255, 85, 85)"
+						itemElement.append(count);
 					}
 					else if(item.item.id === 'loc'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PAPER.png)';
@@ -714,7 +720,7 @@ export function chestMenu(id : number){
 						var data = parse(item.item.data.item) as unknown as ParsedItem;
 						itemElement.style.backgroundImage = `url(https://dfonline.dev/public/images/${data.id.toUpperCase().replace('MINECRAFT:','')}.png)`;
 						if(data.Count.value > 1){
-							var count = document.createElement('span');
+							count = document.createElement('span');
 							count.innerText = String(data.Count.value);
 							itemElement.append(count);
 						}
