@@ -711,6 +711,10 @@ export function chestMenu(id : number){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/NAUTILUS_SHELL.png)';
 					}
 					else if (item.item.id === 'var'){
+						count = document.createElement('span');
+						count.innerText = {"unsaved": "G", "saved": "S", "local": "L"}[item.item.data.scope];
+						count.style.color = {"unsaved": "rgb(170, 170, 170)", "saved": "rgb(255, 255, 85)", "local": "rgb(85, 255, 85)"}[item.item.data.scope];
+						itemElement.append(count);
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/MAGMA_CREAM.png)';
 					}
 					else if (item.item.id === 'vec'){
