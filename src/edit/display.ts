@@ -178,6 +178,7 @@ export function chestMenu(id : number){
 											(item.item as unknown as Vector).data.x = Number(xVecInput.value);
 											(item.item as unknown as Vector).data.y = Number(yVecInput.value);
 											(item.item as unknown as Vector).data.z = Number(zVecInput.value);
+											chestMenu(id);
 											contextMenu.click();
 										}
 										if(e.key === 'Escape'){
@@ -718,6 +719,12 @@ export function chestMenu(id : number){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/MAGMA_CREAM.png)';
 					}
 					else if (item.item.id === 'vec'){
+						count = document.createElement('span');
+						count.innerText = 'X: ' + item.item.data.x + '\nY: ' + item.item.data.y + '\nZ: ' + item.item.data.z;
+						count.style.color = "rgb(255, 85, 85)";
+						count.style.textShadow = "1px 1px 1px #000";
+						count.style.fontSize = '0.8em';
+						itemElement.append(count);
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PRISMARINE_SHARD.png)';
 					}
 					else if (item.item.id === 'item'){
