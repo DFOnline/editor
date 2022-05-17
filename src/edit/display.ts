@@ -99,11 +99,24 @@ export function chestMenu(id : number){
 											contextMenu.click();
 										}
 									}
-									value.onclick = e => {
-										e.stopPropagation();
-									}
+									value.onclick = e => e.stopPropagation();
 									contextMenu.append(value);
-									value.focus()
+									value.focus();
+									if(item.item.id === 'var'){
+										const scope = document.createElement('select');
+										scope.onchange = () => {
+											(item.item.data as {scope: string}).scope = scope.value;
+											chestMenu(id);
+										}
+										scope.onclick = e => e.stopPropagation();
+										scope.innerHTML = `
+											<option value="unsaved">GAME</option>
+											<option value="saved">SAVE</option>
+											<option value="local">LOCAL</option>
+										`
+										scope.value = (item.item.data as {scope: string}).scope;
+										contextMenu.append(scope);
+									}
 								}
 
 								else if(item.item.id === 'loc'){
@@ -752,26 +765,26 @@ export function chestMenu(id : number){
 				}
 				itemElement.onmousemove = () => tooltip(item, block);
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
-				itemElement.onclick = (e) => {
-					// if(item.item.id === 'bl_tag'){
-					// 	const tag = findBlockTag(block.block,block.action,item.item.data.tag);
-					// 	item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
-					// }
-					/*else*/ if(item.item.id === 'var'){
-						// swap through the options
-						if(!e.shiftKey){
-							if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
-							else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
-							else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
-						} else { // do it in the other order
-							if(item.item.data.scope === 'unsaved') item.item.data.scope = 'local';
-							else if(item.item.data.scope === 'saved') item.item.data.scope = 'unsaved';
-							else if(item.item.data.scope === 'local') item.item.data.scope = 'saved';
-						}
-					}
-					itemElement.onmousemove(e);
-					chestMenu(id);
-				}
+				// itemElement.onclick = (e) => {
+				// 	if(item.item.id === 'bl_tag'){
+				// 		const tag = findBlockTag(block.block,block.action,item.item.data.tag);
+				// 		item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
+				// 	}
+				// 	else if(item.item.id === 'var'){
+				// 		// swap through the options
+				// 		if(!e.shiftKey){
+				// 			if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
+				// 			else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
+				// 			else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
+				// 		} else { // do it in the other order
+				// 			if(item.item.data.scope === 'unsaved') item.item.data.scope = 'local';
+				// 			else if(item.item.data.scope === 'saved') item.item.data.scope = 'unsaved';
+				// 			else if(item.item.data.scope === 'local') item.item.data.scope = 'saved';
+				// 		}
+				// 	}
+				// 	itemElement.onmousemove(e);
+				// 	chestMenu(id);
+				// }
 			}
 			else { // if there isn't an item.
 				itemElement.id = 'empty' + String(slotID);
