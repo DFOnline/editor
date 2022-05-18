@@ -1,58 +1,32 @@
-@use '../main/main.scss' as *;
+@use "../main/main.scss";
 
-#templates{
-    width: 100%;
+body {
     display: flex;
-    flex-flow: row wrap;
-    .template {
-        box-shadow: black 3px 3px 20px;
-        border-radius: 5px;
-        background-color: $level1;
-        min-width: 230px;
-        max-width: 230px;
-        min-height: fit-content;
-        width: 500px;
-        margin: 20px;
-        padding: 1%;
-        padding-top: 2%;
-        text-align: center;
-        & > img {width: 80%;}
-        
-        & > button {width: 90%; background-color: $level2;}
-        & > #start, .template > #import {color: $level2; margin-top: auto; align-self: flex-end; margin-bottom: 5px;}
-        & > #start {background: linear-gradient(150deg, rgba(72,185,29,1) 0%, rgba(0,255,21,1) 100%); color: black;}
-        & > #import {background: linear-gradient(150deg, rgba(200,160,36,1) 0%, rgba(255,226,0,1) 100%); color: black;}
-    }
-}
+    width: 100%;
+    overflow: hidden;
 
-#user {
-    cursor: pointer;
-    user-select: none;
-    position: absolute;
-    right: 2vw;
-    &:hover {
-        text-decoration: underline;
-    }
-}
+    #content {
+        margin: auto;
 
+        h1 {
+            display: flex;
+            margin: 0;
+            font-size: min(5em,16vw);
+            img {
+                height: 1.5em;
+            }
+        }
 
-@media only screen and (max-width: 600px) {
-    #templates {
-        display: grid;
-        overflow: hidden;
-        .template {
-            width: 90%;
-            height: fit-content;
-            max-width: none;
-            margin: none;
-            > img {width: 40%; margin-top: 5%;}
-            > h2 {font-size: 10vw;}
-            > p {font-size: 5vw;}
-            > button {width: 90%; margin-bottom: 20px;}
+        #buttons {
+            margin-top: 2em;
+            display: grid;
+            * {
+                margin-inline: auto;
+                &:not(:nth-child(1)) {
+                    margin-top: 1em;
+                }
+                width: min(90vw,20em);
+            }
         }
     }
-}
-
-ul {
-    user-select: none;
 }
