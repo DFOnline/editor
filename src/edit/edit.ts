@@ -52,28 +52,13 @@ export let userMeta:
 {"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
 
 export let code: Template;
-document.ondragstart = () => {
-	userMeta.canDragMove = false;
-}
-document.ondragend = () => {
-	userMeta.canDragMove = true;
-}
-document.ondrop = () => {
-	userMeta.canDragMove = true;
-}
-document.addEventListener('touchmove', function(e) { if(!userMeta.canDragMove){e.preventDefault();} }, { passive:false });
-
-document.onclick = () => {
-	contextMenu.click()
-}
-document.onscroll = () => {
-	contextMenu.click()
-}
-document.onkeydown = e => {
-	if(userMeta.ctxKeys[e.key] !== undefined){
-		userMeta.ctxKeys[e.key].click()
-	}
-}
+document.ondragstart = () => userMeta.canDragMove = false;
+document.ondragend = () =>  userMeta.canDragMove = true;
+document.ondrop = () =>  userMeta.canDragMove = true;
+document.ontouchmove = (e) => {if(!userMeta.canDragMove){e.preventDefault();}}
+document.onclick = () => contextMenu.click()
+document.onscroll = () => contextMenu.click()
+document.onkeydown = e => { if(userMeta.ctxKeys[e.key] !== undefined){ userMeta.ctxKeys[e.key].click() } }
 
 // document.onkeyup = e => {
 // 	if (e.key === "Alt") {
