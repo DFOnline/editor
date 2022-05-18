@@ -1,9 +1,8 @@
 import { startup, decodeTemplate, menu, snackbar, codeutilities, cuopen, encodeTemplate, user } from "../main/main";
-import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
+import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import type { Template, SelectionBlock, SubActionBlock, DataBlock, VarScope, PlacedBlock, Argument} from "./template";
 import { unflatten } from 'flat';
-
-import { rendBlocks } from "./display";
+import { rendBlocks } from "./ts/codeSpace";
 
 export type tree = {
 	[key: string]: tree | string;

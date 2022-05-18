@@ -1,4 +1,4 @@
-import type { BlockID } from "./template";
+import type { BlockID } from "../template";
 
 export interface ActionDump {
     codeblocks: CodeBlock[];
