@@ -1,50 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>DFOnline</title>
-        <link rel="shortcut icon" type="image/jpg" href="../media/favicon.png"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="cache-control" content="no-cache">
-        <link rel="stylesheet" type="text/css" href="../main/main.scss">
-        <link rel="stylesheet" type="text/css" href="./home.scss">
-        <script src="./home.ts" type="module"></script>
-        <meta content="DFOnline" property="og:title">
-        <meta content="DiamondFire Online: Create, edit and shares templates online, even on your phone." property="og:description">
-        <meta content="https://dfonline.dev/" property="og:url">
-        <meta content="#31353B" name="theme-color">
-        <meta content="../media/enderchest.png" property="og:image">
-    </head>
-    <div id='header'>
-        <a href="https://discord.gg/NqU6XnyVPA"><img src="../media/frogbin.png" alt="Icon" width="48" height="48" style="transform:translateY(16px)"></a>
-        <h1>DFOnline</h1>
-        
-        <h1 id="user">Login</h1>
-    </div>
-    <div id="panel">
-        <div id="templates">
-            <div class="template">
-                <img src="../media/add.png" alt="Icon">
-                <h2>New Template</h2>
-                <p>Start creating a template.</p>
-                <button id="start" class="bigbutton">Start</button>
-                <button id="import" class="bigbutton">Import</button>
-            </div>
-            <div class="template">
-                <img src="../media/enderchest.png" alt="Icon">
-                <h2>Not actually a template</h2>
-                <p>A description, neither this or the last one is a template.</p>
-                <button id="edit" class="bigbutton">Edit</button>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./home.scss">
+    <script src="./home.ts" type="module"></script>
+    <title>DFOnline</title>
+</head>
+<body>
+    <div id="content">
+        <h1>
+            <img src="../media/enderchest.png" alt="Logo">
+            DFOnline
+        </h1>
+        <div id="buttons">
+            <button class="bigbutton" id="import">Import Template</button>
+            <button class="bigbutton" id="create">Create Template</button>
+            <button class="bigbutton" id="help">Help</button>
         </div>
     </div>
-    <div id="menus">
-        <noscript class="background" style="display: block;">
-            <div>
-                <h1>Is JavaScript not enabled?</h1>
-                <p>This website depends on JavaScript</p>
-            </div>
-        </noscript>
-    </div>
-    <div id="snackbars"></div>
-    <div id="mouseinfo"></div>
+</body>
 </html>
