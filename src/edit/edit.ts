@@ -20,17 +20,17 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 					var blockDiv = document.createElement('div');
 					blockDiv.draggable = true;
 					blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
-					blockDiv.ondragstart = () => {
+					blockDiv.ondragstart = e => {
+						e.stopPropagation();
 						userMeta.type = 'newBlock';
-						var value : any = {id: 'block', block: block.identifier /* lmao */}
-						console.log(block.identifier);
+						const newBlock : any = {id: 'block', block: block.identifier /* lmao */}
 						if(block.identifier !== 'else'){
-							value.args = {'items':[]}
-							if(block.identifier.includes('process') || block.identifier.includes('func')) value.data = '';
-							else if(block.identifier === 'control') value.action = 'Wait';
-							else value.action = '';
+							newBlock.args = {'items':[]}
+							if(block.identifier.includes('process') || block.identifier.includes('func')) newBlock.data = '';
+							else if(block.identifier === 'control') newBlock.action = 'Wait';
+							else newBlock.action = '';
 						}
-						userMeta.value = value;
+						userMeta.value = newBlock;
 					}
 					blockPicker.appendChild(blockDiv);
 				})
