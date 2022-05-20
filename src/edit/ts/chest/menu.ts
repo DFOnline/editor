@@ -52,6 +52,7 @@ import tooltip from "./tooltip";
 				else { // events on general items.
 					itemElement.draggable = true;
 					itemElement.ondragstart = event => {
+						event.stopPropagation();
 		 				userMeta.type = 'item';
 						userMeta.value = Number((event.target as HTMLDivElement).parentElement.id);
 					}
