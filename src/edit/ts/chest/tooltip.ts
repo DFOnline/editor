@@ -126,6 +126,12 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 			selection.style.color = '#55FFFF';
 		}
 		mouseInfo.append(selection);
+		
+		mouseInfo.append(document.createElement('hr'));
+		const desc = document.createElement('span');
+		const newLocal = ActDB.gameValues.find(g => stripColours(g.icon.name) === (item.item as GameValue).data.type);
+		desc.innerText = newLocal.icon.description.join('\n');
+		mouseInfo.append(desc);
 	}
 	else if (item.item.id === 'part'){
 		var titlep = document.createElement('span');
@@ -185,7 +191,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		if(isDeveloperMode()) console.log(item);
 		const tag = findBlockTagOption(block.block, block.action, item.item.data.tag, item.item.data.option);
 		const tags = findBlockTag(block.block, block.action, item.item.data.tag);
-		var tagName = document.createElement('span');
+		const tagName = document.createElement('span');
 		tagName.innerText = 'Tag: ' + item.item.data.tag
 		tagName.style.color = 'yellow';
 		mouseInfo.append(tagName);
