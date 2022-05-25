@@ -45,12 +45,14 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		var z = document.createElement('span');
 		z.innerText = 'Z: ' + dfNumber(item.item.data.loc.z);
 		mouseInfo.append(z);
-		var pitch = document.createElement('span');
-		pitch.innerText = 'p: ' + dfNumber(item.item.data.loc.pitch);
-		mouseInfo.append(pitch);
-		var yaw = document.createElement('span');
-		yaw.innerText = 'y: ' + dfNumber(item.item.data.loc.yaw);
-		mouseInfo.append(yaw);
+		if(!item.item.data.isBlock){
+			var pitch = document.createElement('span');
+			pitch.innerText = 'p: ' + dfNumber(item.item.data.loc.pitch);
+			mouseInfo.append(pitch);
+			var yaw = document.createElement('span');
+			yaw.innerText = 'y: ' + dfNumber(item.item.data.loc.yaw);
+			mouseInfo.append(yaw);
+		}
 	}
 	else if (item.item.id === 'vec'){
 		var titlev = document.createElement('span');
