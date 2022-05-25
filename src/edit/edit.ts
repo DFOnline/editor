@@ -23,10 +23,17 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 					blockDiv.ondragstart = e => {
 						e.stopPropagation();
 						userMeta.type = 'newBlock';
-						const newBlock : any = {id: 'block', block: block.identifier /* lmao */}
+						const newBlock : any =  {id: 'block', block: block.identifier /* lmao */}
 						if(block.identifier !== 'else'){
 							newBlock.args = {'items':[]}
-							if(block.identifier.includes('process') || block.identifier.includes('func')) newBlock.data = '';
+							if(block.identifier === 'func' || block.identifier === 'call_func' || block.identifier === 'process' || block.identifier === 'start_process'){
+								newBlock.data = '';
+								const func = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "func"}},"slot": 26}];
+								const call_func : undefined[] = [];
+								const process = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "process"}},"slot": 26}];
+								const start_process = [{"item": {"id": "bl_tag","data": {"option": "Don't copy","tag": "Local Variables","action": "dynamic","block": "start_process"}},"slot": 25}, {"item": {"id": "bl_tag","data": {"option": "With current targets","tag": "Target Mode","action": "dynamic","block": "start_process"}},"slot": 26}];
+								({call_func,func,process,start_process}[block.identifier]).forEach(x => newBlock.args.items.push(x))
+							} 
 							else if(block.identifier === 'control') newBlock.action = 'Wait';
 							else newBlock.action = '';
 						}
@@ -328,7 +335,7 @@ export function backup(element : HTMLElement) : HTMLDivElement {
 }
 
 export function findBlockTags(block: CodeBlockIdentifier, action: String) {
-	return ActDB.actions.find(x => CodeBlockTypeName[block] === x.codeblockName && x.name === action).tags;
+	return ActDB.actions.find(x => CodeBlockTypeName[block] === x.codeblockName && (x.name === action || x.name === 'dynamic')).tags;
 }
 
 export function findBlockTag(block: CodeBlockIdentifier, action: String, tag: String){

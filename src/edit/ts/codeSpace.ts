@@ -22,7 +22,7 @@ export function rendBlocks(){
 		blockDiv.draggable = true;
 		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
 		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
-		blockDiv.ondrop = e => { // pain and when you drop on a codeblock
+		blockDiv.ondrop = e => { // and when you drop on a codeblock
 			e.stopPropagation();
 
 			var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
