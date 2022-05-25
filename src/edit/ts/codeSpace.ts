@@ -20,7 +20,8 @@ export function rendBlocks(){
 		blockDiv.classList.add('block');
 		blockDiv.id = 'block' + String(i);
 		blockDiv.draggable = true;
-		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i}
+		blockDiv.ondrag = () => {userMeta.type = 'block',userMeta.value = i;}
+		blockDiv.ondragstart = e => e.stopPropagation();
 		blockDiv.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
 		blockDiv.ondrop = e => { // and when you drop on a codeblock
 			e.stopPropagation();
