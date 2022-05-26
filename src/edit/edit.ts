@@ -54,8 +54,8 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 				console.error(e);
 			})
 export let userMeta:
-{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}} =
-{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined}};
+{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean} =
+{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true};
 
 export let code: Template;
 document.ondragstart = () => userMeta.canDragMove = false;

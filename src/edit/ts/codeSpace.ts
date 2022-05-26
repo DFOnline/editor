@@ -255,6 +255,12 @@ export function rendBlocks(){
 		blockDiv.prepend(stack);
 		stack.append(topper);
 		stack.append(blockElement);
+
+		if(!userMeta.canEdit){
+			blockDiv.draggable = false;
+			blockDiv.oncontextmenu = () => false;
+		}
+
 		codeSpace.append(blockDiv);
 	})
 
