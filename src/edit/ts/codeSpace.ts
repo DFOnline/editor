@@ -11,9 +11,11 @@ export function rendBlocks(){
 	const codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
 	const messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.","The Moss.","Procrastination.","Typing Error"];
 	codeSpace.innerHTML = `<!-- ${messages[Math.floor(Math.random() * messages.length)]} -->`; // hi
+	
+	/** How many brackets you have gone into */
+	let bracketLevel = 0;
 
 	code.blocks.forEach((block,i) => {
-
 		if(isDeveloperMode()) console.log(block);
 
 		var blockDiv = document.createElement('div');
@@ -249,9 +251,16 @@ export function rendBlocks(){
 			}
 		}
 		else if(block.id === "bracket"){
+			if(block.direct === 'open')	bracketLevel++;
+			if(block.direct === 'close') bracketLevel--;
 			topper.classList.add('air');
 			blockElement.classList.add('piston','mat',block.direct,block.type)
 		}
+
+		
+		blockDiv.style.position = 'relative';
+		blockDiv.style.top = String(bracketLevel) + 'em';
+
 		blockDiv.prepend(stack);
 		stack.append(topper);
 		stack.append(blockElement);
