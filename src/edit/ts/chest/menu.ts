@@ -1,5 +1,5 @@
 import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../../edit";
-import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber, Argument } from "../../../edit/template";
+import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../../edit/template";
 import { isDeveloperMode, menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { parse } from "nbt-ts";
 import tooltip from "./tooltip";
@@ -764,26 +764,6 @@ import tooltip from "./tooltip";
 				}
 				itemElement.onmousemove = () => tooltip(item, block);
 				itemElement.onmouseleave = () => {mouseInfo.style.display = 'none';}
-				// itemElement.onclick = (e) => {
-				// 	if(item.item.id === 'bl_tag'){
-				// 		const tag = findBlockTag(block.block,block.action,item.item.data.tag);
-				// 		item.item.data.option = (tag.options[(tag.options.findIndex(x => x.name === (item.item as BlockTag).data.option) + 1) % tag.options.length].name); // yeh cool line
-				// 	}
-				// 	else if(item.item.id === 'var'){
-				// 		// swap through the options
-				// 		if(!e.shiftKey){
-				// 			if(item.item.data.scope === 'local') item.item.data.scope = 'unsaved';
-				// 			else if(item.item.data.scope === 'unsaved') item.item.data.scope = 'saved';
-				// 			else if(item.item.data.scope === 'saved') item.item.data.scope = 'local';
-				// 		} else { // do it in the other order
-				// 			if(item.item.data.scope === 'unsaved') item.item.data.scope = 'local';
-				// 			else if(item.item.data.scope === 'saved') item.item.data.scope = 'unsaved';
-				// 			else if(item.item.data.scope === 'local') item.item.data.scope = 'saved';
-				// 		}
-				// 	}
-				// 	itemElement.onmousemove(e);
-				// 	chestMenu(id);
-				// }
 			}
 			else { // if there isn't an item.
 				itemElement.id = 'empty' + String(slotID);
@@ -949,6 +929,13 @@ import tooltip from "./tooltip";
 				}
 				itemElement.oncontextmenu = itemElement.onclick;
 			}
+
+			if(!userMeta.canEdit){
+				itemElement.draggable = false;
+				itemElement.oncontextmenu = () => {return false;}
+				itemElement.onclick = () => {return false;}
+			}
+
 			itemElement.classList.add('item')
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
