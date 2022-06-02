@@ -5,7 +5,7 @@ import { chestMenu } from "./chest/menu";
 import { rendBlocks } from "./codeSpace";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
-    constructor (block : Block, i : number) {
+    constructor (block : Block, i : number, bracketIndex : number) {
         super();
 		this.ondrag = () => {userMeta.type = 'block',userMeta.value = i;}
 
@@ -17,7 +17,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
         this.ondrop = this.dropevent;
         this.oncontextmenu = e => this.contextmenuevent(e, block);
 
-        this.render(block);
+        this.render(block, bracketIndex);
 
 		if(!userMeta.canEdit){
 			this.draggable = false;
@@ -214,7 +214,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
         }
     }
 
-    render : (block : Block) => void = block => {
+    render : (block : Block, bracketIndex : number) => void = (block, bracketIndex) => {
         const stack = document.createElement('div');
         const topper = document.createElement('div');
         const blockElement = document.createElement('div');
@@ -262,6 +262,8 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 			topper.classList.add('air');
 			blockElement.classList.add('piston','mat',block.direct,block.type)
 		}
+
+        this.style.top = (bracketIndex * 30) + 'px';
 
         this.prepend(stack);
 		stack.append(topper);
