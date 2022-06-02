@@ -1,18 +1,13 @@
-import { menu } from "../main/main";
+import Menu from '../main/menu';
 
-document.querySelector<HTMLButtonElement>('#import').onclick = importMenu;
-document.querySelector<HTMLButtonElement>('#new').onclick = newMenu;
-document.querySelector<HTMLButtonElement>('#help').onclick = helpMenu;
+let importMenu = new Menu('Import');
+let createMenu = new Menu('Create Template');
+let helpMenu = new Menu('Help');
 
+window.onload = () => {
+    Menu.setup();
 
-function importMenu(){
-    
-}
-
-function newMenu(){
-
-}
-
-function helpMenu(){
-
+    document.getElementById('import').onclick = () => importMenu.open();
+    document.getElementById('create').onclick = () => createMenu.open();
+    document.getElementById('help').onclick = () => helpMenu.open();
 }
