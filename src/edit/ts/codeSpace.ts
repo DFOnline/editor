@@ -15,10 +15,15 @@ export function rendBlocks(){
 	
 	/** How many brackets you have gone into */
 
+	let bracketIndex = 0;
+
 	code.blocks.forEach((block,i) => {
 		if(isDeveloperMode()) console.log(block);
 
-		const blockDiv = new HTMLCodeBlockElement(block, i);
+		
+		if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
+		const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
+		if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
 
 		codeSpace.append(blockDiv);
 	})
