@@ -67,5 +67,8 @@ export default class Menu {
             menusDiv.id = 'menus';
             document.body.appendChild(menusDiv);
         }
+        else {
+            menusDiv = document.querySelector('html body div#menus');
+        }
     }
 }
