@@ -20,5 +20,35 @@
             <button class="bigbutton" id="help">Help</button>
         </div>
     </div>
+    <div hidden>
+        <!-- It was github copilot who had the idea to have invisible elements with the content. -->
+        <!-- Honestly I think it probably isn't bad. Unless there are name conflicts with ids. -->
+        <div id="help-content">
+            <h2>What is DFOnline?</h2>
+            <p>Simply a service to view, share DF code online.<br />There is some editing and mobile support.</p>
+            <h2>How do I use it?</h2>
+            <ol>
+                <li>On diamondfire, break the start of a code line.</li>
+                <li>While holding the item it gave you run <code>/i nbt</code></li>
+                <li>Open chat and click on anything sent in the message from the command. (This copies stuff onto you clipboard)</li>
+                <li>Press the yellow import template button and paste your clipboard into the text field and press Import.</li>
+            </ol>
+            Once you have imported a template, you can edit it and share it with others.
+            <h2>How do I share templates?</h2>
+            <p>
+                While in the editing menu press File in the top left, press <code>Export</code> <br>
+                It will open a menu, you can press <code>Copy Short Link</code> and share that. <br>
+                Anybody who opens a shared link will be able to view and edit the template.
+            </p>
+        </div>
+        <div id="import-menu">
+            <h2>Import Template</h2>
+            <p>
+                Paste your template code into the text field and press Import.
+            </p>
+            <input type="text" id="import-text" placeholder="Template Data" style="width: 20em;">
+            <button id="import-button">Import</button>
+        </div>
+    </div>
 </body>
 </html>
