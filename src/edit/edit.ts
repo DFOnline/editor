@@ -54,8 +54,8 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 				console.error(e);
 			})
 export let userMeta:
-{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean} =
-{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true};
+{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean } =
+{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true    };
 
 export let code: Template;
 document.ondragstart = () => userMeta.canDragMove = false;
@@ -322,7 +322,7 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 }
 
 /**
- *
+ * This is used for getting the proper codeblock element from something inside it.
  * @param element The element to search
  * @returns The block which the element is in
  */
@@ -347,7 +347,7 @@ export function findBlockTagOption(block: CodeBlockIdentifier, action: String, t
 }
 
 /**
- *
+ * This exports that code and various info about it in an object.
  * @param code Stringified version of a template to compile
  * @returns data: contains the gzip template data, author: Who created the template, name: the name of the template
  */
