@@ -1,7 +1,9 @@
-import { startup, decodeTemplate, menu, snackbar, codeutilities, cuopen, encodeTemplate, user } from "../main/main";
-import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
-import type { Template, SelectionBlock, SubActionBlock, DataBlock, VarScope, PlacedBlock, Argument} from "./template";
 import { unflatten } from 'flat';
+import { createMenu } from '../home/home';
+import { codeutilities, cuopen, decodeTemplate, encodeTemplate, menu, snackbar, startup, user } from "../main/main";
+import Menu from "../main/menu";
+import type { Argument, DataBlock, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
+import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
 
 export type tree = {
@@ -76,6 +78,8 @@ export let contextMenu : HTMLDivElement;
 export let mouseInfo : HTMLDivElement;
 
 window.onload = async function() { // when everything loads - this function is pretty hard to find lol.
+	Menu.setup();
+
 	var start = startup();
 	mouseInfo = start.mouseInfo;
 	contextMenu = document.querySelector('div#context');
@@ -114,28 +118,28 @@ async function menuBar(){
 		contextMenu.style.top = String(bottom) + "px";
 		contextMenu.innerHTML = '';
 		contextMenu.style.display = 'grid';
-		var save = document.createElement('button');
+		const save = document.createElement('button');
 		save.innerText = 'Save';
 		save.disabled = true;
 		contextMenu.append(save);
-		var newTemplate = document.createElement('button');
+		const newTemplate = document.createElement('button');
 		newTemplate.innerText = 'New Template';
-		newTemplate.disabled = true;
+		newTemplate.onclick = () => createMenu.open();
 		contextMenu.append(newTemplate);
-		var exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
+		const exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
 		exportTemplateButton.innerText = 'Export';
 		exportTemplateButton.onclick = async () => { // a mess, anyway the menu for export.
-			let exportDiv = document.createElement('div');
+			const exportDiv = document.createElement('div');
 
-			var p = document.createElement('p');
+			const p = document.createElement('p');
 			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
 			exportDiv.append(p);
 
-			let options = document.createElement('div');
+			const options = document.createElement('div');
 			options.style.display = 'grid';
 			options.style.width = 'fit-content'
 
-			var copyTemplate = document.createElement('button');
+			const copyTemplate = document.createElement('button');
 			copyTemplate.innerText = "Copy Data";
 			copyTemplate.onclick = e => {
 				var data = exportTemplate(JSON.stringify(code));
@@ -145,7 +149,7 @@ async function menuBar(){
 			}
 			options.append(copyTemplate);
 
-			var CodeUtilsSend = document.createElement('button');
+			const CodeUtilsSend = document.createElement('button');
 			CodeUtilsSend.innerText = 'Send to CodeUtilities';
 			CodeUtilsSend.disabled = !cuopen;
 			CodeUtilsSend.onclick = () => { // the code for sending :D
@@ -164,7 +168,7 @@ async function menuBar(){
 
 
 
-			var CopyLinkButton = document.createElement('button');
+			const CopyLinkButton = document.createElement('button');
 			CopyLinkButton.innerText = 'Copy Link';
 			CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
 				var href : string
@@ -177,7 +181,7 @@ async function menuBar(){
 			}
 			options.append(CopyLinkButton);
 
-			var CopyShortLinkButton = document.createElement('button');
+			const CopyShortLinkButton = document.createElement('button');
 			CopyShortLinkButton.innerText = 'Copy Short Link';
 			CopyShortLinkButton.onclick = async e => {
 				var href : string
@@ -192,7 +196,7 @@ async function menuBar(){
 			options.append(CopyShortLinkButton);
 
 			exportDiv.append(options);
-			menu('Export',exportDiv);
+			new Menu('Export',exportDiv).open();
 		}
 		contextMenu.append(exportTemplateButton);
 	}
