@@ -39,6 +39,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 								({call_func,func,process,start_process}[block.identifier]).forEach(x => newBlock.args.items.push(x))
 							} 
 							else if(block.identifier === 'control') newBlock.action = 'Wait';
+							else if(block.identifier === 'set_var') newBlock.action = '=';
 							else newBlock.action = '';
 						}
 						userMeta.value = newBlock;
