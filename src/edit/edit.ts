@@ -1,10 +1,12 @@
 import { unflatten } from 'flat';
 import { createMenu } from '../home/home';
-import { codeutilities, cuopen, decodeTemplate, encodeTemplate, menu, snackbar, startup, user } from "../main/main";
+import { codeutilities, cuopen, encodeTemplate, menu, snackbar, startup, user } from "../main/main";
 import Menu from "../main/menu";
-import type { Argument, DataBlock, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
+import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
+
+import { diffJson } from 'diff';
 
 export type tree = {
 	[key: string]: tree | string;
@@ -59,7 +61,7 @@ export let userMeta:
 {"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean } =
 {"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true    };
 
-export let code: Template;
+export let code: Template = {'blocks':[]};
 document.ondragstart = () => userMeta.canDragMove = false;
 document.ondragend = () =>  userMeta.canDragMove = true;
 document.ondrop = () =>  userMeta.canDragMove = true;
@@ -77,7 +79,7 @@ document.onkeydown = e => { if(userMeta.ctxKeys[e.key] !== undefined){ userMeta.
 export let contextMenu : HTMLDivElement;
 export let mouseInfo : HTMLDivElement;
 
-window.onload = async function() { // when everything loads - this function is pretty hard to find lol.
+window.onload = async function onload() { // when everything loads - this function is pretty hard to find lol.
 	Menu.setup();
 
 	var start = startup();
@@ -88,14 +90,11 @@ window.onload = async function() { // when everything loads - this function is p
 	}
 	if(sessionStorage.getItem('import')){
 		var importTemplate = sessionStorage.getItem('import');
-		if(importTemplate.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/)){
-			console.log(sessionStorage.getItem('import'));
-			code = JSON.parse(decodeTemplate(importTemplate));
-		}
-		else{
-			code = JSON.parse(decodeTemplate((await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save/${importTemplate}`).then(response => response.json())).data));
-			snackbar('Grabbed template from server.');
-		}
+		code = await loadTemplate(importTemplate);
+	}
+	if(start.urlParams.get('compare')){
+		const compareTemplate = start.urlParams.get('compare').replace(/ /g,'+');
+		console.log(diffJson(code, await loadTemplate(compareTemplate)));
 	}
 	rendBlocks();
 	contextMenu.onclick = () => {

@@ -1,4 +1,4 @@
-// Hand coded :>
+import { decodeTemplate } from "../main/main"
 
 export interface Template {
     blocks: Block[]
@@ -215,4 +215,16 @@ export interface ParsedItem {
 }
 export interface NbtValue<t> {
     value: t;
+}
+
+
+export async function loadTemplate(data : string){
+    if(data.match(/^H4sIA*[0-9A-Za-z+/]*={0,2}$/)){
+        return decodeTemplate(data)
+    }
+    else {
+        const res = await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save/${data.replace(/^dfo:/,'')}`);
+        const json = await res.json();
+        return decodeTemplate(json.data);
+    }
 }

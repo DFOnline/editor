@@ -1,3 +1,4 @@
+import type { Template } from "edit/template";
 import { inflate, gzip } from "pako";
 
 export let cuopen = false;
@@ -92,14 +93,15 @@ export const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/i
 codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = true;}
 codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
-export function decodeTemplate(base64data : string){
-    var compressData = atob(base64data);
-    var uint = compressData.split('').map(function(e) {
+export function decodeTemplate(base64data : string) : Template{
+    const compressData = atob(base64data);
+    const uint = compressData.split('').map(function(e) {
         return e.charCodeAt(0);
     });
-    var binData = new Uint8Array(uint);
-    var data = inflate(binData);
-    return String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7');
+    const binData = new Uint8Array(uint);
+    const data = inflate(binData);
+    const string = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7')
+    return JSON.parse(string);
 }
 
 export function encodeTemplate(codedata : string){
