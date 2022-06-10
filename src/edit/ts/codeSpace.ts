@@ -17,17 +17,8 @@ export function rendBlocks(){
 
 	if(compareTemplate){
 		// compare the objects
-		const compareObjects = (obj1: any, obj2: any) =>{
-			if(obj1 === obj2) return true;
-			if(obj1 == null || obj2 == null) return false;
-			if(obj1.constructor !== obj2.constructor) return false;
-			for(let key in obj1){
-				if(!compareObjects(obj1[key], obj2[key])) return false;
-			}
-			return true;
-		}
-
-		const diffs = diffArrays(compareTemplate.blocks, code.blocks, {comparator: compareObjects});
+		const diffs = diffArrays(compareTemplate.blocks, code.blocks, {comparator: (a, b) => JSON.stringify(a) === JSON.stringify(b)});
+		code.blocks = [];
 		let i = 0;
 
 		diffs.forEach((diff) => {
@@ -43,6 +34,7 @@ export function rendBlocks(){
 				codeSpace.append(blockDiv);
 				
 				i++;
+				code.blocks.push(block);
 			})
 		})
 	}
