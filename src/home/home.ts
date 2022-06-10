@@ -30,7 +30,7 @@ window.onload = () => {
             const importData = importText.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/);
             if(importData !== null){
                 sessionStorage.setItem('import', importData[0]);
-                location.href = './edit';
+                location.href = '/edit';
             }
         };
     }
