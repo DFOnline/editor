@@ -1,6 +1,6 @@
 import { unflatten } from 'flat';
 import { createMenu } from '../home/home';
-import { codeutilities, cuopen, encodeTemplate, menu, snackbar, startup, user } from "../main/main";
+import { codeutilities, cuopen, encodeTemplate, menu, snackbar, startup, templateLike, user } from "../main/main";
 import Menu from "../main/menu";
 import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
@@ -155,15 +155,33 @@ async function menuBar(){
 			p.innerHTML = 'Compare templates and show the changes made to them<br> You might want to get short link data from the export menu.';
 			comparisonDiv.append(p);
 
+			const cleanPaste = (e: ClipboardEvent) => {
+				const text = e.clipboardData.getData('text/plain');
+				const Input = e.target as HTMLInputElement;
+				// if the clipboard is a link with the template parameter
+				const params = new URLSearchParams(text.replace(/^.*(?=\?)/g,''));
+				if(params.has('template')){
+					e.preventDefault();
+					Input.value = params.get('template');
+				}
+				// if the clipboard is data with template data
+				if(text.match(templateLike)){
+					e.preventDefault();
+					Input.value = text.match(templateLike)[0];
+				}
+			}
+
 			const oldTemplate = document.createElement('input');
 			oldTemplate.type = 'text';
 			oldTemplate.placeholder = 'Old Template';
 			// if the url has a template parameter, it will be used as the old template.
 			if(new URLSearchParams(location.search).has('template')) oldTemplate.value = new URLSearchParams(location.search).get('template');
+			oldTemplate.onpaste = cleanPaste;
 
 			const newTemplate = document.createElement('input');
 			newTemplate.type = 'text';
 			newTemplate.placeholder = 'New Template';
+			newTemplate.onpaste = cleanPaste;
 
 			const compareButton = document.createElement('button');
 			compareButton.innerText = 'Compare';
