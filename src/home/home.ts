@@ -1,3 +1,4 @@
+import { templateLike } from '../main/main';
 import Menu from '../main/menu';
 
 const createMenuContents = document.createElement('div');
@@ -27,7 +28,7 @@ window.onload = () => {
         importMenu.open();
         document.getElementById('import-button').onclick = () => {
             const importText = document.querySelector<HTMLButtonElement>('input#import-text').value;
-            const importData = importText.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/);
+            const importData = importText.match(templateLike);
             if(importData !== null){
                 sessionStorage.setItem('import', importData[0]);
                 location.href = '/edit';

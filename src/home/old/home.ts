@@ -1,4 +1,4 @@
-import { startup, menu, login, cuopen, codeutilities, user, snackbar } from "../../main/main"
+import { startup, menu, login, cuopen, codeutilities, user, snackbar, templateLike } from "../../main/main"
 
 function importMenu(code = ""){
     var div = document.createElement('div');
@@ -20,7 +20,7 @@ function importMenu(code = ""){
     activateImport.innerText = "Go!"
     activateImport.style.marginLeft = "5px"
     activateImport.onclick = () => {
-        var data = importField.value.match(/H4sIA*[0-9A-Za-z+/]*={0,2}/);
+        var data = importField.value.match(templateLike);
         if(data !== null){
             sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
         }
