@@ -16,15 +16,29 @@ export function rendBlocks(){
 	let bracketIndex = 0;
 
 	if(compareTemplate){
+		// compare the objects
+		const compareObjects = (obj1: any, obj2: any) =>{
+			if(obj1 === obj2) return true;
+			if(obj1 == null || obj2 == null) return false;
+			if(obj1.constructor !== obj2.constructor) return false;
+			for(let key in obj1){
+				if(!compareObjects(obj1[key], obj2[key])) return false;
+			}
+			return true;
+		}
+
+		const diffs = diffArrays(compareTemplate.blocks, code.blocks, {comparator: compareObjects});
 		let i = 0;
-		diffArrays(compareTemplate.blocks, code.blocks).forEach((diff) => {
+
+		diffs.forEach((diff) => {
 			diff.value.forEach(block => {
 				if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
 				const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
 				if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
 				
-				if(diff.added) blockDiv.style.outline = '2px solid green';
-				if(diff.removed) blockDiv.style.outline = '2px solid red';
+				// give it a green or red transparent background
+				if(diff.added) blockDiv.style.backgroundColor = 'rgba(0,255,0,0.5)';
+				if(diff.removed) blockDiv.style.backgroundColor = 'rgba(255,0,0,0.5)';
 
 				codeSpace.append(blockDiv);
 				
