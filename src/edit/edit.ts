@@ -17,34 +17,36 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(data => { // unready required init
 				ActDB = data;
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
+				if(userMeta.canEdit){
 				rendBlocks();
 				var blockPicker = document.getElementById('blocks');
 				ActDB.codeblocks.forEach(block => { // placing blocks menu
-					var blockDiv = document.createElement('div');
-					blockDiv.draggable = true;
-					blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
-					blockDiv.ondragstart = e => {
-						e.stopPropagation();
-						userMeta.type = 'newBlock';
-						const newBlock : any =  {id: 'block', block: block.identifier /* lmao */}
-						if(block.identifier !== 'else'){
-							newBlock.args = {'items':[]}
-							if(block.identifier === 'func' || block.identifier === 'call_func' || block.identifier === 'process' || block.identifier === 'start_process'){
-								newBlock.data = '';
-								const func = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "func"}},"slot": 26}];
-								const call_func : undefined[] = [];
-								const process = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "process"}},"slot": 26}];
-								const start_process = [{"item": {"id": "bl_tag","data": {"option": "Don't copy","tag": "Local Variables","action": "dynamic","block": "start_process"}},"slot": 25}, {"item": {"id": "bl_tag","data": {"option": "With current targets","tag": "Target Mode","action": "dynamic","block": "start_process"}},"slot": 26}];
-								({call_func,func,process,start_process}[block.identifier]).forEach(x => newBlock.args.items.push(x))
-							} 
-							else if(block.identifier === 'control') newBlock.action = 'Wait';
-							else if(block.identifier === 'set_var') newBlock.action = '=';
-							else newBlock.action = '';
+						var blockDiv = document.createElement('div');
+						blockDiv.draggable = true;
+						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
+						blockDiv.ondragstart = e => {
+							e.stopPropagation();
+							userMeta.type = 'newBlock';
+							const newBlock : any =  {id: 'block', block: block.identifier /* lmao */}
+							if(block.identifier !== 'else'){
+								newBlock.args = {'items':[]}
+								if(block.identifier === 'func' || block.identifier === 'call_func' || block.identifier === 'process' || block.identifier === 'start_process'){
+									newBlock.data = '';
+									const func = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "func"}},"slot": 26}];
+									const call_func : undefined[] = [];
+									const process = [{"item": {"id": "bl_tag","data": {"option": "False","tag": "Is Hidden","action": "dynamic","block": "process"}},"slot": 26}];
+									const start_process = [{"item": {"id": "bl_tag","data": {"option": "Don't copy","tag": "Local Variables","action": "dynamic","block": "start_process"}},"slot": 25}, {"item": {"id": "bl_tag","data": {"option": "With current targets","tag": "Target Mode","action": "dynamic","block": "start_process"}},"slot": 26}];
+									({call_func,func,process,start_process}[block.identifier]).forEach(x => newBlock.args.items.push(x))
+								} 
+								else if(block.identifier === 'control') newBlock.action = 'Wait';
+								else if(block.identifier === 'set_var') newBlock.action = '=';
+								else newBlock.action = '';
+							}
+							userMeta.value = newBlock;
 						}
-						userMeta.value = newBlock;
-					}
-					blockPicker.appendChild(blockDiv);
-				})
+						blockPicker.appendChild(blockDiv);
+					})
+				}
 				Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 			})
 			.catch(e => {
