@@ -5,6 +5,7 @@ import Menu from "../main/menu";
 import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
+import exportMenu from './ts/exportMenu';
 
 export type tree = {
 	[key: string]: tree | string;
@@ -94,6 +95,7 @@ window.onload = async function onload() { // when everything loads - this functi
 	}
 	if(start.urlParams.get('compare')){
 		compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
+		userMeta.canEdit = false;
 	}
 	rendBlocks();
 	contextMenu.onclick = () => {
@@ -127,76 +129,63 @@ async function menuBar(){
 		const exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
 		exportTemplateButton.innerText = 'Export';
 		exportTemplateButton.onclick = async () => { // a mess, anyway the menu for export.
-			const exportDiv = document.createElement('div');
-
-			const p = document.createElement('p');
-			p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
-			exportDiv.append(p);
-
-			const options = document.createElement('div');
-			options.style.display = 'grid';
-			options.style.width = 'fit-content'
-
-			const copyTemplate = document.createElement('button');
-			copyTemplate.innerText = "Copy Data";
-			copyTemplate.onclick = e => {
-				var data = exportTemplate(JSON.stringify(code));
-				var altName = data.name.replace('"','\\"').replace('\\','\\\\').replace("'","\\'");
-				if(e.shiftKey || e.ctrlKey) navigator.clipboard.writeText(`/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.data}",version:1,author:"${data.author}"}'}} 1`);
-				else navigator.clipboard.writeText(data.data);
-			}
-			options.append(copyTemplate);
-
-			const CodeUtilsSend = document.createElement('button');
-			CodeUtilsSend.innerText = 'Send to CodeUtilities';
-			CodeUtilsSend.disabled = !cuopen;
-			CodeUtilsSend.onclick = () => { // the code for sending :D
-				codeutilities.send(JSON.stringify(
-					{
-						type: 'template',
-						data: JSON.stringify(exportTemplate(JSON.stringify(code))),
-						source: 'DFOnline'
-					}
-				));
-				codeutilities.onmessage = e => {
-					if(JSON.parse(e.data).status === 'success') snackbar('Recieved confirmation for sent template');
-				}
-			}
-			options.append(CodeUtilsSend);
-
-
-
-			const CopyLinkButton = document.createElement('button');
-			CopyLinkButton.innerText = 'Copy Link';
-			CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
-				var href : string
-				if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
-				else href = location.origin + '/edit/';
-				var searchParams = new URLSearchParams(location.search);
-				var exportData = exportTemplate(JSON.stringify(code)).data;
-				searchParams.set('template',exportData);
-				navigator.clipboard.writeText(href + '?' + searchParams.toString());
-			}
-			options.append(CopyLinkButton);
-
-			const CopyShortLinkButton = document.createElement('button');
-			CopyShortLinkButton.innerText = 'Copy Short Link';
-			CopyShortLinkButton.onclick = async e => {
-				var href : string
-				if(e.ctrlKey) href = 'https://dfonline.dev/edit/';
-				else if(e.shiftKey) href = 'https://diamondfire.gitlab.io/template/';
-				else href = location.origin + '/edit/';
-				var searchParams = new URLSearchParams(location.search);
-				var exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
-				searchParams.set(e.shiftKey ? 't' : 'template',e.shiftKey ? 'dfo:' + exportData : exportData);
-				navigator.clipboard.writeText(href + '?' + searchParams.toString());
-			}
-			options.append(CopyShortLinkButton);
-
-			exportDiv.append(options);
-			new Menu('Export',exportDiv).open();
+			exportMenu.open();
+		}
+		if(!userMeta.canEdit){
+			exportTemplateButton.disabled = true;
 		}
 		contextMenu.append(exportTemplateButton);
+
+		const comparison = document.createElement('button');
+		comparison.innerText = 'Compare';
+		comparison.onclick = () => {
+			const comparisonDiv = document.createElement('div');
+
+
+			// A link to the export menu
+			const a = document.createElement('a');
+			a.href = '#';
+			a.innerText = 'Export';
+			a.onclick = () => {
+				exportMenu.open();
+			}
+			comparisonDiv.append(a);
+
+			const p = document.createElement('p');
+			p.innerHTML = 'Compare templates and show the changes made to them<br> You might want to get short link data from the export menu.';
+			comparisonDiv.append(p);
+
+			const oldTemplate = document.createElement('input');
+			oldTemplate.type = 'text';
+			oldTemplate.placeholder = 'Old Template';
+			// if the url has a template parameter, it will be used as the old template.
+			if(new URLSearchParams(location.search).has('template')) oldTemplate.value = new URLSearchParams(location.search).get('template');
+
+			const newTemplate = document.createElement('input');
+			newTemplate.type = 'text';
+			newTemplate.placeholder = 'New Template';
+
+			const compareButton = document.createElement('button');
+			compareButton.innerText = 'Compare';
+			compareButton.onclick = () => {
+				// the settings are set by urlparams
+				// `compare` is for the old one
+				// `template` is for the new one
+
+				const searchParams = new URLSearchParams('');
+				searchParams.set('compare',oldTemplate.value);
+				searchParams.set('template',newTemplate.value);
+				// send them to the url
+				location.search = searchParams.toString();
+			}
+
+			comparisonDiv.append(oldTemplate);
+			comparisonDiv.append(newTemplate);
+			comparisonDiv.append(compareButton);
+
+			new Menu('Compare',comparisonDiv).open();
+		}
+		contextMenu.append(comparison);
 	}
 	document.querySelector<HTMLButtonElement>('button#edit').onclick = e => {
 		console.log(e.target);
@@ -353,7 +342,7 @@ export function findBlockTagOption(block: CodeBlockIdentifier, action: String, t
  * @param code Stringified version of a template to compile
  * @returns data: contains the gzip template data, author: Who created the template, name: the name of the template
  */
-function exportTemplate(code : string) : {data: string, author: string, name: string;}{
+export function exportTemplate(code : string) : {data: string, author: string, name: string;}{
 	let name : string;
 	if(user && user.name) name = user.name;
 	else name = 'DFOnline';
