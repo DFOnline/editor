@@ -6,8 +6,6 @@ import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActi
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
 
-import { diffJson } from 'diff';
-
 export type tree = {
 	[key: string]: tree | string;
 }
@@ -61,6 +59,7 @@ export let userMeta:
 {"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean } =
 {"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true    };
 
+export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
 document.ondragstart = () => userMeta.canDragMove = false;
 document.ondragend = () =>  userMeta.canDragMove = true;
@@ -93,8 +92,7 @@ window.onload = async function onload() { // when everything loads - this functi
 		code = await loadTemplate(importTemplate);
 	}
 	if(start.urlParams.get('compare')){
-		const compareTemplate = start.urlParams.get('compare').replace(/ /g,'+');
-		console.log(diffJson(code, await loadTemplate(compareTemplate)));
+		compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
 	}
 	rendBlocks();
 	contextMenu.onclick = () => {

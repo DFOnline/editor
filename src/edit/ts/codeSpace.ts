@@ -1,9 +1,7 @@
-import { ActDB, backup, code, contextMenu, setAction, userMeta } from "../edit";
-import { Block, Bracket, BracketType, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../../edit/template";
+import { code, compareTemplate, userMeta } from "../edit";
 import { isDeveloperMode } from "../../main/main";
-import { CodeBlockTypeName } from "./actiondump";
-import { chestMenu } from "./chest/menu";
 import HTMLCodeBlockElement from "./codeblock";
+import { diffArrays } from 'diff'
 
 export function rendBlocks(){
 
@@ -17,17 +15,35 @@ export function rendBlocks(){
 
 	let bracketIndex = 0;
 
-	code.blocks.forEach((block,i) => {
-		if(isDeveloperMode()) console.log(block);
+	if(compareTemplate){
+		let i = 0;
+		diffArrays(compareTemplate.blocks, code.blocks).forEach((diff) => {
+			diff.value.forEach(block => {
+				if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
+				const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
+				if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
+				
+				if(diff.added) blockDiv.style.outline = '2px solid green';
+				if(diff.removed) blockDiv.style.outline = '2px solid red';
 
-		
-		if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
-		const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
-		if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
+				codeSpace.append(blockDiv);
+				
+				i++;
+			})
+		})
+	}
+	else{
+		code.blocks.forEach((block,i) => {
+			if(isDeveloperMode()) console.log(block);
 
-		codeSpace.append(blockDiv);
-	})
+			
+			if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
+			const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
+			if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
 
+			codeSpace.append(blockDiv);
+		})
+	}
 	var end = document.createElement('div')
 	end.classList.add('block');
 	codeSpace.append(end);
