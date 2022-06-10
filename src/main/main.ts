@@ -313,3 +313,5 @@ document.addEventListener('keydown',(e) => {
 export function isDeveloperMode() : boolean{
     return sessionStorage.getItem('developerMode') === 'true';
 }
+
+export const templateLike = /H4sIA*[0-9A-Za-z+/]*={0,2}/;
