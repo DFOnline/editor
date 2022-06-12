@@ -1,6 +1,6 @@
 import { unflatten } from 'flat';
 import { createMenu } from '../home/home';
-import { codeutilities, cuopen, encodeTemplate, menu, snackbar, startup, templateLike, user } from "../main/main";
+import { encodeTemplate, menu, snackbar, startup, templateLike, user } from "../main/main";
 import Menu from "../main/menu";
 import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";

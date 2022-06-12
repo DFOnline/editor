@@ -1,4 +1,4 @@
-import { startup, menu, login, cuopen, codeutilities, user, snackbar, templateLike } from "../main/main"
+import { startup, menu, login, codeutilities, user, templateLike } from "../main/main"
 
 function importMenu(code = ""){
     var div = document.createElement('div');
