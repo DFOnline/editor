@@ -1,39 +1,87 @@
+import Menu from "../main/menu";
 import { startup, menu, login, codeutilities, user, templateLike } from "../main/main"
 
-function importMenu(code = ""){
-    var div = document.createElement('div');
+Menu.setup();
 
-    var toptext = document.createElement('p');
-    toptext.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
-    div.appendChild(toptext);
+// function importMenu(code = ""){
+//     var div = document.createElement('div');
 
-    var imports = document.createElement('div');
-    var importField = document.createElement('input');
-    importField.type = "text";
-    importField.placeholder = "Template Data";
-    importField.onkeyup = event => {if(event.key === "Enter"){activateImport.click()}}
-    importField.id = "importfield";
-    importField.value = code;
-    imports.appendChild(importField);
+//     var toptext = document.createElement('p');
+//     toptext.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
+//     div.appendChild(toptext);
 
-    var activateImport = document.createElement('button')
-    activateImport.innerText = "Go!"
-    activateImport.style.marginLeft = "5px"
-    activateImport.onclick = () => {
-        var data = importField.value.match(templateLike);
-        if(data !== null){
-            sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
+//     var imports = document.createElement('div');
+//     var importField = document.createElement('input');
+//     importField.type = "text";
+//     importField.placeholder = "Template Data";
+//     importField.onkeyup = event => {if(event.key === "Enter"){activateImport.click()}}
+//     importField.id = "importfield";
+//     importField.value = code;
+//     imports.appendChild(importField);
+
+//     var activateImport = document.createElement('button')
+//     activateImport.innerText = "Go!"
+//     activateImport.style.marginLeft = "5px"
+//     activateImport.onclick = () => {
+//         var data = importField.value.match(templateLike);
+//         if(data !== null){
+//             sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
+//         }
+//     }
+//     imports.appendChild(activateImport)
+//     div.appendChild(imports)
+//     if(cuopen){
+//         var cuad = document.createElement('p')
+//         cuad.innerText = "Or, because you have codeutilities you can go into minecraft, hold your template and type /sendtemplate!"
+//         div.appendChild(cuad)
+//     }
+//     menu('Import',div)
+// }
+
+class ImportMenu extends Menu {
+    constructor(code = ''){
+        const content = document.createElement('div');
+        const p = document.createElement('p');
+        p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
+        const a = document.createElement('a');
+        a.innerText = 'Info';
+        a.href = '/edit/how';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Template Data';
+        input.onkeyup = event => {if(event.key === 'Enter'){activateImport.click()}}
+        input.value = code;
+        const activateImport = document.createElement('button');
+        activateImport.innerText = 'Import';
+        activateImport.onclick = () => {
+            const data = input.value.match(templateLike);
+            if(data !== null){
+                sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
+            }
         }
+        content.append(a,p,input,activateImport);
+        super('Import', content);
     }
-    imports.appendChild(activateImport)
-    div.appendChild(imports)
-    if(cuopen){
-        var cuad = document.createElement('p')
-        cuad.innerText = "Or, because you have codeutilities you can go into minecraft, hold your template and type /sendtemplate!"
-        div.appendChild(cuad)
-    }
-    menu('Import',div)
+    
 }
+
+const createMenuContents = document.createElement('div');
+const createMenuParagraph = document.createElement('p');
+createMenuParagraph.innerHTML = `
+Editing templates is not fully implemented yet. <br>
+Mainly placing blocks which need them, do not place brackets. <br>
+So in that means it's impossible to create working code. <br>
+`;
+createMenuContents.append(createMenuParagraph);
+const createMenuButton = document.createElement('button');
+createMenuButton.innerText = 'Create Template';
+createMenuButton.onclick = () => {
+    sessionStorage.setItem('import','H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
+    location.href = '/edit/';
+}
+createMenuContents.append(createMenuButton);
+
+export const createMenu = new Menu('Create Template', createMenuContents);
 
 window.onload = () => {
     startup()
@@ -56,26 +104,9 @@ window.onload = () => {
         userBox.onclick = () => location.href = ('./login');
     }
     var importButton = document.getElementById('import') as HTMLButtonElement;
-    importButton.onclick = () => {importMenu()};
+    importButton.onclick = () => {new ImportMenu().open()};
     document.querySelector('button#start').addEventListener('click',() => {
-        var create = document.createElement('div');
-        var p = document.createElement('p');
-        p.innerHTML = `
-Creating new templates is rather useless, knowing that the editor can't do everything.<br>
-I suggest using DFOnline as a template viewer (knowing that derpystuff template web view is broken).<br>
-I don't suggest as using it as a full on editor, since it isn't finished and DF serves as better editing for code itself.<br>
-Sorry for the massive block of text, but have a button to make it an empty template, if you really want to.
-`;
-        create.appendChild(p);
-        var createButton = document.createElement('button');
-        createButton.innerText = "Create Empty Template";
-        createButton.onclick = () => {
-            // set importdata to empty template
-            sessionStorage.setItem('import','H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
-            location.href = '/edit/';
-        }
-        create.appendChild(createButton);
-        menu('Create',create);
+        createMenu.open();
     })
 }
 
@@ -86,7 +117,7 @@ codeutilities.onmessage = event => {
         try{
             importField.value = JSON.parse(data.received).code
         }catch{
-            importMenu(JSON.parse(data.received).code)
+            new ImportMenu(JSON.parse(data.received).code).open();
         }
     }
 }
