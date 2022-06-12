@@ -1,0 +1,46 @@
+@import "../../main/main.scss";
+
+body {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle, rgba(58,4,73,1) 0%, rgba(58,4,73,1) 10%, $level0 50%);
+
+    #content {
+        margin: auto;
+
+        h1 {
+            display: flex;
+            margin: 0;
+            font-size: min(5em,16vw);
+            img {
+                height: 1.5em;
+            }
+        }
+
+        #buttons {
+            margin-top: 2em;
+            display: grid;
+            * {
+                margin-inline: auto;
+                &:not(:nth-child(1)) {
+                    margin-top: 1em;
+                }
+                width: min(90vw,20em);
+            }
+
+            #import {
+                background: linear-gradient(150deg, #c8a024 0%, #ffe200 100%);
+                color: #000;
+            }
+            #create {
+                background: linear-gradient(150deg, #48b91d 0%, #00ff15 100%);
+                color: #000;
+            }
+            #help {
+                background: linear-gradient(150deg, #a01513 0%, #BF211E 100%);
+                margin-top: 2em
+            }
+        }
+    }
+}
