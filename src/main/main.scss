@@ -49,7 +49,12 @@ html,body {
     margin: 0;
     width: fit-content;
     height: fit-content;
+
+    body > * {
+        margin-top: 0;
+    }
 }
+
 input, button, select {
     color: #e8e6e3;
     background-color: #222222;
