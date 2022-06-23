@@ -1,0 +1,17 @@
+#context {
+    position: fixed;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
+
+    div {
+        display: grid;
+        min-width: 3em;
+        position: fixed;
+
+        * {
+            margin: 0;
+        }
+    }
+}
