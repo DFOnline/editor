@@ -9,7 +9,11 @@ window.onload = function() {
     const xd = document.createElement('button');
     xd.innerText = 'xd'
 
-    const thatContextMenu = new ContextMenu('Yes!',[funny,xd])
+    const thatContextMenu = new ContextMenu('Yes!',[funny,xd,subMenu.interface],true)
     const that = document.getElementById('that');
     that.onclick = e => thatContextMenu.toggle(e)
 }
+
+const input = document.createElement('input');
+input.placeholder = 'yes';
+const subMenu = new ContextMenu('uhuh',[input],true)

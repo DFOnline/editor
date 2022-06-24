@@ -1,3 +1,5 @@
+@use "../main/main.scss" as *;
+
 #context {
     position: fixed;
     width: 0;
@@ -9,9 +11,16 @@
         display: grid;
         min-width: 3em;
         position: fixed;
+        background-color: $level2;
+        padding: 3px;
+        border-radius: 5px;
 
         * {
             margin: 0;
+        }
+        button {
+            box-shadow: none;
+            border-radius: 3px;
         }
     }
 }
