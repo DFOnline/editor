@@ -5,15 +5,18 @@ export const ContextMenus : ContextMenu[] = []
 export default class ContextMenu {
     name: string;
     contents: HTMLElement[];
+
     isOpen = false;
+
+    subMenu : HTMLButtonElement;
+
     private HTMLElement : HTMLDivElement;
-    interface : HTMLButtonElement;
     private ref : Symbol;
 
     /**
      * 
      * @param name The name the context should have
-     * @param options The HTML elements to be used as options in the context menu. To have another context menu in a context menu use the `ContextMenu.interface` value
+     * @param options The HTML elements to be used as options in the context menu. To have another context menu in a context menu use the `ContextMenu.subMenu` value
      * @param hasTitle If the name is used as a title.
      */
     constructor(name : string, options : HTMLElement[], hasTitle = false) {
@@ -30,12 +33,12 @@ export default class ContextMenu {
         this.contents.forEach(i => this.HTMLElement.append(i));
         // stop propogation when any of `events` is ran
         events.forEach(e => {
-            console.log(e);
             (this.HTMLElement as any)[e] = (e : Event) => {e.stopImmediatePropagation();}
         })
 
-        this.interface = document.createElement('button');
-        this.interface.innerText = name;
+        this.subMenu = document.createElement('button');
+        this.subMenu.classList.add('ctx-sub-menu');
+        this.subMenu.innerText = name;
     }
 
     /**
