@@ -18,7 +18,7 @@
     "ts-node": "^10.4.0"
   },
   "scripts": {
-    "test": "npx parcel \"src/**/*.html\" --no-cache --dist-dir ./docs --lazy",
+    "test": "npx parcel \"src/**/*.html\" --dist-dir ./docs --lazy",
     "build": "npx parcel build \"src/**/*.html\" --no-source-maps"
   }
 }
