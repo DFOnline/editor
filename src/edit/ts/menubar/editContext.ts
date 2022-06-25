@@ -7,6 +7,8 @@ import ContextMenu from "../../../main/context";
 var renameVars = document.createElement('button');
 renameVars.innerText = 'Rename All Variables';
 renameVars.onclick = () => {
+    editContext.close();
+
     var menuDiv = document.createElement('div');
     menuDiv.style.display = 'grid';
 
