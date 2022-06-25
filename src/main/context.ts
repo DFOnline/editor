@@ -40,7 +40,7 @@ export default class ContextMenu {
             this.isFocus = true;
         }
         this.HTMLElement.onmouseleave = () => {
-            setInterval(() => {
+            setTimeout(() => {
                 this.isFocus = false;
             })
         }
