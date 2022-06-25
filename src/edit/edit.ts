@@ -1,17 +1,22 @@
 import { unflatten } from 'flat';
-import { createMenu } from '../home/home';
+import ContextMenu from '../main/context';
 import { encodeTemplate, menu, snackbar, startup, templateLike, user } from "../main/main";
 import Menu from "../main/menu";
 import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
-import exportMenu from './ts/exportMenu';
+import menuBar from './ts/menubar/menubar';
 
 export type tree = {
 	[key: string]: tree | string;
 }
 export let Sounds : tree
 export let ActDB : ActionDump
+
+export let userMeta:
+{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean } =
+{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true    };
+
 fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
@@ -59,9 +64,6 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 				}
 				console.error(e);
 			})
-export let userMeta:
-{"type": 'block' | 'item' | 'newBlock' | undefined, "value": any | undefined, "canDragMove": boolean, "context" : boolean, "ctxKeys": {[ key: string]: HTMLButtonElement}, "search": {"index": number, "value": undefined | any[]}, "canEdit": boolean } =
-{"type": undefined,                                 "value": undefined,       "canDragMove": true,    "context": false,    "ctxKeys": {},                                  "search": {"index": 0,      "value": undefined},         "canEdit": true    };
 
 export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
@@ -81,202 +83,6 @@ document.onkeydown = e => { if(userMeta.ctxKeys[e.key] !== undefined){ userMeta.
 
 export let contextMenu : HTMLDivElement;
 export let mouseInfo : HTMLDivElement;
-
-window.onload = async function onload() { // when everything loads - this function is pretty hard to find lol.
-	Menu.setup();
-
-	var start = startup();
-	mouseInfo = start.mouseInfo;
-	contextMenu = document.querySelector('div#context');
-	if(start.urlParams.has('template')){
-		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
-	}
-	if(sessionStorage.getItem('import')){
-		var importTemplate = sessionStorage.getItem('import');
-		code = await loadTemplate(importTemplate);
-	}
-	if(start.urlParams.get('compare')){
-		compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
-		userMeta.canEdit = false;
-	}
-	rendBlocks();
-	contextMenu.onclick = () => {
-		contextMenu.style.display = 'none';
-		contextMenu.innerHTML = '';
-		userMeta.ctxKeys = {};
-		userMeta.search.index = 0;
-		userMeta.search.value = undefined;
-	}
-	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
-
-	await menuBar();
-}
-
-async function menuBar(){
-	document.querySelector<HTMLButtonElement>('button#file').onclick = e => {
-		e.stopPropagation();
-		var {left, bottom} = (e.target as HTMLButtonElement).getBoundingClientRect();
-		contextMenu.style.left = String(left) + "px";
-		contextMenu.style.top = String(bottom) + "px";
-		contextMenu.innerHTML = '';
-		contextMenu.style.display = 'grid';
-		const save = document.createElement('button');
-		save.innerText = 'Save';
-		save.disabled = true;
-		contextMenu.append(save);
-		const newTemplate = document.createElement('button');
-		newTemplate.innerText = 'New Template';
-		newTemplate.onclick = () => createMenu.open();
-		contextMenu.append(newTemplate);
-		const exportTemplateButton = document.createElement('button'); // this variable contains a HTMLButtonElement, this variable is futher filled with the inner text (the text that shows in the button) to say 'Export'. This button is used to export the template, so when you click it you get various options for export the template, such as copying the internal data, the give command and sending it the the minecraft mod CodeUtilties throught the inbuilt Item API. The item API is an Application Programming Interface for minecraft, to send things like minecraft items and templates to minecraft, and DiamondFire (a server for making minigames in minecraft with blocks) templates to anything listening through the API.
-		exportTemplateButton.innerText = 'Export';
-		exportTemplateButton.onclick = async () => { // a mess, anyway the menu for export.
-			exportMenu.open();
-		}
-		if(!userMeta.canEdit){
-			exportTemplateButton.disabled = true;
-		}
-		contextMenu.append(exportTemplateButton);
-
-		const comparison = document.createElement('button');
-		comparison.innerText = 'Compare';
-		comparison.onclick = () => {
-			const comparisonDiv = document.createElement('div');
-
-
-			// A link to the export menu
-			const a = document.createElement('a');
-			a.href = '#';
-			a.innerText = 'Export';
-			a.onclick = () => {
-				exportMenu.open();
-			}
-			comparisonDiv.append(a);
-
-			const p = document.createElement('p');
-			p.innerHTML = 'Compare templates and show the changes made to them<br> You might want to get short link data from the export menu.';
-			comparisonDiv.append(p);
-
-			const cleanPaste = (e: ClipboardEvent) => {
-				const text = e.clipboardData.getData('text/plain');
-				const Input = e.target as HTMLInputElement;
-				// if the clipboard is a link with the template parameter
-				const params = new URLSearchParams(text.replace(/^.*(?=\?)/g,''));
-				if(params.has('template')){
-					e.preventDefault();
-					Input.value = params.get('template');
-				}
-				// if the clipboard is data with template data
-				if(text.match(templateLike)){
-					e.preventDefault();
-					Input.value = text.match(templateLike)[0];
-				}
-			}
-
-			const oldTemplate = document.createElement('input');
-			oldTemplate.type = 'text';
-			oldTemplate.placeholder = 'Old Template';
-			// if the url has a template parameter, it will be used as the old template.
-			if(new URLSearchParams(location.search).has('template')) oldTemplate.value = new URLSearchParams(location.search).get('template');
-			oldTemplate.onpaste = cleanPaste;
-
-			const newTemplate = document.createElement('input');
-			newTemplate.type = 'text';
-			newTemplate.placeholder = 'New Template';
-			newTemplate.onpaste = cleanPaste;
-
-			const compareButton = document.createElement('button');
-			compareButton.innerText = 'Compare';
-			compareButton.onclick = () => {
-				// the settings are set by urlparams
-				// `compare` is for the old one
-				// `template` is for the new one
-
-				const searchParams = new URLSearchParams('');
-				searchParams.set('compare',oldTemplate.value);
-				searchParams.set('template',newTemplate.value);
-				// send them to the url
-				location.search = searchParams.toString();
-			}
-
-			comparisonDiv.append(oldTemplate);
-			comparisonDiv.append(newTemplate);
-			comparisonDiv.append(compareButton);
-
-			new Menu('Compare',comparisonDiv).open();
-		}
-		contextMenu.append(comparison);
-	}
-	document.querySelector<HTMLButtonElement>('button#edit').onclick = e => {
-		console.log(e.target);
-		e.stopPropagation();
-		var {left, bottom} = (e.target as HTMLButtonElement).getBoundingClientRect();
-		contextMenu.style.left = String(left) + "px";
-		contextMenu.style.top = String(bottom) + "px";
-		contextMenu.innerHTML = '';
-		contextMenu.style.display = 'grid';
-
-		var renameVars = document.createElement('button');
-		renameVars.innerText = 'Rename All Variables';
-		renameVars.onclick = () => {
-			var menuDiv = document.createElement('div');
-			menuDiv.style.display = 'grid';
-
-			var lookValue = document.createElement('input');
-			lookValue.placeholder = 'Variable Name';
-			menuDiv.append(lookValue);
-
-			var replaceValue = document.createElement('input');
-			replaceValue.placeholder = 'New Name'
-			menuDiv.append(replaceValue);
-
-			var scopeValue = document.createElement('select');
-			var opt = document.createElement('option');
-			opt.value = 'unsaved';
-			opt.text = 'GAME';
-			scopeValue.append(opt);
-			opt = document.createElement('option');
-			opt.value = 'save';
-			opt.text = 'SAVE';
-			scopeValue.append(opt);
-			opt = document.createElement('option');
-			opt.value = 'local';
-			opt.text = 'LOCAL';
-			scopeValue.append(opt);
-			menuDiv.append(scopeValue);
-			menuDiv.append(document.createElement('br'));
-
-
-			{
-				var replace = document.createElement('button');
-				replace.innerText = 'Rename All'
-				replace.onclick = () => {
-					let results = 0;
-					code.blocks = code.blocks.map(e => {
-						var newBlock = e;
-						if((e as SubActionBlock).args !== undefined){
-							(e as SelectionBlock).args.items = (e as SelectionBlock).args.items.map(x => {
-								var newItem = x;
-								if(newItem.item.id === 'var' && newItem.item.data.scope === (scopeValue.value as VarScope) && newItem.item.data.name === lookValue.value){
-									newItem.item.data.name = replaceValue.value;
-									results++;
-								}
-								return newItem
-							})
-						}
-						return newBlock;
-					})
-					snackbar(`Found ${results} variables.`)
-				}
-				menuDiv.append(replace);
-			}
-			menu('Rename All Variables',menuDiv);
-
-		}
-		contextMenu.append(renameVars);
-	}
-}
-
 
 /**
  * Set the action of a CodeBlock, this will fill in the block tags.
@@ -371,4 +177,35 @@ export function exportTemplate(code : string) : {data: string, author: string, n
 		author: name,
 		name: 'DFOnline Template', // proper name system planned later
 	})
+}
+
+window.onload = async function onload() { // when everything loads - this function is pretty hard to find lol.
+	Menu.setup();
+	ContextMenu.setup();
+
+	var start = startup();
+	mouseInfo = start.mouseInfo;
+	contextMenu = document.querySelector('div#context');
+	if(start.urlParams.has('template')){
+		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
+	}
+	if(sessionStorage.getItem('import')){
+		var importTemplate = sessionStorage.getItem('import');
+		code = await loadTemplate(importTemplate);
+	}
+	if(start.urlParams.get('compare')){
+		compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
+		userMeta.canEdit = false;
+	}
+	rendBlocks();
+	contextMenu.onclick = () => {
+		contextMenu.style.display = 'none';
+		contextMenu.innerHTML = '';
+		userMeta.ctxKeys = {};
+		userMeta.search.index = 0;
+		userMeta.search.value = undefined;
+	}
+	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
+
+	await menuBar();
 }
