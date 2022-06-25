@@ -129,10 +129,11 @@ export default class ContextMenu {
      * This should only be run when the document is ready.
      */
     static setup(){
-        const path = 'html body div#context';
+        const id = 'contexts'
+        const path = 'html body div#' + id;
         if(document.querySelector(path) === null){
             contextOverlay = document.createElement('div');
-            contextOverlay.id = 'context';
+            contextOverlay.id = id;
             document.body.appendChild(contextOverlay);
         }
         else {
