@@ -35,7 +35,6 @@ export default class Menu {
      * Opens the menu.
      */
     open(){
-        console.log(this.title)
         menusDiv.appendChild(this.background);
     }
 
