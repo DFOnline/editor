@@ -9,6 +9,7 @@ export default class ContextMenu {
     isOpen = false;
     
     subMenu : HTMLButtonElement;
+    topMenu : HTMLButtonElement;
     
     private HTMLElement : HTMLDivElement;
     private ref : Symbol;
@@ -49,22 +50,30 @@ export default class ContextMenu {
         this.subMenu.classList.add('ctx-sub-menu');
         this.subMenu.innerText = name;
         this.subMenu.onmouseover = () => {
-            console.log(this.isFocus)
             if(!this.isFocus){
                 const {right: x,top: y} = this.subMenu.getBoundingClientRect();
-                this.open(x - 15,y);
+                this.open(x - 2,y);
             }
         };
-        this.subMenu.onmouseleave = () => {
-            setTimeout(() => {
-                if(!this.isFocus){
-                    this.close();
-                }
-            },2)
-        }
+        this.subMenu.onmouseleave = this.closeChecker.bind(this);
         this.subMenu.onclick = () => {
             const {right: x,top: y} = this.subMenu.getBoundingClientRect();
             this.use(x - 15,y);
+        }
+
+        this.topMenu = document.createElement('button');
+        this.topMenu.innerText = name;
+        this.topMenu.onmouseover = () => {
+            if(!this.isFocus){
+                const {left: x,bottom: y} = this.topMenu.getBoundingClientRect();
+                this.open(x,y - 4);
+            }
+        };
+        this.topMenu.onmouseleave = this.closeChecker.bind(this);
+        this.topMenu.onclick = e => {
+            e.stopPropagation();
+            const {left: x,bottom: y} = this.topMenu.getBoundingClientRect();
+            this.use(x,y);
         }
     }
 
@@ -138,6 +147,13 @@ export default class ContextMenu {
         ContextMenus.forEach(menu => menu.close())
     }
 
+    private closeChecker() {
+        setTimeout(() => {
+            if(!this.isFocus){
+                this.close();
+            }
+        })
+    }
 }
 
 /**

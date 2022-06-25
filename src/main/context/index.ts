@@ -3,7 +3,7 @@ import ContextMenu from "../context";
 window.onload = function() {
     ContextMenu.setup();
     const that = document.getElementById('that');
-    that.onclick = e => thatContextMenu.toggle(e)
+    that.append(thatContextMenu.topMenu)
 }
 
 const input = document.createElement('input');
