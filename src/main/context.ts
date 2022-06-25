@@ -1,17 +1,18 @@
 let contextOverlay : HTMLDivElement;
 
-export const ContextMenus : ContextMenu[] = []
+export const ContextMenus : ContextMenu[] = [];
 
 export default class ContextMenu {
     name: string;
     contents: HTMLElement[];
 
     isOpen = false;
-
+    
     subMenu : HTMLButtonElement;
-
+    
     private HTMLElement : HTMLDivElement;
     private ref : Symbol;
+    private isFocus = false;
 
     /**
      * 
@@ -35,10 +36,36 @@ export default class ContextMenu {
         events.forEach(e => {
             (this.HTMLElement as any)[e] = (e : Event) => {e.stopImmediatePropagation();}
         })
+        this.HTMLElement.onmouseenter = () => {
+            this.isFocus = true;
+        }
+        this.HTMLElement.onmouseleave = () => {
+            setInterval(() => {
+                this.isFocus = false;
+            })
+        }
 
         this.subMenu = document.createElement('button');
         this.subMenu.classList.add('ctx-sub-menu');
         this.subMenu.innerText = name;
+        this.subMenu.onmouseover = () => {
+            console.log(this.isFocus)
+            if(!this.isFocus){
+                const {right: x,top: y} = this.subMenu.getBoundingClientRect();
+                this.open(x - 15,y);
+            }
+        };
+        this.subMenu.onmouseleave = () => {
+            setTimeout(() => {
+                if(!this.isFocus){
+                    this.close();
+                }
+            })
+        }
+        this.subMenu.onclick = () => {
+            const {right: x,top: y} = this.subMenu.getBoundingClientRect();
+            this.use(x - 15,y);
+        }
     }
 
     /**
@@ -46,7 +73,7 @@ export default class ContextMenu {
      */
     use(x : number, y : number){
         checkReady();
-        if(this.isOpen) this.close();
+        if (this.isOpen) this.close();
         else this.open(x,y);
     }
 
@@ -66,8 +93,9 @@ export default class ContextMenu {
      * Opens the context menu.
      */
     open(x : number, y : number){
+        console.log('open',this,ContextMenus);
         checkReady();
-        if(!this.isOpen){
+        if(this.isOpen){
             this.close();
         }
         this.isOpen = true;
@@ -75,16 +103,20 @@ export default class ContextMenu {
         this.HTMLElement.style.top  = y + 'px';
         contextOverlay.append(this.HTMLElement);
         ContextMenus.push(this);
+        console.log('open',this,ContextMenus);
     }
 
     /**
      * Closes the context menu.
      */
     close(){
+        console.log('close',this,ContextMenus);
         checkReady();
+        this.isFocus = false;
         this.isOpen = false;
         this.HTMLElement.remove();
         ContextMenus.splice(ContextMenus.findIndex(menu => menu.ref === this.ref),1);
+        console.log('close',this,ContextMenus);
     }
 
     /**
