@@ -60,7 +60,7 @@ export default class ContextMenu {
                 if(!this.isFocus){
                     this.close();
                 }
-            })
+            },2)
         }
         this.subMenu.onclick = () => {
             const {right: x,top: y} = this.subMenu.getBoundingClientRect();
@@ -93,7 +93,6 @@ export default class ContextMenu {
      * Opens the context menu.
      */
     open(x : number, y : number){
-        console.log('open',this,ContextMenus);
         checkReady();
         if(this.isOpen){
             this.close();
@@ -103,20 +102,17 @@ export default class ContextMenu {
         this.HTMLElement.style.top  = y + 'px';
         contextOverlay.append(this.HTMLElement);
         ContextMenus.push(this);
-        console.log('open',this,ContextMenus);
     }
 
     /**
      * Closes the context menu.
      */
     close(){
-        console.log('close',this,ContextMenus);
         checkReady();
         this.isFocus = false;
         this.isOpen = false;
         this.HTMLElement.remove();
         ContextMenus.splice(ContextMenus.findIndex(menu => menu.ref === this.ref),1);
-        console.log('close',this,ContextMenus);
     }
 
     /**
