@@ -1,8 +1,8 @@
-import { unflatten } from 'flat';
 import ContextMenu from '../main/context';
-import { encodeTemplate, menu, snackbar, startup, templateLike, user } from "../main/main";
+import { unflatten } from 'flat';
+import { encodeTemplate, snackbar, startup, user } from "../main/main";
 import Menu from "../main/menu";
-import { Argument, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template, VarScope } from "./template";
+import { Argument, DataBlock, loadTemplate, PlacedBlock, SubActionBlock, Template } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from './ts/menubar/menubar';
