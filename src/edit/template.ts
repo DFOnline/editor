@@ -64,8 +64,8 @@ export interface Killable {
     id: 'killable';
 }
 
-export interface Argument {
-    item: Item;
+export interface Argument<i = Item> {
+    item: i;
     slot: number;
 }
 
