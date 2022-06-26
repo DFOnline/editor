@@ -11,6 +11,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 
         this.index = i;
         this.id = 'block' + i;
+        this.classList.add('block')
 
         this.ondragstart = e => e.stopPropagation();
         this.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
