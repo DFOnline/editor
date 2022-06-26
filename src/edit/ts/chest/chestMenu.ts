@@ -3,6 +3,7 @@ import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion
 import { isDeveloperMode, menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { parse } from "nbt-ts";
 import tooltip from "./tooltip";
+import ContextMenu from "../../../main/context";
 
 /**
  * Opens a chest menu. If one is already open the previous one is overwritted to skip any animations.
@@ -32,21 +33,17 @@ export default function chestMenu(id : number){
 					itemElement.oncontextmenu = e => {
 						e.preventDefault();
 						userMeta.value = Number((e.target as HTMLDivElement).parentElement.id);
-						contextMenu.innerHTML = '';
-						contextMenu.style.left = String(e.clientX) + 'px';
-						contextMenu.style.top = String(e.clientY) + 'px';
-						contextMenu.style.display = 'grid';
-						contextMenu.focus();
 						const tags = findBlockTag(block.block, block.action, (item.item as BlockTag).data.tag);
-						tags.options.forEach(o => {
+						const options = tags.options.map(o => {
 							const option = document.createElement('button');
 							option.innerText = o.name;
 							option.onclick = () => {
 								(item.item as BlockTag).data.option = o.name;
 								chestMenu(id);
 							};
-							contextMenu.appendChild(option);
+							return option;
 						});
+						new ContextMenu(tags.name, options, true).toggle(e);
 					}
 				}
 				else { // events on general items.
