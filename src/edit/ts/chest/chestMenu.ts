@@ -1,5 +1,5 @@
 import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../../edit";
-import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../../edit/template";
+import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../template";
 import { isDeveloperMode, menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { parse } from "nbt-ts";
 import tooltip from "./tooltip";
@@ -9,7 +9,7 @@ import tooltip from "./tooltip";
  * @param id The id of the block to open the chest of.
  * @returns The menu element opened.
  */
- export function chestMenu(id : number){
+export default function chestMenu(id : number){
 	var block : SubActionBlock | SelectionBlock = code.blocks[id] as any;
 	if(block.args !== undefined){
 		var menuDiv = document.createElement('div');
@@ -725,8 +725,8 @@ import tooltip from "./tooltip";
 					}
 					else if (item.item.id === 'var'){
 						count = document.createElement('span');
-						count.innerText = {"unsaved": "G", "saved": "S", "local": "L"}[item.item.data.scope];
-						count.style.color = {"unsaved": "rgb(170, 170, 170)", "saved": "rgb(255, 255, 85)", "local": "rgb(85, 255, 85)"}[item.item.data.scope];
+						count.innerText = {"unsaved": "G", "saved": "S", "local": "L"}[(item.item as Variable).data.scope];
+						count.style.color = {"unsaved": "rgb(170, 170, 170)", "saved": "rgb(255, 255, 85)", "local": "rgb(85, 255, 85)"}[(item.item as Variable).data.scope];
 						itemElement.append(count);
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/MAGMA_CREAM.png)';
 					}

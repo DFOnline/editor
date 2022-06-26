@@ -1,7 +1,7 @@
 import { ActDB, backup, code, contextMenu, setAction, userMeta } from "../../edit/edit";
 import { Block, Bracket, BracketType, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../../edit/template";
 import { CodeBlockTypeName } from "./actiondump";
-import { chestMenu } from "./chest/menu";
+import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
