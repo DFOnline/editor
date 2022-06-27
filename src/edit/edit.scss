@@ -5,7 +5,8 @@
     src:url("./MinecraftRegular-Bmg3.otf") format("opentype");
 }
 
-$codeBlockSize: min(300px,80vh);
+// $codeBlockSize: min(300px,80vh);
+$codeBlockSize: 20em;
 #codeBlocks {
     height: 100vh;
     overflow: hidden;
@@ -63,6 +64,7 @@ $codeBlockSize: min(300px,80vh);
                 display: block;
                 height: min-content;
                 font-size: calc((14 / 300 /* magic */) * $codeBlockSize);
+                font-size: calc($codeBlockSize / 20);
                 color: black;
                 min-height: calc((18 / 300) * $codeBlockSize);
                 user-select: none;
@@ -218,8 +220,8 @@ header {
         display: flex;
         div {
             background-size: cover;
-            width: calc((100vw / 18) - 3px);
-            height: calc((100vw / 18) - 3px);
+            width: 5em;
+            height: 5em;
         }
     }
 }
@@ -229,12 +231,13 @@ header {
     background-size: cover;
 
     width: 60px;
-    // make the element as tall as it is wide
-    &:before {
-        content: "";
-        display: block;
-        padding-top: 100%;  /* initial ratio of 1:1*/
-    }
+    aspect-ratio: 1 / 1;
+    // // make the element as tall as it is wide
+    // &:before {
+    //     content: "";
+    //     display: block;
+    //     padding-top: 100%;  /* initial ratio of 1:1*/
+    // }
 
     border: none;
     box-shadow: none;
