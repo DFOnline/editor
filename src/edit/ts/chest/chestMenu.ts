@@ -11,6 +11,7 @@ import tooltip from "./tooltip";
  */
 export default function chestMenu(id : number){
 	var block : SubActionBlock | SelectionBlock = code.blocks[id] as any;
+	const dbBlockType = ActDB.codeblocks.find(b => b.identifier === block.block);
 	if(block.args !== undefined){
 		var menuDiv = document.createElement('div');
 		menuDiv.id = 'chest';
@@ -942,6 +943,11 @@ export default function chestMenu(id : number){
 		})
 		var chestDiv = document.querySelector('#chest');
 		if(chestDiv) {chestDiv.parentElement.replaceChild(menuDiv,chestDiv); return menuDiv;}
-		else return menu('Chest',menuDiv);
+		else return menu(`(${id}) ${titleCase(dbBlockType.name)}: ${block.action}`,menuDiv);
 	}
 }
+
+/**
+ * Makes each word start with a capital letter
+ */
+function titleCase(str:string){return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());}
