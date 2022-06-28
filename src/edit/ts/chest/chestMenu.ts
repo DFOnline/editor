@@ -135,10 +135,10 @@ export default function chestMenu(id : number){
 										(item.item as unknown as DFLocation).data.loc.z = Number(zInput.value);
 										(item.item as unknown as DFLocation).data.loc.pitch = Number(pitchInput.value);
 										(item.item as unknown as DFLocation).data.loc.yaw = Number(yawInput.value);
-										contextMenu.click();
+										contextMenu.close();
 									}
 									if(e.key === 'Escape'){
-										contextMenu.click();
+										contextMenu.close();
 									}
 								}
 								locationInput.style.display = 'grid';
@@ -184,7 +184,8 @@ export default function chestMenu(id : number){
 								yawLabel.append(yawInput);
 								locationInput.append(yawLabel);
 
-								contextMenu.append(locationInput);
+								const contextMenu = new ContextMenu('Location', [locationInput]);
+								contextMenu.toggle(e);
 								xLabel.focus();
 							}
 
