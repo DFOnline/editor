@@ -2,7 +2,6 @@
 	"include": ["src", "types"],
 	"compilerOptions": {
 		"downlevelIteration": true,
-		"target": "ES3",
 		"moduleResolution": "node",
 		"jsx": "preserve",
 		"baseUrl": "./src",
