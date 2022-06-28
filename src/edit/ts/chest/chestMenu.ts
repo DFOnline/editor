@@ -72,7 +72,7 @@ export default function chestMenu(id : number){
 						valueButton.onclick = e => { // main value
 							topItemContext.close();
 
-							if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){
+							if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){ // on new
 								const value = document.createElement('input');
 								const ctx : HTMLElement[] = [value];
 								value.value = item.item.data.name;
@@ -124,7 +124,7 @@ export default function chestMenu(id : number){
 								ctxBox.toggle(e);
 							}
 
-							else if(item.item.id === 'loc'){
+							else if(item.item.id === 'loc'){ // on new
 								var locationInput = document.createElement('div');
 								locationInput.onclick = e => e.stopPropagation();
 								locationInput.onkeydown = e => {
