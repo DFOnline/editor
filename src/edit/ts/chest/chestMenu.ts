@@ -232,6 +232,7 @@ export default function chestMenu(id : number){
 								vectorEdit.append(zVecLabel);
 
 								const contextMenu = new ContextMenu('Vector', [vectorEdit]);
+								contextMenu.toggle(e);
 								xVecLabel.focus();
 							}
 
