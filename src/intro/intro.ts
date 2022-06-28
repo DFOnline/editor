@@ -1,17 +1,4 @@
 import { version } from '../../package.json';
-// import { user } from '../main/main'; solarlint hates me for commeting cod
-
-// var params = new URLSearchParams(window.location.search); so what I did was put some stuff here
-// var code = params.get('code')
-// if(code !== null){
-//     fetch("https://WebBot.georgerng.repl.co/auth/discord",{
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//             token: user.token
-//         })
-//     })
-// }
 
 window.onload = async () => {
     document.getElementById('ver').innerText += " " + version;

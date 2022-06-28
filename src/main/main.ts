@@ -1,4 +1,4 @@
-import type { Template } from "edit/template";
+import type { Template } from "../edit/template";
 import { inflate, gzip } from "pako";
 
 export let cuopen = false;
