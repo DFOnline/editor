@@ -189,7 +189,7 @@ export default function chestMenu(id : number){
 								xLabel.focus();
 							}
 
-							else if(item.item.id === 'vec'){
+							else if(item.item.id === 'vec'){ // on new
 								var vectorEdit = document.createElement('div');
 								vectorEdit.onclick = e => e.stopPropagation();
 								vectorEdit.onkeydown = e => {
@@ -198,10 +198,10 @@ export default function chestMenu(id : number){
 										(item.item as unknown as Vector).data.y = Number(yVecInput.value);
 										(item.item as unknown as Vector).data.z = Number(zVecInput.value);
 										chestMenu(id);
-										contextMenu.click();
+										contextMenu.close();
 									}
 									if(e.key === 'Escape'){
-										contextMenu.click();
+										contextMenu.close();
 									}
 								}
 								vectorEdit.style.display = 'grid';
@@ -231,7 +231,7 @@ export default function chestMenu(id : number){
 								zVecLabel.append(zVecInput);
 								vectorEdit.append(zVecLabel);
 
-								contextMenu.append(vectorEdit);
+								const contextMenu = new ContextMenu('Vector', [vectorEdit]);
 								xVecLabel.focus();
 							}
 
