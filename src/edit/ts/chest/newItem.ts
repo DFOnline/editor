@@ -143,5 +143,10 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    return new ContextMenu('New Item',[varItem,textItem,numItem,locItem,vecItem,soundItem,gameValueItem,potionItem])
+    const menu = document.createElement('div');
+    [varItem,textItem,numItem,locItem,vecItem,soundItem,gameValueItem,potionItem].forEach(e => {
+        menu.append(e);
+    })
+    const Context = new ContextMenu('New Item',[menu],true);
+    return Context
 }
