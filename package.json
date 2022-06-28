@@ -19,6 +19,6 @@
   },
   "scripts": {
     "test": "npx vite serve",
-    "build": "echo soon™"
+    "build": "npx vite build"
   }
 }
