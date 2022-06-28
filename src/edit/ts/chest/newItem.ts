@@ -10,16 +10,18 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
     e.stopPropagation();
 
     const workItem = (item : Item) => {
+        Context.close();
+
         block.args.items.push({
             slot: slotID,
             item: item
         });
-        var menu = chestMenu(id);
+        const menu = chestMenu(id);
 
         setTimeout(() => {
             (menu.querySelectorAll('*.slot > .item')[slotID] as HTMLElement).oncontextmenu(e);
             setTimeout(() => {
-                userMeta.ctxKeys['a'].click();
+                userMeta.ctxKeys['a'].onclick(e);
             }, 0);
         });
     }
@@ -147,6 +149,7 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
     [varItem,textItem,numItem,locItem,vecItem,soundItem,gameValueItem,potionItem].forEach(e => {
         menu.append(e);
     })
-    const Context = new ContextMenu('New Item',[menu],true);
+    menu.style.display = 'flex';
+    const Context = new ContextMenu('New Item',[menu]);
     return Context
 }
