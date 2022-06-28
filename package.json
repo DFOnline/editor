@@ -18,7 +18,7 @@
     "ts-node": "^10.4.0"
   },
   "scripts": {
-    "test": "npx vite src/ --port 1234",
+    "test": "npx vite serve",
     "build": "echo soon™"
   }
 }
