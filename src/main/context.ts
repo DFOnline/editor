@@ -56,7 +56,8 @@ export default class ContextMenu {
             }
         };
         this.subMenu.onmouseleave = this.closeChecker.bind(this);
-        this.subMenu.onclick = () => {
+        this.subMenu.onclick = e => {
+            e.stopImmediatePropagation();
             const {right: x,top: y} = this.subMenu.getBoundingClientRect();
             this.use(x - 15,y);
         }
@@ -71,7 +72,7 @@ export default class ContextMenu {
         };
         this.topMenu.onmouseleave = this.closeChecker.bind(this);
         this.topMenu.onclick = e => {
-            e.stopPropagation();
+            e.stopImmediatePropagation();
             const {left: x,bottom: y} = this.topMenu.getBoundingClientRect();
             this.use(x,y);
         }
