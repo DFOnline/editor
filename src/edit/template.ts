@@ -72,28 +72,23 @@ export interface Argument<i = Item> {
 
 // Item Code ========================================================
 
-export interface Item {
-    id: string;
-    data: any
-}
+export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
 
-// export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
-
-export interface Number extends Item {
+export interface Number {
     id: 'num';
     data: {
         name: string;
     }
 }
 
-export interface Text extends Item {
+export interface Text {
     id: 'txt';
     data: {
         name: string;
     }
 }
 
-export interface Variable extends Item {
+export interface Variable {
     id: 'var'
     data: {
         name: string;
@@ -101,7 +96,7 @@ export interface Variable extends Item {
     }
 }
 
-export interface Location extends Item {
+export interface Location {
     id: 'loc';
     data: {
         isBlock: boolean;
@@ -115,7 +110,7 @@ export interface Location extends Item {
     }
 }
 
-export interface Vector extends Item {
+export interface Vector {
     id: 'vec';
     data: {
         x: number;
@@ -124,7 +119,7 @@ export interface Vector extends Item {
     }
 }
 
-export interface Potion extends Item {
+export interface Potion {
     id: 'pot';
     data: {
         pot: string;
@@ -133,7 +128,7 @@ export interface Potion extends Item {
     }
 }
 
-export interface Sound extends Item {
+export interface Sound {
     id: 'snd';
     data: {
         sound: string
@@ -142,7 +137,7 @@ export interface Sound extends Item {
     }
 }
 
-export interface GameValue extends Item {
+export interface GameValue {
     id: 'g_val';
     data: {
         type: string;
@@ -150,7 +145,7 @@ export interface GameValue extends Item {
     }
 }
 
-export interface Particle extends Item {
+export interface Particle {
     id: 'part';
     data: {
         particle: string
@@ -173,7 +168,7 @@ export interface Particle extends Item {
     }
 }
 
-export interface BlockTag extends Item {
+export interface BlockTag {
     id: 'bl_tag';
     data: {
         option: string;
@@ -183,7 +178,7 @@ export interface BlockTag extends Item {
     }
 }
 
-export interface ChestItem extends Item {
+export interface ChestItem {
     id: 'item';
     data: {
         item: string;
