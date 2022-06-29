@@ -1,10 +1,11 @@
 import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../../edit";
-import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../template";
+import { BlockTag, GameValue, g_valSelection, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation } from "../../template";
 import { isDeveloperMode, menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { parse } from "nbt-ts";
 import tooltip from "./tooltip";
 import ContextMenu from "../../../main/context";
 import newItem from "./newItem";
+import Num from "./item/num";
 
 /**
  * Opens a chest menu. If one is already open the previous one is overwritted to skip any animations.
@@ -67,12 +68,15 @@ export default function chestMenu(id : number){
 						e.preventDefault();
 						userMeta.value = Number((e.target as HTMLDivElement).parentElement.id);
 
-						const valueButton = document.createElement('button');
+						let valueButton = document.createElement('button');
+						if(item.item.id === 'num'){
+							valueButton = new Num(item.item).valueContext(id).subMenu;
+						}
 						valueButton.innerHTML = 'V<u>a</u>lue'
 						valueButton.onclick = e => { // main value
 							topItemContext.close();
 
-							if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){ // on new
+							if(item.item.id === 'txt' || item.item.id === 'var'){ // on new
 								const value = document.createElement('input');
 								const ctx : HTMLElement[] = [value];
 								value.value = item.item.data.name;
@@ -711,11 +715,7 @@ export default function chestMenu(id : number){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
 					}
 					else if(item.item.id === 'num'){
-						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/SLIME_BALL.png)';
-						count = document.createElement('span');
-						count.innerText = item.item.data.name;
-						count.style.color = "rgb(255, 85, 85)"
-						itemElement.append(count);
+						new Num(item.item).icon(itemElement);
 					}
 					else if(item.item.id === 'loc'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PAPER.png)';
