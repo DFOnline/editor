@@ -6,6 +6,7 @@ import { Argument, DataBlock, loadTemplate, PlacedBlock, SubActionBlock, Templat
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from './ts/menubar/menubar';
+import 'drag-drop-touch';
 
 export type tree = {
 	[key: string]: tree | string;
