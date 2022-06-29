@@ -8,12 +8,15 @@ import { resolve } from 'path';
  */
 export default 
 {
-    base: './',
     root,
     server: {
         port: 1234,
     },
+    preview: {
+        port: 1234,
+    },
     build: {
+        emptyOutDir: true,
         rollupOptions: {
             input: {
                 main: resolve(root,'index.html'),
