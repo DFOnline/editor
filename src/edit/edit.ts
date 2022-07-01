@@ -24,9 +24,13 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 				ActDB = data;
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
 				if(userMeta.canEdit){
-				rendBlocks();
-				var blockPicker = document.getElementById('blocks');
-				ActDB.codeblocks.forEach(block => { // placing blocks menu
+					try{ rendBlocks(); }
+					catch (e) {
+						snackbar('An error occurred whilst displaying the blocks. For more info check console.');
+						console.error(e);
+					}
+					var blockPicker = document.getElementById('blocks');
+					ActDB.codeblocks.forEach(block => { // placing blocks menu
 						var blockDiv = document.createElement('div');
 						blockDiv.draggable = true;
 						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
@@ -52,8 +56,8 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						}
 						blockPicker.appendChild(blockDiv);
 					})
-				}
-				Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
+					}
+					Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 			})
 			.catch(e => {
 				// if it is 500, it means the backend server is down.
@@ -61,7 +65,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 					snackbar('Backend server is down. Please try again later.')
 				}
 				else{
-					snackbar('An unexpected backend error occured. Please try again later.')
+					snackbar('An error occured. For more info check console.')
 				}
 				console.error(e);
 			})
@@ -82,6 +86,9 @@ document.onkeydown = e => { if(userMeta.ctxKeys[e.key] !== undefined){ userMeta.
 // 	}
 // }
 
+/**
+ * @deprecated Use new `ContextMenu` instead.
+ */
 export let contextMenu : HTMLDivElement;
 export let mouseInfo : HTMLDivElement;
 
@@ -181,22 +188,47 @@ export function exportTemplate(code : string) : {data: string, author: string, n
 }
 
 window.onload = async function onload() { // when everything loads - this function is pretty hard to find lol.
-	Menu.setup();
-	ContextMenu.setup();
+	try {
+		Menu.setup();
+		ContextMenu.setup();
+	}
+	catch (e) {
+		snackbar('An error occured whilst setting up the editor. Check the console for more info.');
+		console.error(e);
+	}
 
-	var start = startup();
+	let start
+	try {
+		start = startup();
+	}
+	catch (e) {
+		snackbar('An error occured whilst starting up the editor. Check the console for more info.');
+		console.error(e);
+		return;
+	}
+
 	mouseInfo = start.mouseInfo;
 	contextMenu = document.querySelector('div#context');
-	if(start.urlParams.has('template')){
-		sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
+
+	try {
+
+		if(start.urlParams.has('template')){
+			sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
+		}
+		if(sessionStorage.getItem('import')){
+			var importTemplate = sessionStorage.getItem('import');
+			code = await loadTemplate(importTemplate);
+		}
+		if(start.urlParams.get('compare')){
+			compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
+			userMeta.canEdit = false;
+		}
+
 	}
-	if(sessionStorage.getItem('import')){
-		var importTemplate = sessionStorage.getItem('import');
-		code = await loadTemplate(importTemplate);
-	}
-	if(start.urlParams.get('compare')){
-		compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
-		userMeta.canEdit = false;
+	catch (e) {
+		snackbar('An error occured whilst loading the template. Check the console for more info.');
+		console.error(e);
+		return;
 	}
 	rendBlocks();
 	contextMenu.onclick = () => {
