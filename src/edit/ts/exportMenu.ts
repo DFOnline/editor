@@ -70,3 +70,6 @@ options.append(CopyShortLinkButton);
 
 exportDiv.append(options);
 export default new Menu('Export',exportDiv);
+export function update(){
+    CodeUtilsSend.disabled = !cuopen;
+}
