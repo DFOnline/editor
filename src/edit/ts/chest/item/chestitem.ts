@@ -5,6 +5,8 @@ export default abstract class ChestItem {
     backgroundUrl : string;
     item : Item;
 
+    abstract immutable : boolean;
+
     constructor(item : Item){
         this.item = item;
     }
