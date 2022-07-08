@@ -22,13 +22,14 @@ export interface Action {
     codeblockName: string;
     tags: Tag[];
     icon: Icon;
-    subActionBlocks: [ // they aren't actually ordered, but I couldn't find anything which ignores unordered and having each value unique
-        "if_var",
-        "if_game",
-        "if_player"?,
-        "if_entity"?,
-    ]
+    subActionBlocks?: subActionBlocks;
 }
+
+type subActionBlocks = 
+    ['if_player', 'if_var', 'if_game',] |
+    ['if_entity', 'if_var', 'if_game',] |
+    ['if_player', 'if_entity', 'if_var', 'if_game']
+
 
 export interface Icon {
     material: string;
