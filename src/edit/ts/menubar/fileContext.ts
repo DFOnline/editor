@@ -1,6 +1,6 @@
 import ContextMenu from "../../../main/context";
 import { createMenu } from "../../../home/home";
-import exportMenu from "../exportMenu";
+import exportMenu, { update } from "../exportMenu";
 import { templateLike } from "../../../main/main";
 import Menu from "../../../main/menu";
 
@@ -20,6 +20,7 @@ exportTemplateButton.innerText = 'Export';
 exportTemplateButton.onclick = async () => {
     fileContext.close();
     exportMenu.open();
+    update();
 }
 
 const comparison = document.createElement('button');
