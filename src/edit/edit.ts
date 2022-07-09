@@ -2,7 +2,7 @@ import ContextMenu from '../main/context';
 import { unflatten } from 'flat';
 import { encodeTemplate, snackbar, startup, user } from "../main/main";
 import Menu from "../main/menu";
-import { Argument, DataBlock, loadTemplate, PlacedBlock, SubActionBlock, Template } from "./template";
+import { Argument, Block, Bracket, DataBlock, loadTemplate, PlacedBlock, SelectionBlock, SubActionBlock, Template } from "./template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./ts/actiondump";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from './ts/menubar/menubar';
@@ -29,15 +29,16 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						snackbar('An error occurred whilst displaying the blocks. For more info check console.');
 						console.error(e);
 					}
-					var blockPicker = document.getElementById('blocks');
+					const blockPicker = document.getElementById('blocks');
 					ActDB.codeblocks.forEach(block => { // placing blocks menu
-						var blockDiv = document.createElement('div');
+						const blockDiv = document.createElement('div');
 						blockDiv.draggable = true;
 						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
 						blockDiv.ondragstart = e => {
 							e.stopPropagation();
 							userMeta.type = 'newBlock';
-							const newBlock : any =  {id: 'block', block: block.identifier /* lmao */}
+							const newBlock: any =  {id: 'block', block: block.identifier /* lmao */}
+							const newBlocks: any[] = [newBlock];
 							if(block.identifier !== 'else'){
 								newBlock.args = {'items':[]}
 								if(block.identifier === 'func' || block.identifier === 'call_func' || block.identifier === 'process' || block.identifier === 'start_process'){
@@ -52,7 +53,17 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 								else if(block.identifier === 'set_var') newBlock.action = '=';
 								else newBlock.action = '';
 							}
-							userMeta.value = newBlock;
+							if(block.identifier.includes('if') || block.identifier === 'else' || block.identifier === 'repeat'){
+								// create and append a pair of brackets
+								const openBracket : Bracket = {id: 'bracket', type: 'norm', direct: 'open'};
+								const closeBracket : Bracket = {id: 'bracket', type: 'norm', direct: 'close'};
+								if(block.identifier === 'repeat'){
+									openBracket.type = 'repeat';
+									closeBracket.type = 'repeat';
+								}
+								newBlocks.push(openBracket,closeBracket);
+							}
+							userMeta.value = newBlocks;
 						}
 						blockPicker.appendChild(blockDiv);
 					})

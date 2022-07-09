@@ -2,6 +2,7 @@ import { code, compareTemplate, userMeta } from "../edit";
 import { isDeveloperMode } from "../../main/main";
 import HTMLCodeBlockElement from "./codeblock";
 import { diffArrays } from 'diff'
+import type { Block } from "edit/template";
 
 export function rendBlocks(){
 
@@ -58,7 +59,7 @@ export function rendBlocks(){
 	codeSpace.ondrop = e => {
 		e.stopPropagation();
 		if(userMeta.type === 'newBlock'){
-			code.blocks.push(userMeta.value);
+			userMeta.value.forEach((block : Block) => {code.blocks.push(block)});
 			rendBlocks();
 		}
 	}
