@@ -99,8 +99,7 @@ export function decodeTemplate(base64data : string) : Template{
         return e.charCodeAt(0);
     });
     const binData = new Uint8Array(uint);
-    const data = inflate(binData);
-    const string = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7')
+    const string = inflate(binData,{to: 'string'});
     return JSON.parse(string);
 }
 
