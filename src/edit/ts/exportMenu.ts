@@ -1,5 +1,5 @@
 import Menu from "../../main/menu";
-import { code, exportTemplate } from "../../edit/edit";
+import { code, exportTemplate } from "./edit";
 import { codeutilities, cuopen, snackbar } from "../../main/main";
 
 const exportDiv = document.createElement('div');

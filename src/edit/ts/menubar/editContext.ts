@@ -1,4 +1,4 @@
-import { code } from "../../edit";
+import { code } from "../edit";
 import type { SubActionBlock, SelectionBlock, VarScope } from "../../template";
 import { snackbar } from "../../../main/main";
 import Menu from "../../../main/menu";

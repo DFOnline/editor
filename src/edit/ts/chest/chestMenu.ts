@@ -1,4 +1,4 @@
-import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../../edit";
+import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../edit";
 import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../template";
 import { isDeveloperMode, menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { parse } from "nbt-ts";

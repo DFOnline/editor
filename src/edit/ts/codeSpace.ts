@@ -1,4 +1,4 @@
-import { code, compareTemplate, userMeta } from "../edit";
+import { code, compareTemplate, userMeta } from "./edit";
 import { isDeveloperMode } from "../../main/main";
 import HTMLCodeBlockElement from "./codeblock";
 import { diffArrays } from 'diff'
