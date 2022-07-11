@@ -39,11 +39,15 @@ export default class Num extends ChestItem {
         return ctxBox;
     }
 
-    icon(itemElement : HTMLDivElement){
+    icon(){
+        const itemElement = document.createElement('div');
+        
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         const count = document.createElement('span');
         count.innerText = this.item.data.name;
         count.style.color = "rgb(255, 85, 85)"
         itemElement.append(count);
+        
+        return itemElement
     }
 }

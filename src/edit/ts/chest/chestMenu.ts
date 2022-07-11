@@ -795,6 +795,7 @@ import Menu from "../../../main/menu";
 // 		else return menu('Chest',menuDiv);
 // 	}
 // }
+
 export default function chestMenu(BlockIndex : number){
 	const menuDiv = document.createElement('div');
 	const chest = new Menu('Chest',menuDiv);
@@ -806,6 +807,12 @@ export default function chestMenu(BlockIndex : number){
 		slot.id = 'slot' + String(SlotIndex);
 		slot.classList.add('slot');
 		menuDiv.append(slot);
+
+		const itemElement = document.createElement('div');
+		itemElement.id = 'item' + String(SlotIndex);
+		itemElement.classList.add('item');
+		slot.appendChild(itemElement);
+		
 	})
 	
 	if(chest) {
