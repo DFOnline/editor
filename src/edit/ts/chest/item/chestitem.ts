@@ -1,5 +1,6 @@
 import type { Item } from "edit/template";
 import type ContextMenu from "main/context";
+import Num from "./num";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -13,5 +14,12 @@ export default abstract class ChestItem {
 
     abstract valueContext(id : number) : ContextMenu;
 
-    abstract icon(itemElement : HTMLDivElement) : void;
+    abstract icon() : HTMLDivElement;
+}
+
+export function getItem(item : Item){
+    switch(item.id){
+        case 'num': return new Num(item);
+        default: return null;
+    }
 }
