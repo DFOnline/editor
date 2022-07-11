@@ -53,14 +53,8 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                     code.blocks.splice(pushSpot,0,data); // splice data in
                 }
                 else{
-                    code.blocks.splice(pushSpot,0,userMeta.value); // splice userMeta value in
-                    if(userMeta.value.block.includes('if') || userMeta.value.block === 'repeat'){
-                        var type : BracketType = userMeta.value.block === 'repeat' ? 'repeat' : 'norm';
-                        var open : Bracket = {id: 'bracket', direct: 'open', type};
-                        var close : Bracket = {id: 'bracket', direct: 'close', type};
-                        code.blocks.splice(pushSpot + 1,0,open,close)
-                    }
-
+                    // add each value in userMeta.value into the codespace (in reverse order)
+                    (userMeta.value as Block[]).reverse().forEach((insert) => {code.blocks.splice(pushSpot,0,insert);});
                 }
                 code.blocks = code.blocks.filter(y => y.id !== "killable"); // remove the ones marked for deletion. If nothing marked, nothing gone.
             }
