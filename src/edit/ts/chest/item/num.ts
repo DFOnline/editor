@@ -7,6 +7,8 @@ export default class Num extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
     item : Number;
 
+    movable = false;
+
     constructor(item : Number){
         super(item);
     }
