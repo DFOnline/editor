@@ -7,13 +7,16 @@ import { rendBlocks } from "./codeSpace";
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
         super();
-		this.ondrag = () => {userMeta.type = 'block',userMeta.value = i;}
 
         this.index = i;
         this.id = 'block' + i;
         this.classList.add('block')
 
-        this.ondragstart = e => e.stopPropagation();
+        this.ondragstart = e => {
+            e.stopPropagation();
+            userMeta.type = 'block';
+            userMeta.value = i;
+        }
         this.ondragover = e => {if(userMeta.type === 'block' || userMeta.type === 'newBlock'){e.preventDefault();e.stopPropagation();}};
         this.ondrop = this.dropevent;
         this.oncontextmenu = e => this.contextmenuevent(e, block);
