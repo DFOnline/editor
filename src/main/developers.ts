@@ -46,3 +46,35 @@ export const developerMenu = new Menu('Developer Menu',devMenu);
 export function isDeveloperMode() : boolean{
     return sessionStorage.getItem('developerMode') === 'true';
 }
+
+const developerOverlay = document.createElement('pre');
+developerOverlay.classList.add('developerOverlay');
+developerOverlay.style.display = 'none';
+developerOverlay.style.position = 'fixed';
+developerOverlay.style.bottom = '0px';
+developerOverlay.style.right = '0px';
+developerOverlay.style.width = '40%';
+developerOverlay.style.height = '40%';
+developerOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+developerOverlay.style.zIndex = '9999';
+developerOverlay.style.color = 'white';
+developerOverlay.style.fontWeight = 'bold';
+developerOverlay.style.userSelect = 'none';
+
+if(isDeveloperMode()){
+    window.addEventListener('load',() => {
+        document.body.appendChild(developerOverlay);
+        developerOverlay.style.display = 'block';
+    }
+    ,{once:true});
+}
+
+export function devOverlayText(text : string, append : boolean = false) : void{
+    if( append ) {
+        if(developerOverlay.innerText.length > 0){
+            developerOverlay.innerText += '\n';
+        }
+        developerOverlay.innerText += text;
+    }
+    else developerOverlay.innerText = text;
+}
