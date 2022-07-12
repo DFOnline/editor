@@ -202,12 +202,12 @@ button {
         user-select: none;
         position: relative;
 
-        .error {
+        &.error {
             background-color: #ff0000;
             color: white;
         }
 
-        .development {
+        &.development {
             background-color: #7700ff;
             color: white;
             position: fixed;
