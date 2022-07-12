@@ -9,9 +9,6 @@ import { resolve } from 'path';
 export default 
 {
     root,
-    optimizeDeps: {
-        disabled: true,
-    },
     server: {
         port: 1234,
     },
