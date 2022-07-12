@@ -7,11 +7,13 @@ export let cuopen = false;
 /**
  * Shows a popup like the one saying "Couldn't connect to codeutilties"
  * @param message A message to show in the popup
+ * @param type The type of message to show, changes style
  */
-export function snackbar(message : string){
-    var bar = document.createElement('span')
-    bar.innerText = message
-    bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}}
+export function snackbar(message : string, type: 'error' | 'development' | '' = ''){
+    const bar = document.createElement('span');
+    bar.innerText = message;
+    bar.classList.add(type);
+    bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}};
     bar.onanimationend = event => (event.target as HTMLElement).remove();
     document.getElementById('snackbars').appendChild(bar);
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
@@ -49,12 +51,15 @@ export function menu(title : string, content : HTMLElement = document.createElem
     return bg;
 }
 
+/**
+ * @deprecated The plot for, and the backend for accounts are gone.
+ */
 export const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
 /**
  * Login to DFOnline server with Username and Password.
  * @param name Username
  * @param auth Password
- * @deprecated
+ * @deprecated The plot for, and the backend for accounts are gone.
  */
 export function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
