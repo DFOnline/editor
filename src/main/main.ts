@@ -1,5 +1,6 @@
 import type { Template } from "../edit/template";
 import { inflate, gzip } from "pako";
+import { developerMenu } from "./developers";
 
 export let cuopen = false;
 
@@ -268,49 +269,10 @@ if(sessionStorage.getItem('apiEndpoint') === null){
 
 document.addEventListener('keydown',(e) => {
     if(e.key === 'D' && e.shiftKey && e.ctrlKey && e.altKey){
-        console.log('yah')
-        let devMenu = document.createElement('div');
-
-        let info = document.createElement('p');
-        info.innerText = 'This is the dev menu.<br>You can change the api endpoint here, but only if you know what you are doing.';
-
-        let apiEndpointLabel = document.createElement('label');
-        apiEndpointLabel.innerText = 'API Endpoint: ';
-
-        let apiEndpoint = document.createElement('input');
-        apiEndpoint.type = 'text';
-        apiEndpoint.value = sessionStorage.getItem('apiEndpoint');
-        apiEndpoint.oninput = () => {
-            sessionStorage.setItem('apiEndpoint',apiEndpoint.value);
-        };
-        apiEndpoint.placeholder = 'api endpoint';
-
-        apiEndpointLabel.appendChild(apiEndpoint);
-        devMenu.appendChild(apiEndpointLabel);
-
-        devMenu.append(document.createElement('br'));
-
-        const developerModeToggleLabel = document.createElement('label');
-        developerModeToggleLabel.innerText = 'Developer Mode ';
-        const developerModeToggle = document.createElement('input');
-        developerModeToggle.type = 'checkbox';
-        developerModeToggle.checked = sessionStorage.getItem('developerMode') === 'true';
-        developerModeToggle.onchange = () => {
-            sessionStorage.setItem('developerMode',developerModeToggle.checked.toString());
-        };
-        developerModeToggleLabel.appendChild(developerModeToggle);
-        devMenu.appendChild(developerModeToggleLabel);
-
-        menu('Developer Menu',devMenu);
+        if   (!developerMenu.isOpen) developerMenu.open();
+        else                         developerMenu.close();
+        
     }
 })
-
-/**
- * Gets if the developer mode, which can be set in the dev menu.
- * @returns If the developer mode is enabled or not.
- */
-export function isDeveloperMode() : boolean{
-    return sessionStorage.getItem('developerMode') === 'true';
-}
 
 export const templateLike = /H4sIA*[0-9A-Za-z+/]*={0,2}/;

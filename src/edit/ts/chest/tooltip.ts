@@ -1,6 +1,7 @@
 import { ActDB, findBlockTag, findBlockTagOption, mouseInfo } from "../edit";
 import type { Argument, GameValue, ParsedItem, Particle, Potion, SelectionBlock, Sound, SubActionBlock } from "edit/template";
-import { dfNumber, isDeveloperMode, minecraftColorHTML, MinecraftTextCompToCodes, stripColours } from "../../../main/main";
+import { dfNumber, minecraftColorHTML, MinecraftTextCompToCodes, stripColours } from "../../../main/main";
+import { isDeveloperMode } from "../../../main/developers";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 
