@@ -117,7 +117,8 @@ export function exportTemplate(code : string) : {data: string, author: string, n
 }
 
 window.addEventListener('load',() => {
-	mouseInfo = document.querySelector('div.mouseinfo');
+	mouseInfo = document.querySelector('html body div#mouseinfo');
+	console.log(mouseInfo);
 	contextMenu = document.querySelector('div#context');
 })
 
