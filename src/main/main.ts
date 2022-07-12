@@ -54,6 +54,7 @@ export const user : {name: string, auth: string, token : string} = localStorage.
  * Login to DFOnline server with Username and Password.
  * @param name Username
  * @param auth Password
+ * @deprecated
  */
 export function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
