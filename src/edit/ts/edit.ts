@@ -34,7 +34,7 @@ export let mouseInfo : HTMLDivElement;
  * @throws `RangeError` If the block at `index` doesn't exist.
  */
 export function setAction(index: number, value: string, ignoreInvalidAction = false){
-	var block = code.blocks[index]
+	let block = code.blocks[index]
 	if(block){
 		if(block.id === 'block'){
 			if((block as DataBlock).data) (block as DataBlock).data = value;
@@ -47,10 +47,10 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 				else{ // logic for block tags
 
 					(block as SubActionBlock).action = value;
-					var newItems = (block as SubActionBlock).args.items.filter(item => item.item.id !== 'bl_tag');
+					let newItems = (block as SubActionBlock).args.items.filter(item => item.item.id !== 'bl_tag');
 					if(action !== undefined){
 						action.tags.forEach((tag,i) => {
-							var newTag : Argument = ({
+							let newTag : Argument = ({
 								slot: (26 - i),
 								item: {
 									id: 'bl_tag',

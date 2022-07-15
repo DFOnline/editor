@@ -51,7 +51,7 @@ export function rendBlocks(){
 			codeSpace.append(blockDiv);
 		})
 	}
-	var end = document.createElement('div')
+	let end = document.createElement('div')
 	end.classList.add('block');
 	codeSpace.append(end);
 

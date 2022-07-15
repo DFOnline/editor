@@ -15,8 +15,8 @@ options.style.width = 'fit-content'
 const copyTemplate = document.createElement('button');
 copyTemplate.innerText = "Copy Data";
 copyTemplate.onclick = e => {
-    var data = exportTemplate(JSON.stringify(code));
-    var altName = data.name.replace('"','\\"').replace('\\','\\\\').replace("'","\\'");
+    let data = exportTemplate(JSON.stringify(code));
+    let altName = data.name.replace('"','\\"').replace('\\','\\\\').replace("'","\\'");
     if(e.shiftKey || e.ctrlKey) navigator.clipboard.writeText(`/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.data}",version:1,author:"${data.author}"}'}} 1`);
     else navigator.clipboard.writeText(data.data);
 }
@@ -44,11 +44,11 @@ options.append(CodeUtilsSend);
 const CopyLinkButton = document.createElement('button');
 CopyLinkButton.innerText = 'Copy Link';
 CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
-    var href : string
+    let href : string
     if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
     else href = location.origin + '/edit/';
-    var searchParams = new URLSearchParams(location.search);
-    var exportData = exportTemplate(JSON.stringify(code)).data;
+    let searchParams = new URLSearchParams(location.search);
+    let exportData = exportTemplate(JSON.stringify(code)).data;
     searchParams.set('template',exportData);
     navigator.clipboard.writeText(href + '?' + searchParams.toString());
 }
@@ -57,12 +57,12 @@ options.append(CopyLinkButton);
 const CopyShortLinkButton = document.createElement('button');
 CopyShortLinkButton.innerText = 'Copy Short Link';
 CopyShortLinkButton.onclick = async e => {
-    var href : string
+    let href : string
     if(e.ctrlKey) href = 'https://dfonline.dev/edit/';
     else if(e.shiftKey) href = 'https://diamondfire.gitlab.io/template/';
     else href = location.origin + '/edit/';
-    var searchParams = new URLSearchParams(location.search);
-    var exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
+    let searchParams = new URLSearchParams(location.search);
+    let exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
     searchParams.set(e.shiftKey ? 't' : 'template',e.shiftKey ? 'dfo:' + exportData : exportData);
     navigator.clipboard.writeText(href + '?' + searchParams.toString());
 }
