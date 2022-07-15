@@ -4,24 +4,24 @@ import { snackbar } from "../../../main/main";
 import Menu from "../../../main/menu";
 import ContextMenu from "../../../main/context";
 
-var renameVars = document.createElement('button');
+let renameVars = document.createElement('button');
 renameVars.innerText = 'Rename All Variables';
 renameVars.onclick = () => {
     editContext.close();
 
-    var menuDiv = document.createElement('div');
+    let menuDiv = document.createElement('div');
     menuDiv.style.display = 'grid';
 
-    var lookValue = document.createElement('input');
+    let lookValue = document.createElement('input');
     lookValue.placeholder = 'Variable Name';
     menuDiv.append(lookValue);
 
-    var replaceValue = document.createElement('input');
+    let replaceValue = document.createElement('input');
     replaceValue.placeholder = 'New Name'
     menuDiv.append(replaceValue);
 
-    var scopeValue = document.createElement('select');
-    var opt = document.createElement('option');
+    let scopeValue = document.createElement('select');
+    let opt = document.createElement('option');
     opt.value = 'unsaved';
     opt.text = 'GAME';
     scopeValue.append(opt);
@@ -38,15 +38,15 @@ renameVars.onclick = () => {
 
 
     {
-        var replace = document.createElement('button');
+        let replace = document.createElement('button');
         replace.innerText = 'Rename All'
         replace.onclick = () => {
             let results = 0;
             code.blocks = code.blocks.map(e => {
-                var newBlock = e;
+                let newBlock = e;
                 if((e as SubActionBlock).args !== undefined){
                     (e as SelectionBlock).args.items = (e as SelectionBlock).args.items.map(x => {
-                        var newItem = x;
+                        let newItem = x;
                         if(newItem.item.id === 'var' && newItem.item.data.scope === (scopeValue.value as VarScope) && newItem.item.data.name === lookValue.value){
                             newItem.item.data.name = replaceValue.value;
                             results++;

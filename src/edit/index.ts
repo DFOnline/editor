@@ -33,7 +33,7 @@ window.onload = async function onload() { // when everything loads - this functi
 		}
         let code, compareTemplate;
 		if(sessionStorage.getItem('import')){
-			var importTemplate = sessionStorage.getItem('import');
+			let importTemplate = sessionStorage.getItem('import');
 			code = await loadTemplate(importTemplate);
 		}
 		if(start.urlParams.get('compare')){

@@ -38,20 +38,20 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
     dropevent : (e : DragEvent) => void = e => { // and when you drop on a codeblock
         e.stopPropagation();
 
-        var HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
-        var id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
+        let HTMLblock = backup(e.target as HTMLElement); // the HTML block you dropped on
+        let id = (Number(HTMLblock.id.replace('block',''))); // numerical id of the block dropped on
 
         if(id !== userMeta.value){
             if(userMeta.type !== 'newBlock' && (Math.abs(id - userMeta.value) === 1 || e.shiftKey)){ // if it is next to the one you just used
-                var swapData = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // the block you held
+                let swapData = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // the block you held
                 code.blocks[userMeta.value] = code.blocks[id]; // and some swapping shenanagins
                 code.blocks[id] = swapData; // it works so I got it correct
             }
             else {
-                var {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
-                var pushSpot = (id + Number(e.clientX > (width / 2) + posX))
+                let {x:posX,width} = HTMLblock.getBoundingClientRect(); // x on screen as posX and witdh
+                let pushSpot = (id + Number(e.clientX > (width / 2) + posX))
                 if(userMeta.type !== 'newBlock'){
-                    var data = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // get the block you held
+                    let data = JSON.parse((JSON.stringify(code.blocks[userMeta.value]))) as Readonly<Block>; // get the block you held
                     code.blocks[userMeta.value]['id'] = 'killable'; // mark thing for deletion
                     code.blocks.splice(pushSpot,0,data); // splice data in
                 }
@@ -75,17 +75,17 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
             if(block.id !== 'bracket'){
                 if(block.block !== 'else'){
 
-                    var valueButton = document.createElement('button');
+                    let valueButton = document.createElement('button');
                     if((block as DataBlock).data !== undefined) valueButton.innerHTML = 'D<u>a</u>ta';
                     if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined) valueButton.innerHTML = '<u>A</u>ction'
 
                     valueButton.onclick = () => { // YEEE CONTEXT FOR EDITING ACTIONS
                         setTimeout(() => {
                             contextMenu.style.display = 'grid';
-                                var value = document.createElement('input');
+                                let value = document.createElement('input');
                                 if((block as DataBlock).data === undefined){ // default action type block.
                                     value.value = (block as SelectionBlock | SubActionBlock).action;
-                                    var results = document.createElement('div');
+                                    let results = document.createElement('div');
                                     let pre = value.value.substring(value.selectionStart,0);
                                     value.onkeydown = e => { // ENTER, ESCAPE AND TAB
                                         if(e.key === 'Enter'){
@@ -116,12 +116,12 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                                             userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block] && x.icon.description.length !== 0).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
                                             userMeta.search.index = 0;
                                             if(userMeta.search.value.length !== 0){
-                                                var length = value.value.length;
+                                                let length = value.value.length;
                                                 value.value = userMeta.search.value[userMeta.search.index].name;
                                                 value.setSelectionRange(length,value.value.length);
                                                 userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
                                                 userMeta.search.value.forEach(v => {
-                                                    var res = document.createElement('button');
+                                                    let res = document.createElement('button');
                                                     res.innerText = v.name;
                                                     res.onclick = () => {
                                                         (block as SelectionBlock | SubActionBlock).action = v.name;
@@ -160,16 +160,16 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                     contextMenu.append(valueButton);
 
                     if(SelectionBlocks.includes(block.block)){ // blocks which are supposed to have a target.
-                        var targetButton = document.createElement('button');
+                        let targetButton = document.createElement('button');
                         targetButton.innerHTML = '<u>S</u>election';
 
                         targetButton.onclick = () => {
                             setTimeout(() => {
-                                var target = document.createElement('select'); // selection
+                                let target = document.createElement('select'); // selection
                                 target.value = (block as SelectionBlock).target;
                                 target.onclick = e => e.stopPropagation(); // allow clicking
                                 SelectionValues.forEach(sel => { // create the options
-                                    var option = document.createElement('option');
+                                    let option = document.createElement('option');
                                     option.value = sel;
                                     option.innerText = sel;
                                     target.append(option);
@@ -189,7 +189,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         contextMenu.append(targetButton);
                     }
                     if(block.block.includes('if_')){ // NOT button
-                        var not = document.createElement('button');
+                        let not = document.createElement('button');
                         not.innerHTML = '<u>N</u>OT';
                         not.onclick = () => {
                             (block as SelectionBlock).inverted = (block as SelectionBlock).inverted === 'NOT' ? '' : 'NOT';
@@ -201,7 +201,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                     contextMenu.append(document.createElement('hr'));
                 }
             }
-            var deleteButton = document.createElement('button');
+            let deleteButton = document.createElement('button');
             deleteButton.innerHTML = '<u>D</u>elete';
             deleteButton.onclick = () => {
                 code.blocks.splice(this.index,1);
@@ -225,18 +225,18 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 			}
 			blockElement.classList.add(block.block, 'mat');
 			if(block.block !== "else"){
-				var sign = document.createElement('div');
+				let sign = document.createElement('div');
 				sign.classList.add('sign');
 
-				var BlockType = document.createElement('span');
+				let BlockType = document.createElement('span');
 				BlockType.innerText = CodeBlockTypeName[block.block];
 				sign.append(BlockType);
 
-				var ActionLine = document.createElement('span');
+				let ActionLine = document.createElement('span');
 				ActionLine.innerText = block.block === "call_func" || block.block === "func" || block.block === "process" || block.block === "start_process" ? block.data : (block as SelectionBlock).action;
 				sign.append(ActionLine);
 
-				var SelectionLine = document.createElement('span');
+				let SelectionLine = document.createElement('span');
 				if((block as SelectionBlock).target){
 					SelectionLine.innerText = (block as SelectionBlock).target;
 				} else if((block as SubActionBlock).subAction){
@@ -245,7 +245,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 					SelectionLine.innerText = "";
 				}
 				sign.append(SelectionLine);
-				var not = document.createElement('span');
+				let not = document.createElement('span');
 				not.innerText = (block as SelectionBlock).inverted ? (block as SelectionBlock).inverted : "";
 				sign.append(not);
 				blockElement.append(sign);

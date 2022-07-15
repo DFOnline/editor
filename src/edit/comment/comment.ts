@@ -20,7 +20,7 @@ window.onkeydown = event => {
 }
 
 function generateTheComment(){
-    var code : Template = {"blocks":[{"id":"block","block":"control","args":{"items":[]},"action":"","target":"","inverted":""}]};
+    let code : Template = {"blocks":[{"id":"block","block":"control","args":{"items":[]},"action":"","target":"","inverted":""}]};
     (code['blocks'][0] as SelectionBlock)['action'] = (document.getElementById('action') as HTMLInputElement).value as any;
     (code['blocks'][0] as SelectionBlock)['target'] = (document.getElementById('target') as HTMLInputElement).value as any;
     (code['blocks'][0] as SelectionBlock)['inverted'] = (document.getElementById('inverted') as HTMLInputElement).value as any;
@@ -35,9 +35,9 @@ function generateTheComment(){
 
 
 function nextElement(move = 1){
-    var elements = [...(document.querySelectorAll('.comment') as unknown as Array<HTMLElement>)];
-    var current = elements.findIndex(x => x === document.activeElement);
-    var newIndex = (current + move) % elements.length;
+    let elements = [...(document.querySelectorAll('.comment') as unknown as Array<HTMLElement>)];
+    let current = elements.findIndex(x => x === document.activeElement);
+    let newIndex = (current + move) % elements.length;
     newIndex = newIndex < 0 ? elements.length - 1 : newIndex;
     elements[newIndex].focus();
 }

@@ -1,5 +1,5 @@
 import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../edit";
-import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber } from "../../template";
+import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber, DataBlock } from "../../template";
 import { menu, minecraftColorHTML, stripColours } from "../../../main/main";
 import { isDeveloperMode } from "../../../main/developers";
 import { parse } from "nbt-ts";
@@ -11,17 +11,17 @@ import tooltip from "./tooltip";
  * @returns The menu element opened.
  */
 export default function chestMenu(id : number){
-	var block : SubActionBlock | SelectionBlock = code.blocks[id] as any;
+	let block : SubActionBlock | SelectionBlock = code.blocks[id] as any;
 	const dbBlockType = ActDB.codeblocks.find(b => b.identifier === block.block);
 	if(block.args !== undefined){
-		var menuDiv = document.createElement('div');
+		let menuDiv = document.createElement('div');
 		menuDiv.id = 'chest';
 		[...Array(27).keys()].forEach((slotID) => { // each slot
-			var slot = document.createElement('div');
+			let slot = document.createElement('div');
 			slot.classList.add('slot');
 			const itemIndex = block.args.items.findIndex(i => i.slot == slotID)
-			var item = (block.args.items[itemIndex]);
-			var itemElement = document.createElement('div');
+			let item = (block.args.items[itemIndex]);
+			let itemElement = document.createElement('div');
 			itemElement.style.backgroundImage = "";
 			if(item){ // if there in an item
 				slot.id = String(itemIndex);
@@ -60,8 +60,8 @@ export default function chestMenu(id : number){
 					}
 					itemElement.ondragover = e => e.preventDefault();
 					itemElement.ondrop = event => {
-						var dropOn = block.args.items[Number((event.target as HTMLDivElement).parentElement.id)]; // the item you just dropped onto
-						var dropping = block.args.items[userMeta.value];
+						let dropOn = block.args.items[Number((event.target as HTMLDivElement).parentElement.id)]; // the item you just dropped onto
+						let dropping = block.args.items[userMeta.value];
 						const swap = dropOn.slot;
 						dropOn.slot = dropping.slot;
 						dropping.slot = swap;
@@ -76,14 +76,14 @@ export default function chestMenu(id : number){
 						contextMenu.style.display = 'grid';
 						contextMenu.focus();
 
-						var valueButton = document.createElement('button');
+						let valueButton = document.createElement('button');
 						valueButton.innerHTML = 'V<u>a</u>lue'
 						valueButton.onclick = () => { // main value
 							setTimeout(() => {
 								contextMenu.style.display = 'grid';
 
 								if(item.item.id === 'num' || item.item.id === 'txt' || item.item.id === 'var'){
-									var value = document.createElement('input');
+									let value = document.createElement('input');
 									value.value = item.item.data.name;
 									value.onkeydown = e => {
 										if(e.key === 'Enter'){
@@ -121,7 +121,7 @@ export default function chestMenu(id : number){
 								}
 
 								else if(item.item.id === 'loc'){
-									var locationInput = document.createElement('div');
+									let locationInput = document.createElement('div');
 									locationInput.onclick = e => e.stopPropagation();
 									locationInput.onkeydown = e => {
 										if(isDeveloperMode()) console.log(e);
@@ -140,41 +140,41 @@ export default function chestMenu(id : number){
 									locationInput.style.display = 'grid';
 									locationInput.style.gridTemplateRows = '1fr 1fr 1fr 1fr';
 
-									var xLabel = document.createElement('label');
+									let xLabel = document.createElement('label');
 									xLabel.innerHTML = 'X: ';
-									var xInput = document.createElement('input');
+									let xInput = document.createElement('input');
 									xInput.type = 'number';
 									xInput.value = String(item.item.data.loc.x);
 									xLabel.append(xInput);
 									locationInput.append(xLabel);
 
-									var yLabel = document.createElement('label');
+									let yLabel = document.createElement('label');
 									yLabel.innerHTML = 'Y: ';
-									var yInput = document.createElement('input');
+									let yInput = document.createElement('input');
 									yInput.type = 'number';
 									yInput.value = String(item.item.data.loc.y);
 									yLabel.append(yInput);
 									locationInput.append(yLabel);
 
-									var zLabel = document.createElement('label');
+									let zLabel = document.createElement('label');
 									zLabel.innerHTML = 'Z: ';
-									var zInput = document.createElement('input');
+									let zInput = document.createElement('input');
 									zInput.type = 'number';
 									zInput.value = String(item.item.data.loc.z);
 									zLabel.append(zInput);
 									locationInput.append(zLabel);
 
-									var pitchLabel = document.createElement('label');
+									let pitchLabel = document.createElement('label');
 									pitchLabel.innerHTML = 'Pitch: ';
-									var pitchInput = document.createElement('input');
+									let pitchInput = document.createElement('input');
 									pitchInput.type = 'number';
 									pitchInput.value = String(item.item.data.loc.pitch);
 									pitchLabel.append(pitchInput);
 									locationInput.append(pitchLabel);
 
-									var yawLabel = document.createElement('label');
+									let yawLabel = document.createElement('label');
 									yawLabel.innerHTML = 'Yaw: ';
-									var yawInput = document.createElement('input');
+									let yawInput = document.createElement('input');
 									yawInput.type = 'number';
 									yawInput.value = String(item.item.data.loc.yaw);
 									yawLabel.append(yawInput);
@@ -185,7 +185,7 @@ export default function chestMenu(id : number){
 								}
 
 								else if(item.item.id === 'vec'){
-									var vectorEdit = document.createElement('div');
+									let vectorEdit = document.createElement('div');
 									vectorEdit.onclick = e => e.stopPropagation();
 									vectorEdit.onkeydown = e => {
 										if(e.key === 'Enter'){
@@ -202,25 +202,25 @@ export default function chestMenu(id : number){
 									vectorEdit.style.display = 'grid';
 									vectorEdit.style.gridTemplateRows = '1fr 1fr 1fr';
 
-									var xVecLabel = document.createElement('label');
+									let xVecLabel = document.createElement('label');
 									xVecLabel.innerHTML = 'X: ';
-									var xVecInput = document.createElement('input');
+									let xVecInput = document.createElement('input');
 									xVecInput.type = 'number';
 									xVecInput.value = String(item.item.data.x);
 									xVecLabel.append(xVecInput);
 									vectorEdit.append(xVecLabel);
 
-									var yVecLabel = document.createElement('label');
+									let yVecLabel = document.createElement('label');
 									yVecLabel.innerHTML = 'Y: ';
-									var yVecInput = document.createElement('input');
+									let yVecInput = document.createElement('input');
 									yVecInput.type = 'number';
 									yVecInput.value = String(item.item.data.y);
 									yVecLabel.append(yVecInput);
 									vectorEdit.append(yVecLabel);
 
-									var zVecLabel = document.createElement('label');
+									let zVecLabel = document.createElement('label');
 									zVecLabel.innerHTML = 'Z: ';
-									var zVecInput = document.createElement('input');
+									let zVecInput = document.createElement('input');
 									zVecInput.type = 'number';
 									zVecInput.value = String(item.item.data.z);
 									zVecLabel.append(zVecInput);
@@ -688,7 +688,7 @@ export default function chestMenu(id : number){
 						contextMenu.append(valueButton);
 						contextMenu.append(document.createElement('hr'));
 
-						var deleteButton = document.createElement('button');
+						let deleteButton = document.createElement('button');
 						deleteButton.innerHTML = '<u>D</u>elete';
 						deleteButton.onclick = () => {
 							block.args.items.splice(userMeta.value,1);
@@ -699,7 +699,7 @@ export default function chestMenu(id : number){
 					}
 				}
 				{ // the textures. epic
-					var count;
+					let count;
 					if(item.item.id === 'txt'){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/BOOK.png)';
 					}
@@ -742,7 +742,7 @@ export default function chestMenu(id : number){
 						itemElement.style.backgroundImage = 'url(https://dfonline.dev/public/images/PRISMARINE_SHARD.png)';
 					}
 					else if (item.item.id === 'item'){
-						var data = parse(item.item.data.item) as unknown as ParsedItem;
+						let data = parse(item.item.data.item) as unknown as ParsedItem;
 						itemElement.style.backgroundImage = `url(https://dfonline.dev/public/images/${data.id.toUpperCase().replace('MINECRAFT:','')}.png)`;
 						if(data.Count.value > 1){
 							count = document.createElement('span');
@@ -772,7 +772,7 @@ export default function chestMenu(id : number){
 				itemElement.classList.add('empty');
 				itemElement.ondragover = e => e.preventDefault();
 				itemElement.ondrop = event => {
-					var target = event.target as HTMLDivElement
+					let target = event.target as HTMLDivElement
 					block.args.items[userMeta.value].slot = Number(target.id.replace('empty',''));
 					chestMenu(id);
 				}
@@ -792,7 +792,7 @@ export default function chestMenu(id : number){
 							slot: slotID,
 							item: item
 						});
-						var menu = chestMenu(id);
+						let menu = chestMenu(id);
 
 						setTimeout(() => {
 							(menu.querySelectorAll('*.slot > .item')[slotID] as HTMLElement).oncontextmenu(e);
@@ -806,7 +806,7 @@ export default function chestMenu(id : number){
 					varItem.classList.add('newValue');
 					varItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/MAGMA_CREAM.png")';
 					varItem.onclick = () => {
-						var newItem : Variable = {
+						let newItem : Variable = {
 							id: 'var',
 							data: {
 								scope: 'unsaved',
@@ -821,7 +821,7 @@ export default function chestMenu(id : number){
 					textItem.classList.add('newValue');
 					textItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/BOOK.png")';
 					textItem.onclick = () => {
-						var newItem : Text = {
+						let newItem : Text = {
 							id: 'txt',
 							data: {
 								name: '',
@@ -835,7 +835,7 @@ export default function chestMenu(id : number){
 					numItem.classList.add('newValue');
 					numItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/SLIME_BALL.png")';
 					numItem.onclick = () => {
-						var newItem : DFNumber = {
+						let newItem : DFNumber = {
 							id: 'num',
 							data: {
 								name: '',
@@ -849,7 +849,7 @@ export default function chestMenu(id : number){
 					locItem.classList.add('newValue');
 					locItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PAPER.png")';
 					locItem.onclick = () => {
-						var newItem : DFLocation = {
+						let newItem : DFLocation = {
 							id: 'loc',
 							data: {
 								isBlock: false,
@@ -870,7 +870,7 @@ export default function chestMenu(id : number){
 					vecItem.classList.add('newValue');
 					vecItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PRISMARINE_SHARD.png")';
 					vecItem.onclick = () => {
-						var newItem : Vector = {
+						let newItem : Vector = {
 							id: 'vec',
 							data: {
 								x: 0,
@@ -886,7 +886,7 @@ export default function chestMenu(id : number){
 					soundItem.classList.add('newValue');
 					soundItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAUTILUS_SHELL.png")';
 					soundItem.onclick = () => {
-						var newItem : Sound = {
+						let newItem : Sound = {
 							id: 'snd',
 							data: {
 								sound: '',
@@ -902,7 +902,7 @@ export default function chestMenu(id : number){
 					gameValueItem.classList.add('newValue');
 					gameValueItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAME_TAG.png")';
 					gameValueItem.onclick = () => {
-						var newItem : GameValue = {
+						let newItem : GameValue = {
 							id: 'g_val',
 							data: {
 								target: 'Default',
@@ -917,7 +917,7 @@ export default function chestMenu(id : number){
 					potionItem.classList.add('newValue');
 					potionItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/DRAGON_BREATH.png")';
 					potionItem.onclick = () => {
-						var newItem : Potion = {
+						let newItem : Potion = {
 							id: 'pot',
 							data: {
 								amp: 0,
@@ -942,7 +942,7 @@ export default function chestMenu(id : number){
 			slot.appendChild(itemElement);
 			menuDiv.append(slot);
 		})
-		var chestDiv = document.querySelector('#chest');
+		let chestDiv = document.querySelector('#chest');
 		if(chestDiv) {chestDiv.parentElement.replaceChild(menuDiv,chestDiv); return menuDiv;}
 		else return menu(`(${id}) ${titleCase(dbBlockType.name)}: ${block.action}`,menuDiv);
 	}

@@ -25,11 +25,11 @@ export function snackbar(message : string, type: 'error' | 'development' | '' = 
  * @param content HTMLElement object of what the menu should contain
  */
 export function menu(title : string, content : HTMLElement = document.createElement('span')){
-    var bg = document.createElement('div');
+    let bg = document.createElement('div');
     bg.classList.add('background');
     setTimeout(() => {
         bg.onclick = event => {
-            var hit = event.target as HTMLElement
+            let hit = event.target as HTMLElement
             if(hit.classList.contains('background')){
                 if(!hit.classList.contains('fade')){
                     hit.classList.add('fade')
@@ -40,8 +40,8 @@ export function menu(title : string, content : HTMLElement = document.createElem
             }
         }
     },100)
-    var screen = document.createElement('div');
-    var obj = document.createElement('h1');
+    let screen = document.createElement('div');
+    let obj = document.createElement('h1');
     obj.innerText = title;
     screen.appendChild(obj);
     screen.appendChild(content);
@@ -89,7 +89,7 @@ export function startup(){
         mouseInfo.style.left = String(e.clientX + 10) + 'px';
     }
     let urlParams = new URLSearchParams(location.search)
-    var urlMessage = urlParams.get('message');
+    let urlMessage = urlParams.get('message');
     if(urlMessage){
         snackbar(urlMessage)
     }
@@ -111,8 +111,8 @@ export function decodeTemplate(base64data : string) : Template{
 }
 
 export function encodeTemplate(codedata : string){
-    var data = gzip(codedata);
-    var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    let data = gzip(codedata);
+    let data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
     return btoa(data2);
 }
 
@@ -155,7 +155,7 @@ export function MinecraftTextCompToCodes(component : string | object) : string{
         "reset": "r"
     }
 
-    var text = '\u00A7r';
+    let text = '\u00A7r';
     if(workComponents.bold){
         text += '\u00A7l';
     }
@@ -222,13 +222,13 @@ export function minecraftColorHTML(text : string, defaultColor = '§r',font?:str
         'r': {css: 'color: #ffffff;', reset: true},
         'x': {css: '', reset: true},
     };
-    var last = styleMap['r'].css;
-    var hexColor = 0;
+    let last = styleMap['r'].css;
+    let hexColor = 0;
     return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-ORX].*?(?=[&§][\dA-FK-ORX])|[&§][\dA-FK-ORX].*/gi).map((str : string) => {
-            var newStr = str.replace(/^[&§][\dA-FK-ORX]/gi,'');
-            var element = document.createElement('span');
+            let newStr = str.replace(/^[&§][\dA-FK-ORX]/gi,'');
+            let element = document.createElement('span');
             element.innerText = newStr;
-            var style = styleMap[str[1] as 'r'];
+            let style = styleMap[str[1] as 'r'];
             if(style.reset){
                 if(str[1] === 'x'){
                     hexColor = 6;
