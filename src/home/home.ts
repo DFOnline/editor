@@ -1,5 +1,6 @@
 import Menu from "../main/menu";
 import { startup, menu, login, codeutilities, user, templateLike } from "../main/main"
+import User from "../main/user";
 
 Menu.setup();
 
@@ -120,4 +121,9 @@ codeutilities.onmessage = event => {
             new ImportMenu(JSON.parse(data.received).code).open();
         }
     }
+}
+
+const prefrences = document.querySelector<HTMLHeadingElement>('h1#perf');
+prefrences.onclick = () => {
+    User.menu.open();
 }
