@@ -40,9 +40,9 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 			if((block as DataBlock).data) (block as DataBlock).data = value;
 			else if((block as SubActionBlock)){
 
-				let action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block] && act.name === value)) // this is the action in db
+				let action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
 
-				if(value !== '' && !ignoreInvalidAction && action === undefined) throw new TypeError(`Action ${value} doesn't exist on block type ${CodeBlockTypeName[(block as PlacedBlock).block]}`);
+				if(value !== '' && !ignoreInvalidAction && action === undefined) throw new TypeError(`Action ${value} doesn't exist on block type ${CodeBlockTypeName[(block as PlacedBlock).block as 'else']}`);
 
 				else{ // logic for block tags
 
@@ -89,7 +89,7 @@ export function backup(element : HTMLElement) : HTMLDivElement {
 }
 
 export function findBlockTags(block: CodeBlockIdentifier, action: String) {
-	return ActDB.actions.find(x => CodeBlockTypeName[block] === x.codeblockName && (x.name === action || x.name === 'dynamic')).tags;
+	return ActDB.actions.find(x => CodeBlockTypeName[block as 'else'] === x.codeblockName && (x.name === action || x.name === 'dynamic')).tags;
 }
 
 export function findBlockTag(block: CodeBlockIdentifier, action: String, tag: String){
