@@ -46,6 +46,8 @@ export function rendBlocks(){
 
 			
 			if(block.id === 'bracket' && block.direct === 'close' && User.shiftBlocks) bracketIndex--;
+			// make sure it is not below 0
+			if(bracketIndex < 0) bracketIndex = 0;
 			const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
 			if(block.id === 'bracket' && block.direct === 'open' && User.shiftBlocks) bracketIndex++;
 
