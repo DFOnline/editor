@@ -1,5 +1,5 @@
 import { ActDB, backup, code, contextMenu, setAction, userMeta } from "./edit";
-import { Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../../edit/template";
+import { Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
 import { CodeBlockTypeName } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
@@ -113,7 +113,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                                     value.oninput = () => { // EVERYTHING ELSE THAT YOU TYPE
                                         results.innerHTML = '';
                                         if(value.value.length - pre.length >= 0){
-                                            userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block] && x.icon.description.length !== 0).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
+                                            userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block as 'player_action'] && x.icon.description.length !== 0).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
                                             userMeta.search.index = 0;
                                             if(userMeta.search.value.length !== 0){
                                                 let length = value.value.length;
@@ -229,7 +229,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 				sign.classList.add('sign');
 
 				let BlockType = document.createElement('span');
-				BlockType.innerText = CodeBlockTypeName[block.block];
+				BlockType.innerText = CodeBlockTypeName[block.block as 'player_action'];
 				sign.append(BlockType);
 
 				let ActionLine = document.createElement('span');
@@ -262,6 +262,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 		}
 
         this.style.top = (bracketIndex * 30) + 'px';
+        
 
         this.prepend(stack);
 		stack.append(topper);
