@@ -1,6 +1,5 @@
 import Menu from "../main/menu";
-import { startup, menu, login, codeutilities, user, templateLike } from "../main/main"
-import User from "../main/user";
+import { templateLike } from "../main/main"
 
 Menu.setup();
 
