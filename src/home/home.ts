@@ -39,7 +39,7 @@ Menu.setup();
 //     menu('Import',div)
 // }
 
-class ImportMenu extends Menu {
+export class ImportMenu extends Menu {
     constructor(code = ''){
         const content = document.createElement('div');
         const p = document.createElement('p');
@@ -83,47 +83,3 @@ createMenuButton.onclick = () => {
 createMenuContents.append(createMenuButton);
 
 export const createMenu = new Menu('Create Template', createMenuContents);
-
-window.onload = () => {
-    startup()
-    let userBox = (document.getElementById('user') as HTMLInputElement);
-    if(user){
-        userBox.innerHTML = user.name;
-        userBox.onclick = () => {
-            let menuDiv = document.createElement('div');
-            let updateButton = document.createElement('button');
-            updateButton.innerText = "Relog";
-            updateButton.onclick = () => login(user.name,user.auth);
-            menuDiv.appendChild(updateButton);
-            let logoutButton = document.createElement('button');
-            logoutButton.innerText = "Logout";
-            logoutButton.onclick = () => {delete(localStorage.user); location.reload();};
-            menuDiv.appendChild(logoutButton);
-            menu(user.name,menuDiv);
-        }
-    } else {
-        userBox.onclick = () => location.href = ('./login');
-    }
-    let importButton = document.getElementById('import') as HTMLButtonElement;
-    importButton.onclick = () => {new ImportMenu().open()};
-    document.querySelector('button#start').addEventListener('click',() => {
-        createMenu.open();
-    })
-}
-
-codeutilities.onmessage = event => {
-    let data = JSON.parse(event.data)
-    if(data.type === "template"){
-        let importField = (document.getElementById('importfield') as HTMLInputElement);
-        try{
-            importField.value = JSON.parse(data.received).code
-        }catch{
-            new ImportMenu(JSON.parse(data.received).code).open();
-        }
-    }
-}
-
-const prefrences = document.querySelector<HTMLHeadingElement>('h1#perf');
-prefrences.onclick = () => {
-    User.menu.open();
-}
