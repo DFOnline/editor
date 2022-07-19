@@ -3,6 +3,7 @@ import { isDeveloperMode } from "../../main/developers";
 import HTMLCodeBlockElement from "./codeblock";
 import { diffArrays } from 'diff'
 import type { Block } from "edit/template";
+import User from "../../main/user";
 
 export function rendBlocks(){
 
@@ -44,9 +45,9 @@ export function rendBlocks(){
 			if(isDeveloperMode()) console.log(block);
 
 			
-			if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
+			if(block.id === 'bracket' && block.direct === 'close' && User.shiftBlocks) bracketIndex--;
 			const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
-			if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
+			if(block.id === 'bracket' && block.direct === 'open' && User.shiftBlocks) bracketIndex++;
 
 			codeSpace.append(blockDiv);
 		})
