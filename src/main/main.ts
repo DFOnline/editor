@@ -116,7 +116,7 @@ export function encodeTemplate(codedata : string){
     return btoa(data2);
 }
 
-export function stripColours(text : string){
+export function stripColors(text : string){
     return text.replace(/[&§][\dA-FK-ORX]/gi,'');
 }
 
