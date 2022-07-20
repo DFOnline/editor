@@ -1,6 +1,6 @@
 import { ActDB, findBlockTag, findBlockTagOption, mouseInfo } from "../edit";
 import type { Argument, GameValue, ParsedItem, Particle, Potion, SelectionBlock, Sound, SubActionBlock } from "edit/template";
-import { dfNumber, minecraftColorHTML, MinecraftTextCompToCodes, stripColours } from "../../../main/main";
+import { dfNumber, minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../main/main";
 import { isDeveloperMode } from "../../../main/developers";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
@@ -76,7 +76,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		titlepot.style.color = '#ff557f';
 		mouseInfo.append(titlepot);
 		let typepot = document.createElement('span');
-		typepot.innerHTML = minecraftColorHTML(ActDB.potions.find(x => stripColours(x.icon.name) === (item.item as Potion).data.pot).icon.name)[0].outerHTML
+		typepot.innerHTML = minecraftColorHTML(ActDB.potions.find(x => stripColors(x.icon.name) === (item.item as Potion).data.pot).icon.name)[0].outerHTML
 		mouseInfo.append(typepot);
 		mouseInfo.append(document.createElement('hr'));
 		let amp = document.createElement('span');
@@ -93,7 +93,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		titles.style.textShadow = '1px 1px #000'; // the original sound color contrasts really badly.
 		mouseInfo.append(titles);
 		let sound = document.createElement('span');
-		sound.innerHTML = minecraftColorHTML(ActDB.sounds.find(s => stripColours(s.icon.name) === (item.item as Sound).data.sound).icon.name)[0].outerHTML;
+		sound.innerHTML = minecraftColorHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === (item.item as Sound).data.sound).icon.name)[0].outerHTML;
 		mouseInfo.append(sound);
 		mouseInfo.append(document.createElement('hr'))
 		let pitchs = document.createElement('span');
@@ -105,7 +105,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 	}
 	else if (item.item.id === 'g_val'){
 		let gval = document.createElement('span');
-		gval.innerHTML = minecraftColorHTML(ActDB.gameValues.find(g => stripColours(g.icon.name) === (item.item as GameValue).data.type).icon.name)[0].outerHTML;
+		gval.innerHTML = minecraftColorHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === (item.item as GameValue).data.type).icon.name)[0].outerHTML;
 		mouseInfo.append(gval);
 		let selection = document.createElement('span');
 		selection.innerText = item.item.data.target;
@@ -132,7 +132,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		
 		mouseInfo.append(document.createElement('hr'));
 		const desc = document.createElement('span');
-		const newLocal = ActDB.gameValues.find(g => stripColours(g.icon.name) === (item.item as GameValue).data.type);
+		const newLocal = ActDB.gameValues.find(g => stripColors(g.icon.name) === (item.item as GameValue).data.type);
 		desc.innerText = newLocal.icon.description.join('\n');
 		mouseInfo.append(desc);
 	}
@@ -143,7 +143,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		titlep.style.textShadow = '1px 1px #000';
 		mouseInfo.append(titlep);
 		let par = document.createElement('span');
-		par.innerHTML = minecraftColorHTML(ActDB.particleCategories.find(p => stripColours(p.icon.name) === (item.item as Particle).data.particle).icon.name)[0].outerHTML;
+		par.innerHTML = minecraftColorHTML(ActDB.particleCategories.find(p => stripColors(p.icon.name) === (item.item as Particle).data.particle).icon.name)[0].outerHTML;
 		mouseInfo.append(par);
 		mouseInfo.append(document.createElement('hr'));
 		let amount = document.createElement('span');

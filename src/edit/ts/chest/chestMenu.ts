@@ -1,6 +1,6 @@
 import { ActDB, code, contextMenu, findBlockTag, findBlockTagOption, mouseInfo, Sounds, tree, userMeta } from "../edit";
 import { BlockTag, GameValue, g_valSelection, Item, ParsedItem, Particle, Potion, SelectionBlock, SelectionValues, Sound, SubActionBlock, Variable, Vector, Location as DFLocation, Text, Number as DFNumber, DataBlock } from "../../template";
-import { menu, minecraftColorHTML, stripColours } from "../../../main/main";
+import { menu, minecraftColorHTML, stripColors } from "../../../main/main";
 import { isDeveloperMode } from "../../../main/developers";
 import { parse } from "nbt-ts";
 import tooltip from "./tooltip";
@@ -261,7 +261,7 @@ export default function chestMenu(id : number){
 													if(typeof value === 'string'){
 														// get the new name from the icon name, which df uses for some reason.
 														const newSound = ActDB.sounds.find(s => s.sound === value).icon.name;
-														(item.item as unknown as Sound).data.sound = stripColours(newSound);
+														(item.item as unknown as Sound).data.sound = stripColors(newSound);
 														soundValue.innerHTML = value;
 														contextMenu.click();
 													}
@@ -337,7 +337,7 @@ export default function chestMenu(id : number){
 															const valueButton = document.createElement('button');
 															valueButton.innerHTML = minecraftColorHTML(value.icon.name)[0].outerHTML;
 															valueButton.onclick = () => {
-																(item.item as unknown as GameValue).data.type = stripColours(value.icon.name);
+																(item.item as unknown as GameValue).data.type = stripColors(value.icon.name);
 																contextMenu.click();
 															}
 															selectValue.append(valueButton);
@@ -628,7 +628,7 @@ export default function chestMenu(id : number){
 											potionTypeButton.innerHTML = minecraftColorHTML(potion.icon.name)[0].outerHTML;
 											potionTypeButton.onclick = () => {
 												potionEdit.append(potionTypeButton);
-												(item.item as Potion).data.pot = stripColours(potion.icon.name);
+												(item.item as Potion).data.pot = stripColors(potion.icon.name);
 											}
 											potionEdit.append(potionTypeButton);
 										});
