@@ -18,12 +18,12 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         });
         const menu = chestMenu(id);
 
-        setTimeout(() => {
-            (menu.querySelectorAll('*.slot > .item')[slotID] as HTMLElement).oncontextmenu(e);
-            setTimeout(() => {
-                userMeta.ctxKeys['a'].onclick(e);
-            }, 0);
-        });
+        // setTimeout(() => {
+        //     (menu.querySelectorAll('*.slot > .item')[slotID] as HTMLElement).oncontextmenu(e);
+        //     setTimeout(() => {
+        //         userMeta.ctxKeys['a'].onclick(e);
+        //     }, 0);
+        // });
     }
 
     const varItem = document.createElement('button');
