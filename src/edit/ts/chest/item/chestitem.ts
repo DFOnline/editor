@@ -94,6 +94,7 @@ export class Num extends ChestItem {
     }
 }
 
+
 function getItem(item : Item){
     switch(item.id){
         case 'num': return new Num(item);
