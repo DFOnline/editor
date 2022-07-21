@@ -1,4 +1,4 @@
-import { code, userMeta } from "../edit";
+import { code, mouseInfo, userMeta } from "../edit";
 import Menu from "../../../main/menu";
 import newItem from "./newItem";
 import type { ArgumentBlock } from "edit/template";
@@ -821,7 +821,31 @@ export default function chestMenu(BlockIndex : number){
 			const chestItem = ChestItem.getItem(item.item);
 			itemElement = chestItem.icon();
 			itemElement.id = 'item' + String(SlotIndex);
-			console.log(itemElement);
+			itemElement.classList.add('full')
+			
+			itemElement.onmouseover = () => {
+
+				mouseInfo.innerHTML = '';
+
+				mouseInfo.style.display = 'block';
+				// It is already moved in another loop
+				// mouseInfo.style.left = e.clientX + 'px';
+				// mouseInfo.style.top = (e.clientY + 50) + 'px';
+
+				mouseInfo.append(chestItem.tooltip());
+			}
+
+			itemElement.onmousemove = e => {
+				e.stopPropagation();
+				mouseInfo.style.left = e.clientX + 'px';
+				mouseInfo.style.top = e.clientY + 'px';
+			}
+
+			itemElement.onmouseleave = e => {
+				e.stopPropagation();
+				mouseInfo.style.display = 'none';
+				mouseInfo.innerHTML = '';
+			}
 		}
 		else {
 			itemElement.id = 'empty' + String(SlotIndex);
