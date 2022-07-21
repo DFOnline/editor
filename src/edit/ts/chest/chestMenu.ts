@@ -837,10 +837,8 @@ export default function chestMenu(BlockIndex : number){
 		}
 	})
 	
-	if(document.querySelector('div#chest')){
-		chest.content.replaceWith(menuDiv);
-	}
-	else {
-		chest.open();
-	}
+	const chestDiv = document.querySelector('div#chest')
+	if(chestDiv != null) chestDiv.parentElement.replaceChild(menuDiv,chestDiv);
+	else chest.open();
+	return chest;
 }
