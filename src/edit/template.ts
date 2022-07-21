@@ -21,9 +21,14 @@ export const SelectionBlocks : BlockID[] = ["player_action", "entity_event", "en
 export type BlockSubActionID = "if_entity" | "if_game" | "if_player" | "if_var";
 export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
-export type Block = PhysicalBlock | Killable // + Killable type, used in filtering.
-export type PlacedBlock = SelectionBlock | SubActionBlock | DataBlock | Else // All the types you place
-export type PhysicalBlock = PlacedBlock | Bracket // All the types we use
+/** Everything that can be in the array. Killable is used for filtering. */
+export type Block = PhysicalBlock | Killable
+/** All types placed by the player */
+export type PlacedBlock = ArgumentBlock | DataBlock | Else 
+/** All the types with arguments */
+export type ArgumentBlock = SelectionBlock | SubActionBlock 
+/** All types that appear in the codespace */
+export type PhysicalBlock = PlacedBlock | Bracket 
 
 export interface Bracket {
     id: "bracket";
