@@ -1,5 +1,5 @@
 import type { GameValue, Item, Potion, SelectionBlock, Sound, SubActionBlock, Variable, Vector, Location, Text, Number } from "../../template";
-import { userMeta } from "../../edit";
+import { userMeta } from "../edit";
 import chestMenu from "./chestMenu";
 import ContextMenu from "../../../main/context";
 
