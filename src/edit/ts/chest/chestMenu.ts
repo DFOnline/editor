@@ -1,4 +1,8 @@
+import { code, userMeta } from "../../edit";
 import Menu from "../../../main/menu";
+import newItem from "./newItem";
+import type { ArgumentBlock } from "edit/template";
+import ChestItem from "./item/chestitem";
 
 /**
  * Opens a chest menu. If one is already open the previous one is overwritted to skip any animations.
@@ -799,8 +803,10 @@ import Menu from "../../../main/menu";
 export default function chestMenu(BlockIndex : number){
 	const menuDiv = document.createElement('div');
 	const chest = new Menu('Chest',menuDiv);
-
 	menuDiv.id = 'chest';
+
+	/** The block of the chest */
+	const block : ArgumentBlock = code.blocks[BlockIndex] as any;
 
 	[...Array(27).keys()].forEach(SlotIndex => {
 		const slot = document.createElement('div');
@@ -813,9 +819,26 @@ export default function chestMenu(BlockIndex : number){
 		itemElement.classList.add('item');
 		slot.appendChild(itemElement);
 		
+		/** The item of the slot */
+		const item = block.args.items.find(item => item.slot === SlotIndex);
+		if(item) {
+			itemElement.append(ChestItem.getItem(item.item).icon());
+		}
+		else {
+			itemElement.id = 'empty' + String(SlotIndex);
+			itemElement.classList.add('empty');
+			itemElement.ondragover = e => e.preventDefault();
+			itemElement.ondrop = event => {
+				let target = event.target as HTMLDivElement
+				block.args.items[userMeta.value].slot = Number(target.id.replace('empty',''));
+				chestMenu(BlockIndex);
+			}
+			itemElement.onclick = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
+			itemElement.oncontextmenu = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
+		}
 	})
 	
-	if(chest) {
+	if(document.querySelector('div#chest')){
 		chest.content.replaceWith(menuDiv);
 	}
 	else {
