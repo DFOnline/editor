@@ -799,7 +799,6 @@ import ChestItem from "./item/chestitem";
 // 		else return menu('Chest',menuDiv);
 // 	}
 // }
-
 export default function chestMenu(BlockIndex : number){
 	const menuDiv = document.createElement('div');
 	const chest = new Menu('Chest',menuDiv);
@@ -814,15 +813,15 @@ export default function chestMenu(BlockIndex : number){
 		slot.classList.add('slot');
 		menuDiv.append(slot);
 
-		const itemElement = document.createElement('div');
-		itemElement.id = 'item' + String(SlotIndex);
-		itemElement.classList.add('item');
-		slot.appendChild(itemElement);
+		let itemElement = document.createElement('div');
 		
 		/** The item of the slot */
 		const item = block.args.items.find(item => item.slot === SlotIndex);
 		if(item) {
-			itemElement.append(ChestItem.getItem(item.item).icon());
+			const chestItem = ChestItem.getItem(item.item);
+			itemElement = chestItem.icon();
+			itemElement.id = 'item' + String(SlotIndex);
+			console.log(itemElement);
 		}
 		else {
 			itemElement.id = 'empty' + String(SlotIndex);
@@ -836,6 +835,9 @@ export default function chestMenu(BlockIndex : number){
 			itemElement.onclick = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
 			itemElement.oncontextmenu = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
 		}
+
+		itemElement.classList.add('item');
+		slot.appendChild(itemElement);
 	})
 	
 	const chestDiv = document.querySelector('div#chest')
