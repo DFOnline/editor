@@ -1,6 +1,7 @@
-import { ActDB, findBlockTag, findBlockTagOption, mouseInfo } from "../../edit";
+import { ActDB, findBlockTag, findBlockTagOption, mouseInfo } from "../edit";
 import type { Argument, GameValue, ParsedItem, Particle, Potion, SelectionBlock, Sound, SubActionBlock } from "edit/template";
-import { dfNumber, isDeveloperMode, minecraftColorHTML, MinecraftTextCompToCodes, stripColours } from "../../../main/main";
+import { dfNumber, minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../main/main";
+import { isDeveloperMode } from "../../../main/developers";
 import { parse } from "nbt-ts";
 import itemNames from './itemnames.json';
 
@@ -8,15 +9,15 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 	mouseInfo.style.display = 'grid';
 	mouseInfo.innerHTML = '';
 	if (item.item.id === 'num' || item.item.id === 'txt') {
-		var txt = document.createElement('div');
+		let txt = document.createElement('div');
 		minecraftColorHTML(item.item.data.name,item.item.id === 'num' ? '§c' : undefined).forEach(x => txt.appendChild(x));
 		mouseInfo.append(txt);
 	}
 	else if (item.item.id === 'var'){
-		var name = document.createElement('span');
+		let name = document.createElement('span');
 		name.innerText = item.item.data.name;
 		mouseInfo.append(name);
-		var scope = document.createElement('span');
+		let scope = document.createElement('span');
 		if(item.item.data.scope === 'local'){
 			scope.innerText = 'LOCAL';
 			scope.style.color = '#55ff55'
@@ -32,81 +33,81 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		mouseInfo.append(scope);
 	}
 	else if (item.item.id === 'loc'){
-		var title = document.createElement('span');
+		let title = document.createElement('span');
 		title.innerText = 'Location';
 		title.style.color = '#55ff55';
 		mouseInfo.append(title);
-		var x = document.createElement('span');
+		let x = document.createElement('span');
 		x.innerText = 'X: ' + dfNumber(item.item.data.loc.x);
 		mouseInfo.append(x);
-		var y = document.createElement('span');
+		let y = document.createElement('span');
 		y.innerText = 'Y: ' + dfNumber(item.item.data.loc.y);
 		mouseInfo.append(y);
-		var z = document.createElement('span');
+		let z = document.createElement('span');
 		z.innerText = 'Z: ' + dfNumber(item.item.data.loc.z);
 		mouseInfo.append(z);
 		if(!item.item.data.isBlock){
-			var pitch = document.createElement('span');
+			let pitch = document.createElement('span');
 			pitch.innerText = 'p: ' + dfNumber(item.item.data.loc.pitch);
 			mouseInfo.append(pitch);
-			var yaw = document.createElement('span');
+			let yaw = document.createElement('span');
 			yaw.innerText = 'y: ' + dfNumber(item.item.data.loc.yaw);
 			mouseInfo.append(yaw);
 		}
 	}
 	else if (item.item.id === 'vec'){
-		var titlev = document.createElement('span');
+		let titlev = document.createElement('span');
 		titlev.innerText = 'Vector';
 		titlev.style.color = '#2affaa';
 		mouseInfo.append(titlev);
-		var xv = document.createElement('span');
+		let xv = document.createElement('span');
 		xv.innerText = 'X: ' + dfNumber(item.item.data.x);
 		mouseInfo.append(xv);
-		var yv = document.createElement('span');
+		let yv = document.createElement('span');
 		yv.innerText = 'Y: ' + dfNumber(item.item.data.y);
 		mouseInfo.append(yv);
-		var zv = document.createElement('span');
+		let zv = document.createElement('span');
 		zv.innerText = 'Z: ' + dfNumber(item.item.data.z);
 		mouseInfo.append(zv);
 	}
 	else if (item.item.id === 'pot'){
-		var titlepot = document.createElement('span');
+		let titlepot = document.createElement('span');
 		titlepot.innerText = 'Potion Effect';
 		titlepot.style.color = '#ff557f';
 		mouseInfo.append(titlepot);
-		var typepot = document.createElement('span');
-		typepot.innerHTML = minecraftColorHTML(ActDB.potions.find(x => stripColours(x.icon.name) === (item.item as Potion).data.pot).icon.name)[0].outerHTML
+		let typepot = document.createElement('span');
+		typepot.innerHTML = minecraftColorHTML(ActDB.potions.find(x => stripColors(x.icon.name) === (item.item as Potion).data.pot).icon.name)[0].outerHTML
 		mouseInfo.append(typepot);
 		mouseInfo.append(document.createElement('hr'));
-		var amp = document.createElement('span');
+		let amp = document.createElement('span');
 		amp.innerText = 'Amplifier: ' + String(item.item.data.amp)
 		mouseInfo.append(amp);
-		var dur = document.createElement('span');
+		let dur = document.createElement('span');
 		dur.innerText = 'Duration: ' + String(item.item.data.dur) + ' ticks';
 		mouseInfo.append(dur);
 	}
 	else if (item.item.id === 'snd'){
-		var titles = document.createElement('span');
+		let titles = document.createElement('span');
 		titles.innerText = 'Sound';
 		titles.style.color = '#5555ff';
 		titles.style.textShadow = '1px 1px #000'; // the original sound color contrasts really badly.
 		mouseInfo.append(titles);
-		var sound = document.createElement('span');
-		sound.innerHTML = minecraftColorHTML(ActDB.sounds.find(s => stripColours(s.icon.name) === (item.item as Sound).data.sound).icon.name)[0].outerHTML;
+		let sound = document.createElement('span');
+		sound.innerHTML = minecraftColorHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === (item.item as Sound).data.sound).icon.name)[0].outerHTML;
 		mouseInfo.append(sound);
 		mouseInfo.append(document.createElement('hr'))
-		var pitchs = document.createElement('span');
+		let pitchs = document.createElement('span');
 		pitchs.innerText = 'Pitch: ' + String(dfNumber(item.item.data.pitch));
 		mouseInfo.append(pitchs)
-		var volume = document.createElement('span');
+		let volume = document.createElement('span');
 		volume.innerText = 'Volume: ' + String(dfNumber(item.item.data.vol));
 		mouseInfo.append(volume);
 	}
 	else if (item.item.id === 'g_val'){
-		var gval = document.createElement('span');
-		gval.innerHTML = minecraftColorHTML(ActDB.gameValues.find(g => stripColours(g.icon.name) === (item.item as GameValue).data.type).icon.name)[0].outerHTML;
+		let gval = document.createElement('span');
+		gval.innerHTML = minecraftColorHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === (item.item as GameValue).data.type).icon.name)[0].outerHTML;
 		mouseInfo.append(gval);
-		var selection = document.createElement('span');
+		let selection = document.createElement('span');
 		selection.innerText = item.item.data.target;
 		if(item.item.data.target === 'Selection' || item.item.data.target === 'Default'){
 			selection.style.color = '#55FF55'
@@ -131,24 +132,24 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		
 		mouseInfo.append(document.createElement('hr'));
 		const desc = document.createElement('span');
-		const newLocal = ActDB.gameValues.find(g => stripColours(g.icon.name) === (item.item as GameValue).data.type);
+		const newLocal = ActDB.gameValues.find(g => stripColors(g.icon.name) === (item.item as GameValue).data.type);
 		desc.innerText = newLocal.icon.description.join('\n');
 		mouseInfo.append(desc);
 	}
 	else if (item.item.id === 'part'){
-		var titlep = document.createElement('span');
+		let titlep = document.createElement('span');
 		titlep.innerText = 'Particle Effect';
 		titlep.style.color = '#aa55ff';
 		titlep.style.textShadow = '1px 1px #000';
 		mouseInfo.append(titlep);
-		var par = document.createElement('span');
-		par.innerHTML = minecraftColorHTML(ActDB.particleCategories.find(p => stripColours(p.icon.name) === (item.item as Particle).data.particle).icon.name)[0].outerHTML;
+		let par = document.createElement('span');
+		par.innerHTML = minecraftColorHTML(ActDB.particleCategories.find(p => stripColors(p.icon.name) === (item.item as Particle).data.particle).icon.name)[0].outerHTML;
 		mouseInfo.append(par);
 		mouseInfo.append(document.createElement('hr'));
-		var amount = document.createElement('span');
+		let amount = document.createElement('span');
 		amount.innerText = "Amount: " + String(item.item.data.cluster.amount);
 		mouseInfo.append(amount);
-		var spread = document.createElement('span');
+		let spread = document.createElement('span');
 		spread.innerText = 'Spread: ' + dfNumber(item.item.data.cluster.horizontal) + ' ' + dfNumber(item.item.data.cluster.vertical); // string templates go brrrrr // tbh this is mostly function so I think a string template would look worse but atleast I mention as such in a massive line to make mild refrence to the existance to string litterals, their often place in strings generated like this and their still uselessness here despite what they are usefull for.
 		mouseInfo.append(spread);
 
@@ -207,7 +208,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		})
 	}
 	else if(item.item.id === 'item'){
-		var data = parse(item.item.data.item) as unknown as ParsedItem;
+		let data = parse(item.item.data.item) as unknown as ParsedItem;
 		if(isDeveloperMode()) console.log(data);
 
 		if(!data.tag){
@@ -215,7 +216,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		}
 
 
-		var ItemName = document.createElement('span');
+		let ItemName = document.createElement('span');
 		if(data.tag.display && data.tag.display.Name){
 			minecraftColorHTML(MinecraftTextCompToCodes(data.tag.display.Name)).forEach(e => ItemName.append(e));
 
@@ -228,7 +229,7 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 
 		if(data.tag.display && data.tag.display.Lore && data.tag.display.Lore.length > 0){
 			data.tag.display.Lore.forEach((l : string) => {
-				var lore = document.createElement('span');
+				let lore = document.createElement('span');
 				minecraftColorHTML(MinecraftTextCompToCodes(l)).forEach(e => lore.append(e));
 				mouseInfo.append(lore);
 			})
@@ -237,20 +238,20 @@ export default function tooltip(item : Argument, block : SelectionBlock | SubAct
 		mouseInfo.append(document.createElement('hr'));
 
 
-		var ItemType = document.createElement('span');
+		let ItemType = document.createElement('span');
 		ItemType.innerText = data.id;
 		ItemType.style.color = 'gray';
 		ItemType.style.textShadow = '1px 1px #000';
 		mouseInfo.append(ItemType);
 
-		var ItemCount = document.createElement('span');
+		let ItemCount = document.createElement('span');
 		ItemCount.innerText = 'Count: ' + data.Count.value;
 		ItemCount.style.color = 'gray';
 		ItemCount.style.textShadow = '1px 1px #000';
 		mouseInfo.append(ItemCount);
 	}
 	else {
-		var info = document.createElement('span');
+		let info = document.createElement('span');
 		info.innerText = "It seems this item type\nisn't implemented yet."
 		info.style.color = 'red';
 		mouseInfo.append(info);

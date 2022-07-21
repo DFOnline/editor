@@ -1,16 +1,19 @@
-import type { Template } from "edit/template";
+import type { Template } from "../edit/template";
 import { inflate, gzip } from "pako";
+import { developerMenu } from "./developers";
 
 export let cuopen = false;
 
 /**
  * Shows a popup like the one saying "Couldn't connect to codeutilties"
  * @param message A message to show in the popup
+ * @param type The type of message to show, changes style
  */
-export function snackbar(message : string){
-    var bar = document.createElement('span')
-    bar.innerText = message
-    bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}}
+export function snackbar(message : string, type: 'error' | 'development' | '' = ''){
+    const bar = document.createElement('span');
+    bar.innerText = message;
+    bar.classList.add(type);
+    bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}};
     bar.onanimationend = event => (event.target as HTMLElement).remove();
     document.getElementById('snackbars').appendChild(bar);
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
@@ -22,11 +25,11 @@ export function snackbar(message : string){
  * @param content HTMLElement object of what the menu should contain
  */
 export function menu(title : string, content : HTMLElement = document.createElement('span')){
-    var bg = document.createElement('div');
+    let bg = document.createElement('div');
     bg.classList.add('background');
     setTimeout(() => {
         bg.onclick = event => {
-            var hit = event.target as HTMLElement
+            let hit = event.target as HTMLElement
             if(hit.classList.contains('background')){
                 if(!hit.classList.contains('fade')){
                     hit.classList.add('fade')
@@ -37,8 +40,8 @@ export function menu(title : string, content : HTMLElement = document.createElem
             }
         }
     },100)
-    var screen = document.createElement('div');
-    var obj = document.createElement('h1');
+    let screen = document.createElement('div');
+    let obj = document.createElement('h1');
     obj.innerText = title;
     screen.appendChild(obj);
     screen.appendChild(content);
@@ -48,11 +51,15 @@ export function menu(title : string, content : HTMLElement = document.createElem
     return bg;
 }
 
+/**
+ * @deprecated The plot for, and the backend for accounts are gone.
+ */
 export const user : {name: string, auth: string, token : string} = localStorage.user ? JSON.parse(localStorage.user) : undefined
 /**
  * Login to DFOnline server with Username and Password.
  * @param name Username
  * @param auth Password
+ * @deprecated The plot for, and the backend for accounts are gone.
  */
 export function login(name : string, auth : string){
     fetch('https://WebBot.georgerng.repl.co/auth/login',{
@@ -82,7 +89,7 @@ export function startup(){
         mouseInfo.style.left = String(e.clientX + 10) + 'px';
     }
     let urlParams = new URLSearchParams(location.search)
-    var urlMessage = urlParams.get('message');
+    let urlMessage = urlParams.get('message');
     if(urlMessage){
         snackbar(urlMessage)
     }
@@ -99,18 +106,17 @@ export function decodeTemplate(base64data : string) : Template{
         return e.charCodeAt(0);
     });
     const binData = new Uint8Array(uint);
-    const data = inflate(binData);
-    const string = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []).replace(/Â§/g,'\u00A7')
+    const string = inflate(binData,{to: 'string'});
     return JSON.parse(string);
 }
 
 export function encodeTemplate(codedata : string){
-    var data = gzip(codedata);
-    var data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    let data = gzip(codedata);
+    let data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
     return btoa(data2);
 }
 
-export function stripColours(text : string){
+export function stripColors(text : string){
     return text.replace(/[&§][\dA-FK-ORX]/gi,'');
 }
 
@@ -149,7 +155,7 @@ export function MinecraftTextCompToCodes(component : string | object) : string{
         "reset": "r"
     }
 
-    var text = '\u00A7r';
+    let text = '\u00A7r';
     if(workComponents.bold){
         text += '\u00A7l';
     }
@@ -216,13 +222,13 @@ export function minecraftColorHTML(text : string, defaultColor = '§r',font?:str
         'r': {css: 'color: #ffffff;', reset: true},
         'x': {css: '', reset: true},
     };
-    var last = styleMap['r'].css;
-    var hexColor = 0;
+    let last = styleMap['r'].css;
+    let hexColor = 0;
     return (defaultColor + text).replace(/[Âá]/g, '').match(/[&§][\dA-FK-ORX].*?(?=[&§][\dA-FK-ORX])|[&§][\dA-FK-ORX].*/gi).map((str : string) => {
-            var newStr = str.replace(/^[&§][\dA-FK-ORX]/gi,'');
-            var element = document.createElement('span');
+            let newStr = str.replace(/^[&§][\dA-FK-ORX]/gi,'');
+            let element = document.createElement('span');
             element.innerText = newStr;
-            var style = styleMap[str[1] as 'r'];
+            let style = styleMap[str[1] as 'r'];
             if(style.reset){
                 if(str[1] === 'x'){
                     hexColor = 6;
@@ -269,49 +275,10 @@ if(sessionStorage.getItem('apiEndpoint') === null){
 
 document.addEventListener('keydown',(e) => {
     if(e.key === 'D' && e.shiftKey && e.ctrlKey && e.altKey){
-        console.log('yah')
-        let devMenu = document.createElement('div');
-
-        let info = document.createElement('p');
-        info.innerText = 'This is the dev menu.<br>You can change the api endpoint here, but only if you know what you are doing.';
-
-        let apiEndpointLabel = document.createElement('label');
-        apiEndpointLabel.innerText = 'API Endpoint: ';
-
-        let apiEndpoint = document.createElement('input');
-        apiEndpoint.type = 'text';
-        apiEndpoint.value = sessionStorage.getItem('apiEndpoint');
-        apiEndpoint.oninput = () => {
-            sessionStorage.setItem('apiEndpoint',apiEndpoint.value);
-        };
-        apiEndpoint.placeholder = 'api endpoint';
-
-        apiEndpointLabel.appendChild(apiEndpoint);
-        devMenu.appendChild(apiEndpointLabel);
-
-        devMenu.append(document.createElement('br'));
-
-        const developerModeToggleLabel = document.createElement('label');
-        developerModeToggleLabel.innerText = 'Developer Mode ';
-        const developerModeToggle = document.createElement('input');
-        developerModeToggle.type = 'checkbox';
-        developerModeToggle.checked = sessionStorage.getItem('developerMode') === 'true';
-        developerModeToggle.onchange = () => {
-            sessionStorage.setItem('developerMode',developerModeToggle.checked.toString());
-        };
-        developerModeToggleLabel.appendChild(developerModeToggle);
-        devMenu.appendChild(developerModeToggleLabel);
-
-        menu('Developer Menu',devMenu);
+        if   (!developerMenu.isOpen) developerMenu.open();
+        else                         developerMenu.close();
+        
     }
 })
-
-/**
- * Gets if the developer mode, which can be set in the dev menu.
- * @returns If the developer mode is enabled or not.
- */
-export function isDeveloperMode() : boolean{
-    return sessionStorage.getItem('developerMode') === 'true';
-}
 
 export const templateLike = /H4sIA*[0-9A-Za-z+/]*={0,2}/;

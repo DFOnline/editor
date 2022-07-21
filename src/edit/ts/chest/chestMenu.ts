@@ -3,7 +3,6 @@ import Menu from "../../../main/menu";
 import newItem from "./newItem";
 import type { ArgumentBlock } from "edit/template";
 import ChestItem from "./item/chestitem";
-
 /**
  * Opens a chest menu. If one is already open the previous one is overwritted to skip any animations.
  * @param id The id of the block to open the chest of.

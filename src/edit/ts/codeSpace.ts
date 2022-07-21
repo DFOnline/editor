@@ -1,7 +1,9 @@
-import { code, compareTemplate, userMeta } from "../edit";
-import { isDeveloperMode } from "../../main/main";
+import { code, compareTemplate, userMeta } from "./edit";
+import { isDeveloperMode } from "../../main/developers";
 import HTMLCodeBlockElement from "./codeblock";
 import { diffArrays } from 'diff'
+import type { Block } from "edit/template";
+import User from "../../main/user";
 
 export function rendBlocks(){
 
@@ -43,14 +45,16 @@ export function rendBlocks(){
 			if(isDeveloperMode()) console.log(block);
 
 			
-			if(block.id === 'bracket' && block.direct === 'close') bracketIndex--;
+			if(block.id === 'bracket' && block.direct === 'close' && User.shiftBlocks) bracketIndex--;
+			// make sure it is not below 0
+			if(bracketIndex < 0) bracketIndex = 0;
 			const blockDiv = new HTMLCodeBlockElement(block, i,bracketIndex);
-			if(block.id === 'bracket' && block.direct === 'open') bracketIndex++;
+			if(block.id === 'bracket' && block.direct === 'open' && User.shiftBlocks) bracketIndex++;
 
 			codeSpace.append(blockDiv);
 		})
 	}
-	var end = document.createElement('div')
+	let end = document.createElement('div')
 	end.classList.add('block');
 	codeSpace.append(end);
 
@@ -58,7 +62,7 @@ export function rendBlocks(){
 	codeSpace.ondrop = e => {
 		e.stopPropagation();
 		if(userMeta.type === 'newBlock'){
-			code.blocks.push(userMeta.value);
+			userMeta.value.forEach((block : Block) => {code.blocks.push(block)});
 			rendBlocks();
 		}
 	}
