@@ -15,11 +15,11 @@ export default abstract class ChestItem {
     abstract valueContext(id : number) : ContextMenu;
 
     abstract icon() : HTMLDivElement;
-}
 
-export function getItem(item : Item){
-    switch(item.id){
-        case 'num': return new Num(item);
-        default: return null;
+    static getItem(item : Item){
+        switch(item.id){
+            case 'num': return new Num(item);
+            default: return null;
+        }
     }
 }
