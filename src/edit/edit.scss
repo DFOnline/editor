@@ -113,7 +113,7 @@ $codeBlockSize: 20em;
         }
     }
     .item {
-        width:unset;
+        width: unset;
         display: flex;
         position: absolute;
         $add: -3%;
@@ -132,6 +132,10 @@ $codeBlockSize: 20em;
             bottom: -10%;
             font-size: larger;
         }
+        &.full {
+            cursor: none;
+        }
+
     }
 }
 
