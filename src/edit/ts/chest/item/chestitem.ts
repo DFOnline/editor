@@ -113,6 +113,13 @@ export class Num extends ChestItem {
         
         return itemElement
     }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        tooltip.innerText = `${this.item.data.name}`;
+        tooltip.style.color = 'rgb(255, 85, 85)';
+        return tooltip;
+    }
 }
 
 
