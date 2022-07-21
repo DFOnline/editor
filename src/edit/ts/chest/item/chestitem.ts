@@ -12,10 +12,24 @@ export default abstract class ChestItem {
         this.item = item;
     }
 
+
     abstract contextMenu(id : number) : ContextMenu;
 
+    /**
+     * Get the representation of the item as a HTML element.
+     */
     abstract icon() : HTMLDivElement;
 
+    /**
+     * A HTML div with all the tooltip information.
+     */
+    abstract tooltip() : HTMLDivElement;
+
+    /**
+     * Dynamically get the item based of it's type.
+     * @param item The item to parse.
+     * @returns Any type of item, matching the type of the item.
+     */
     static getItem(item : Item){
         return getItem(item);
     }
@@ -39,9 +53,16 @@ export class UnknownItem extends ChestItem {
         const itemElement = document.createElement('div');
 
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
-        itemElement.classList.add('pulse');
+        itemElement.classList.add('fadepulse');
 
         return itemElement
+    }
+
+    tooltip(){
+        const tooltip = document.createElement('div');
+        tooltip.innerText = `This item couldn't be parsed.`;
+        tooltip.style.color = '#ff0000';
+        return tooltip;
     }
 }
 
