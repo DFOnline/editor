@@ -1,6 +1,7 @@
 import chestMenu from "../chestMenu";
-import type { Item, Number } from "../../../template";
+import type { ArgumentBlock, Item, Number } from "../../../template";
 import ContextMenu from "../../../../main/context";
+import { code } from "../../edit";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -13,7 +14,7 @@ export default abstract class ChestItem {
     }
 
 
-    abstract contextMenu(id : number) : ContextMenu;
+    abstract contextMenu(Block : number,Slot : number) : ContextMenu;
 
     /**
      * Get the representation of the item as a HTML element.
@@ -45,7 +46,7 @@ export class UnknownItem extends ChestItem {
         super(item);
     }
 
-    contextMenu(_id: number): ContextMenu {
+    contextMenu(_Block : number, _Slot: number): ContextMenu {
         return new ContextMenu('Unknown',[],true);
     }
 
@@ -76,20 +77,15 @@ export class Num extends ChestItem {
         super(item);
     }
 
-    contextMenu(id : number): ContextMenu {
+    contextMenu(Block: number, Slot: number): ContextMenu {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
         value.onkeydown = e => {
             if(e.key === 'Enter'){
-                if(!e.shiftKey){
-                    this.item.data.name = value.value;
-                    chestMenu(id);
-                    ctxBox.close();
-                }
-                else{
-                    value.value += '\n';
-                }
+                this.item.data.name = value.value;
+                chestMenu(Slot);
+                ctxBox.close();
             }
             if(e.key === 'Escape'){
                 ctxBox.close();
@@ -97,7 +93,16 @@ export class Num extends ChestItem {
         }
         value.onclick = e => e.stopPropagation();
 
-        const ctxBox = new ContextMenu('Number',[value]);
+        /**
+         * @TODO finish this
+         */
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => {
+            ctxBox.close();
+        }
+
+        const ctxBox = new ContextMenu('Number',[value,deleteButton]);
 
         return ctxBox;
     }

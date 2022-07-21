@@ -848,7 +848,16 @@ export default function chestMenu(BlockIndex : number){
 				mouseInfo.innerHTML = '';
 			}
 
-			console.log(chestItem.movable);
+
+			itemElement.oncontextmenu = e => {
+				e.stopPropagation();
+				if(userMeta.canEdit){
+					e.preventDefault();
+					e.stopPropagation();
+					chestItem.contextMenu(BlockIndex,BlockIndex).toggle(e);
+				}
+			}
+
 
 			if(chestItem.movable){
 				itemElement.draggable = true;
