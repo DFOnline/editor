@@ -5,7 +5,8 @@
     src:url("./MinecraftRegular-Bmg3.otf") format("opentype");
 }
 
-$codeBlockSize: min(300px,80vh);
+// $codeBlockSize: min(300px,80vh);
+$codeBlockSize: 20em;
 #codeBlocks {
     height: 100vh;
     overflow: hidden;
@@ -21,30 +22,30 @@ $codeBlockSize: min(300px,80vh);
         .mat {
             display: grid;
             place-items: center;
-            &.event {background-image: url(../media/blocks/event.png);}
-            &.player_action {background-image: url(../media/blocks/player_action.png);}
-            &.if_player {background-image: url(../media/blocks/if_player.png);}
-            &.process {background-image: url(../media/blocks/process.png);}
-            &.start_process {background-image: url(../media/blocks/start_process.png);}
-            &.func {background-image: url(../media/blocks/func.png);}
-            &.call_func {background-image: url(../media/blocks/call_func.png);}
-            &.entity_event {background-image: url(../media/blocks/entity_event.png);}
-            &.entity_action {background-image: url(../media/blocks/entity_action.png);}
-            &.if_entity {background-image: url(../media/blocks/if_entity.png);}
-            &.if_var {background-image: url(../media/blocks/if_var.png);}
-            &.set_var {background-image: url(../media/blocks/set_var.png);}
-            &.if_game {background-image: url(../media/blocks/if_game.png);}
-            &.game_action {background-image: url(../media/blocks/game_action.png);}
-            &.repeat {background-image: url(../media/blocks/repeat.png);}
-            &.control {background-image: url(../media/blocks/control.png);}
-            &.select_obj {background-image: url(../media/blocks/select_obj.png);}
-            &.else {background-image: url(../media/blocks/else.png);}
-            &.loader { background-image: url(../media/blocks/loader.png);}
-            &.call_loader { background-image: url(../media/blocks/call_loader.png);}
-            &.piston {
-                background-image: url(../media/blocks/piston.png);
-                &.repeat {background-image: url(../media/blocks/pistonSticky.png);}
-                &.close {transform: scaleX(-1); width: $codeBlockSize; background-position: left; display: flex;}
+            &.event         { background-image: url( ../media/blocks/event.png         );}
+            &.player_action { background-image: url( ../media/blocks/player_action.png );}
+            &.if_player     { background-image: url( ../media/blocks/if_player.png     );}
+            &.process       { background-image: url( ../media/blocks/process.png       );}
+            &.start_process { background-image: url( ../media/blocks/start_process.png );}
+            &.func          { background-image: url( ../media/blocks/func.png          );}
+            &.call_func     { background-image: url( ../media/blocks/call_func.png     );}
+            &.entity_event  { background-image: url( ../media/blocks/entity_event.png  );}
+            &.entity_action { background-image: url( ../media/blocks/entity_action.png );}
+            &.if_entity     { background-image: url( ../media/blocks/if_entity.png     );}
+            &.if_let        { background-image: url( ../media/blocks/if_var.png        );}
+            &.set_let       { background-image: url( ../media/blocks/set_var.png       );}
+            &.if_game       { background-image: url( ../media/blocks/if_game.png       );}
+            &.game_action   { background-image: url( ../media/blocks/game_action.png   );}
+            &.repeat        { background-image: url( ../media/blocks/repeat.png        );}
+            &.control       { background-image: url( ../media/blocks/control.png       );}
+            &.select_obj    { background-image: url( ../media/blocks/select_obj.png    );}
+            &.else          { background-image: url( ../media/blocks/else.png          );}
+            &.loader        { background-image: url( ../media/blocks/loader.png        );}
+            &.call_loader   { background-image: url( ../media/blocks/call_loader.png   );}
+            &.piston        {
+                              background-image: url(../media/blocks/piston.png);
+                &.repeat    { background-image: url(../media/blocks/pistonSticky.png   );}
+                &.close     { transform: scaleX(-1); width: $codeBlockSize; background-position: left; display: flex;}
             }
         }
         .air {background-image: none;}
@@ -63,6 +64,7 @@ $codeBlockSize: min(300px,80vh);
                 display: block;
                 height: min-content;
                 font-size: calc((14 / 300 /* magic */) * $codeBlockSize);
+                font-size: calc($codeBlockSize / 20);
                 color: black;
                 min-height: calc((18 / 300) * $codeBlockSize);
                 user-select: none;
@@ -218,8 +220,8 @@ header {
         display: flex;
         div {
             background-size: cover;
-            width: calc((100vw / 18) - 3px);
-            height: calc((100vw / 18) - 3px);
+            width: 5em;
+            height: 5em;
         }
     }
 }
@@ -229,12 +231,13 @@ header {
     background-size: cover;
 
     width: 60px;
-    // make the element as tall as it is wide
-    &:before {
-        content: "";
-        display: block;
-        padding-top: 100%;  /* initial ratio of 1:1*/
-    }
+    aspect-ratio: 1 / 1;
+    // // make the element as tall as it is wide
+    // &:before {
+    //     content: "";
+    //     display: block;
+    //     padding-top: 100%;  /* initial ratio of 1:1*/
+    // }
 
     border: none;
     box-shadow: none;

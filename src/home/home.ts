@@ -1,17 +1,17 @@
 import Menu from "../main/menu";
-import { startup, menu, login, codeutilities, user, templateLike } from "../main/main"
+import { templateLike } from "../main/main"
 
 Menu.setup();
 
 // function importMenu(code = ""){
-//     var div = document.createElement('div');
+//     let div = document.createElement('div');
 
-//     var toptext = document.createElement('p');
+//     let toptext = document.createElement('p');
 //     toptext.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
 //     div.appendChild(toptext);
 
-//     var imports = document.createElement('div');
-//     var importField = document.createElement('input');
+//     let imports = document.createElement('div');
+//     let importField = document.createElement('input');
 //     importField.type = "text";
 //     importField.placeholder = "Template Data";
 //     importField.onkeyup = event => {if(event.key === "Enter"){activateImport.click()}}
@@ -19,11 +19,11 @@ Menu.setup();
 //     importField.value = code;
 //     imports.appendChild(importField);
 
-//     var activateImport = document.createElement('button')
+//     let activateImport = document.createElement('button')
 //     activateImport.innerText = "Go!"
 //     activateImport.style.marginLeft = "5px"
 //     activateImport.onclick = () => {
-//         var data = importField.value.match(templateLike);
+//         let data = importField.value.match(templateLike);
 //         if(data !== null){
 //             sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
 //         }
@@ -31,14 +31,14 @@ Menu.setup();
 //     imports.appendChild(activateImport)
 //     div.appendChild(imports)
 //     if(cuopen){
-//         var cuad = document.createElement('p')
+//         let cuad = document.createElement('p')
 //         cuad.innerText = "Or, because you have codeutilities you can go into minecraft, hold your template and type /sendtemplate!"
 //         div.appendChild(cuad)
 //     }
 //     menu('Import',div)
 // }
 
-class ImportMenu extends Menu {
+export class ImportMenu extends Menu {
     constructor(code = ''){
         const content = document.createElement('div');
         const p = document.createElement('p');
@@ -82,42 +82,3 @@ createMenuButton.onclick = () => {
 createMenuContents.append(createMenuButton);
 
 export const createMenu = new Menu('Create Template', createMenuContents);
-
-window.onload = () => {
-    startup()
-    var userBox = (document.getElementById('user') as HTMLInputElement);
-    if(user){
-        userBox.innerHTML = user.name;
-        userBox.onclick = () => {
-            var menuDiv = document.createElement('div');
-            var updateButton = document.createElement('button');
-            updateButton.innerText = "Relog";
-            updateButton.onclick = () => login(user.name,user.auth);
-            menuDiv.appendChild(updateButton);
-            var logoutButton = document.createElement('button');
-            logoutButton.innerText = "Logout";
-            logoutButton.onclick = () => {delete(localStorage.user); location.reload();};
-            menuDiv.appendChild(logoutButton);
-            menu(user.name,menuDiv);
-        }
-    } else {
-        userBox.onclick = () => location.href = ('./login');
-    }
-    var importButton = document.getElementById('import') as HTMLButtonElement;
-    importButton.onclick = () => {new ImportMenu().open()};
-    document.querySelector('button#start').addEventListener('click',() => {
-        createMenu.open();
-    })
-}
-
-codeutilities.onmessage = event => {
-    var data = JSON.parse(event.data)
-    if(data.type === "template"){
-        var importField = (document.getElementById('importfield') as HTMLInputElement);
-        try{
-            importField.value = JSON.parse(data.received).code
-        }catch{
-            new ImportMenu(JSON.parse(data.received).code).open();
-        }
-    }
-}

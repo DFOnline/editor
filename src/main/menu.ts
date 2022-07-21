@@ -6,6 +6,7 @@ let menusDiv : HTMLDivElement;
 export default class Menu {
     title : string;
     content : HTMLElement;
+    isOpen : boolean;
 
     private background : HTMLDivElement;
     private modal : HTMLDivElement;
@@ -14,6 +15,7 @@ export default class Menu {
     constructor(title : string, content : HTMLElement = document.createElement('span')) {
         this.title = title;
         this.content = content;
+        this.isOpen = false;
 
         this.background = document.createElement('div');
         this.background.classList.add('background');
@@ -32,10 +34,13 @@ export default class Menu {
     }
 
     /**
-     * Opens the menu.
+     * Opens the menu. Can only be done once, if you want another create a seperate instance of the object.
      */
     open(){
-        menusDiv.appendChild(this.background);
+        if(!this.isOpen){
+            this.isOpen = true;
+            menusDiv.appendChild(this.background);
+        }
     }
 
     /**
@@ -45,12 +50,14 @@ export default class Menu {
     close(instant = false){
         if(instant){
             this.background.remove();
+            this.isOpen = false;
         }
         else{
             if(!this.background.classList.contains('fade')){
                 this.background.classList.add('fade');
             }
             this.background.addEventListener('animationend', () => {
+                this.isOpen = false;
                 this.background.remove();
                 this.background.classList.remove('fade');
             }, {once: true});

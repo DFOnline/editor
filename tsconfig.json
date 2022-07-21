@@ -2,10 +2,10 @@
 	"include": ["src", "types"],
 	"compilerOptions": {
 		"downlevelIteration": true,
-		"target": "ES3",
 		"moduleResolution": "node",
 		"jsx": "preserve",
 		"baseUrl": "./src",
+		"target": "ES6",
 		"allowSyntheticDefaultImports": true,
 		"importsNotUsedAsValues": "error",
 		/* more strict checking for errors that per-file transpilers like `esbuild` would crash */
