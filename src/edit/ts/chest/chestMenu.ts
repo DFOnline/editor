@@ -816,7 +816,8 @@ export default function chestMenu(BlockIndex : number){
 		let itemElement = document.createElement('div');
 		
 		/** The item of the slot */
-		const item = block.args.items.find(item => item.slot === SlotIndex);
+		const ArrayIndex = block.args.items.findIndex(item => item.slot === SlotIndex);
+		const item = block.args.items[ArrayIndex];
 		if(item) {
 			const chestItem = ChestItem.getItem(item.item);
 			itemElement = chestItem.icon();
@@ -846,14 +847,31 @@ export default function chestMenu(BlockIndex : number){
 				mouseInfo.style.display = 'none';
 				mouseInfo.innerHTML = '';
 			}
+
+			console.log(chestItem.movable);
+
+			if(chestItem.movable){
+				itemElement.draggable = true;
+
+				itemElement.ondragstart = e => {
+					e.stopPropagation();
+
+					e.dataTransfer.setData('application/x.dfitem',JSON.stringify(item));
+					e.dataTransfer.setData('arrayIndex',String(ArrayIndex));
+					e.dataTransfer.effectAllowed = 'move';
+					e.dataTransfer.setDragImage(itemElement,0,0);
+				}
+			}
 		}
 		else {
 			itemElement.id = 'empty' + String(SlotIndex);
 			itemElement.classList.add('empty');
 			itemElement.ondragover = e => e.preventDefault();
-			itemElement.ondrop = event => {
-				let target = event.target as HTMLDivElement
-				block.args.items[userMeta.value].slot = Number(target.id.replace('empty',''));
+			itemElement.ondrop = e => {
+				e.stopPropagation();
+				e.preventDefault();
+				const target = e.target as HTMLDivElement;
+				(code.blocks[BlockIndex] as ArgumentBlock).args.items[Number(e.dataTransfer.getData('arrayIndex'))].slot = Number(target.id.replace('empty',''));
 				chestMenu(BlockIndex);
 			}
 			itemElement.onclick = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
