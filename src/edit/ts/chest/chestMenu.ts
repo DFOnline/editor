@@ -869,6 +869,26 @@ export default function chestMenu(BlockIndex : number){
 					e.dataTransfer.setData('arrayIndex',String(ArrayIndex));
 					e.dataTransfer.effectAllowed = 'move';
 					e.dataTransfer.setDragImage(itemElement,0,0);
+
+					mouseInfo.style.display = 'none';
+				}
+
+				itemElement.ondragover = e => e.preventDefault();
+				itemElement.ondrop = e => {
+					console.log(e)
+					e.stopPropagation();
+					e.preventDefault();
+				
+					const targetIndex = Number((e.target as HTMLDivElement).id.replace('item',''));
+					const draggingIndex = Number(e.dataTransfer.getData('arrayIndex'));
+
+					console.log(draggingIndex,targetIndex);
+					if(draggingIndex !== targetIndex){
+						block.args.items[draggingIndex].slot = targetIndex;
+						block.args.items[targetIndex].slot = draggingIndex;
+					}
+
+					chestMenu(BlockIndex);
 				}
 			}
 		}
