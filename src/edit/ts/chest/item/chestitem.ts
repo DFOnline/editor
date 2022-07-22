@@ -1,7 +1,8 @@
 import chestMenu from "../chestMenu";
-import type { ArgumentBlock, Item, Number } from "../../../template";
+import type { ArgumentBlock, Item, Number, Text } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { code } from "../../edit";
+import { minecraftColorHTML } from "../../../../main/main";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -25,6 +26,11 @@ export default abstract class ChestItem {
      * A HTML div with all the tooltip information.
      */
     abstract tooltip() : HTMLDivElement;
+
+    /**
+     * Returns the data in the item as a human readable string.
+     */
+    abstract repr() : string;
 
     /**
      * Dynamically get the item based of it's type.
@@ -64,6 +70,10 @@ export class UnknownItem extends ChestItem {
         tooltip.innerText = `This item couldn't be parsed.`;
         tooltip.style.color = '#ff0000';
         return tooltip;
+    }
+
+    repr(): string {
+        return `unkown ${this.item}`;
     }
 }
 
@@ -126,12 +136,74 @@ export class Num extends ChestItem {
         tooltip.style.color = 'rgb(255, 85, 85)';
         return tooltip;
     }
+
+    repr(): string {
+        return `num ${this.item.data.name}`;
+    }
 }
 
+export class Txt extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
+    item : Text;
+
+    movable = true;
+
+    constructor(item : Text){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const value = document.createElement('input');
+
+        value.value = this.item.data.name;
+        value.onkeydown = e => {
+            if(e.key === 'Enter'){
+                this.item.data.name = value.value;
+                chestMenu(Slot);
+                ctxBox.close();
+            }
+            if(e.key === 'Escape'){
+                ctxBox.close();
+            }
+        }
+        value.onclick = e => e.stopPropagation();
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => {
+            const block = code.blocks[Block] as ArgumentBlock;
+            const index = block.args.items.findIndex(slot => slot.slot === Slot);
+            block.args.items.splice(index,1);
+            chestMenu(Block);
+            ctxBox.close();
+        }
+
+        const ctxBox = new ContextMenu('Text',[value,deleteButton]);
+
+        return ctxBox;
+    }
+
+    icon(){
+        const itemElement = document.createElement('div');
+        itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
+        return itemElement
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        minecraftColorHTML(this.item.data.name).forEach(color => tooltip.append(color));
+        return tooltip;
+    }
+
+    repr(): string {
+        return `txt ${this.item.data.name.replace('\n','\\n')}`;
+    }
+}
 
 function getItem(item : Item){
     switch(item.id){
         case 'num': return new Num(item);
+        case 'txt': return new Txt(item);
         default: return new UnknownItem(item);
     }
 }
