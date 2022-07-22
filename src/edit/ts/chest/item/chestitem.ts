@@ -93,12 +93,13 @@ export class Num extends ChestItem {
         }
         value.onclick = e => e.stopPropagation();
 
-        /**
-         * @TODO finish this
-         */
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => {
+            const block = code.blocks[Block] as ArgumentBlock;
+            const index = block.args.items.findIndex(slot => slot.slot === Slot);
+            block.args.items.splice(index,1);
+            chestMenu(Block);
             ctxBox.close();
         }
 
