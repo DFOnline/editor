@@ -350,7 +350,6 @@ function locationEditor(item : Location,Slot: number,e: Event,lx: HTMLInputEleme
 }
 
 /* 
-TODO: Location
 TODO: Vector
 TODO: Potion
 TODO: Sound
