@@ -136,7 +136,20 @@ export class Num extends ChestItem {
         count.innerText = this.item.data.name;
         count.style.color = "rgb(255, 85, 85)"
         itemElement.append(count);
-        
+
+        // // when the user uses the scroll wheel
+        // itemElement.onwheel = e => {
+        //     const count = parseInt(this.item.data.name);
+        //     if(!isNaN(count)){
+        //         if(e.deltaY < 0){
+        //             this.item.data.name = (count + 1).toString();
+        //         }
+        //         if(e.deltaY > 0){
+        //             this.item.data.name = (count - 1).toString();
+        //         }
+        //     }
+        // }
+
         return itemElement
     }
 
