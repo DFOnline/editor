@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { code } from "../../edit";
+import { ActDB, code } from "../../edit";
 import { minecraftColorHTML } from "../../../../main/main";
 
 export default abstract class ChestItem {
@@ -409,6 +409,66 @@ export class Vec extends ChestItem {
 
     repr(): string {
         return `vec <${this.item.data.x},${this.item.data.y},${this.item.data.z}>`;
+    }
+}
+
+export class Pot extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/DRAGONS_BREATH.png';
+    item : Potion;
+
+    movable = true;
+
+    constructor(item : Potion){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+
+        // FIXME: finish this value editor
+        const editor = document.createElement('div');
+        const search = document.createElement('input');
+        search.type = 'text';
+        search.placeholder = 'Potion';
+        search.onchange = () => {
+            results.innerHTML = '';
+            ActDB.potions.filter(p => p.potion.toLowerCase().startsWith(search.value.toLowerCase())).forEach(p => {
+                const result = document.createElement('div');
+                result.innerText = p.potion;
+                result.onclick = () => {
+                    search.value = p.potion;
+                    this.item.data.potion = p.potion;
+                }
+                results.append(result);
+            }
+        }
+        const results = document.createElement('div');
+
+        const valueCtx = new ContextMenu('Value',[search,results]);
+
+        const durationLabel = document.createElement('label');
+        durationLabel.innerText = 'Duration:';
+        const duration = document.createElement('input');
+        duration.type = 'number';
+        duration.value = this.item.data.dur.toString();
+        duration.onchange = () => this.item.data.dur = parseInt(duration.value);
+        duration.onclick = e => e.stopPropagation();
+        durationLabel.append(duration);
+
+        const amplificationLabel = document.createElement('label');
+        amplificationLabel.innerText = 'Amplification ';
+        const amplification = document.createElement('input');
+        amplification.type = 'number';
+        amplification.value = this.item.data.amp.toString();
+        amplification.onchange = () => this.item.data.amp = parseInt(amplification.value);
+        amplification.onclick = e => e.stopPropagation();
+        amplificationLabel.append(amplification);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Pot',[durationLabel,amplificationLabel,deleteButton,valueCtx.subMenu]);
+        return ctxBox;
     }
 }
 
