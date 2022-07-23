@@ -200,6 +200,18 @@ export class Txt extends ChestItem {
     }
 }
 
+/* 
+TODO: Variable
+TODO: Location
+TODO: Vector
+TODO: Potion
+TODO: Sound
+TODO: Game Value
+TODO: Particle
+TODO: Items
+TODO: Block Tags
+*/
+
 function getItem(item : Item){
     switch(item.id){
         case 'num': return new Num(item);
