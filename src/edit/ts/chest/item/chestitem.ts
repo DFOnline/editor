@@ -297,11 +297,11 @@ export class Loc extends ChestItem {
         pitch.value = this.item.data.loc.pitch.toString();
         yaw.value = this.item.data.loc.yaw.toString();
 
-        x.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
-        y.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
-        z.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
-        pitch.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
-        yaw.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+        x.onchange = () => this.item.data.loc.x = parseFloat(x.value);
+        y.onchange = () => this.item.data.loc.y = parseFloat(y.value);
+        z.onchange = () => this.item.data.loc.z = parseFloat(z.value);
+        pitch.onchange = () => this.item.data.loc.pitch = parseFloat(pitch.value);
+        yaw.onchange = () => this.item.data.loc.yaw = parseFloat(yaw.value);
 
         x.onclick = e => e.stopPropagation();
         y.onclick = e => e.stopPropagation();
@@ -344,21 +344,6 @@ export class Loc extends ChestItem {
 
     repr(): string {
         return `loc [${this.item.data.loc.x},${this.item.data.loc.y},${this.item.data.loc.z},${this.item.data.loc.pitch},${this.item.data.loc.yaw}]`;
-    }
-}
-function locationEditor(item : Location,Slot: number,e: Event,lx: HTMLInputElement,ly: HTMLInputElement,lz: HTMLInputElement,lpitch: HTMLInputElement,lyaw: HTMLInputElement,ctxBox: ContextMenu){
-    const x = parseFloat(lx.value);
-    const y = parseFloat(ly.value);
-    const z = parseFloat(lz.value);
-    const pitch = parseFloat(lpitch.value);
-    const yaw = parseFloat(lyaw.value);
-    if(!isNaN(x) && !isNaN(y) && !isNaN(z) && !isNaN(pitch) && !isNaN(yaw)){
-        item.data.loc.x = x;
-        item.data.loc.y = y;
-        item.data.loc.z = z;
-        item.data.loc.pitch = pitch;
-        item.data.loc.yaw = yaw;
-        chestMenu(Slot);
     }
 }
 
