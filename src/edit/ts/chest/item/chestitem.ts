@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { code } from "../../edit";
 import { minecraftColorHTML } from "../../../../main/main";
@@ -96,6 +96,12 @@ function nameEditor(item: any, Slot: number, event: KeyboardEvent, value: HTMLIn
         ctxBox.close();
     }
 }
+/** To be returned in icon */
+function genericIcon(backgroundUrl : string){
+    const itemElement = document.createElement('div');
+    itemElement.style.backgroundImage = `url(${backgroundUrl})`;
+    return itemElement
+}
 
 export class Num extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
@@ -119,7 +125,6 @@ export class Num extends ChestItem {
         deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
         const ctxBox = new ContextMenu('Number',[value,deleteButton]);
-
         return ctxBox;
     }
 
@@ -169,14 +174,11 @@ export class Txt extends ChestItem {
         deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
         const ctxBox = new ContextMenu('Text',[value,deleteButton]);
-
         return ctxBox;
     }
 
     icon(){
-        const itemElement = document.createElement('div');
-        itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
-        return itemElement
+        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -223,7 +225,6 @@ export class Var extends ChestItem {
         deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
         const ctxBox = new ContextMenu('Var',[value,scope,deleteButton]);
-
         return ctxBox;
     }
 
@@ -254,6 +255,100 @@ export class Var extends ChestItem {
     }
 }
 
+export class Loc extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/PAPER.png';
+    item : Location;
+
+    movable = true;
+
+    constructor(item : Location){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const x = document.createElement('input');
+        const y = document.createElement('input');
+        const z = document.createElement('input');
+        const pitch = document.createElement('input');
+        const yaw = document.createElement('input');
+
+        x.type = 'number';
+        y.type = 'number';
+        z.type = 'number';
+        pitch.type = 'number';
+        yaw.type = 'number';
+
+        x.value = this.item.data.loc.x.toString();
+        y.value = this.item.data.loc.y.toString();
+        z.value = this.item.data.loc.z.toString();
+        pitch.value = this.item.data.loc.pitch.toString();
+        yaw.value = this.item.data.loc.yaw.toString();
+
+        x.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+        y.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+        z.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+        pitch.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+        yaw.onchange = e => locationEditor(this.item,Slot,e,x,y,z,pitch,yaw,ctxBox);
+
+        x.onclick = e => e.stopPropagation();
+        y.onclick = e => e.stopPropagation();
+        z.onclick = e => e.stopPropagation();
+        pitch.onclick = e => e.stopPropagation();
+        yaw.onclick = e => e.stopPropagation();
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Loc',[x,y,z,pitch,yaw,deleteButton]);
+        return ctxBox;
+    }
+
+    icon(){
+        return genericIcon(this.backgroundUrl);
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const title = document.createElement('span');
+        title.innerText = 'Location';
+        title.style.color = '#55FF55';
+        tooltip.append(title);
+        tooltip.append(document.createElement('br'));
+        const x = document.createElement('span');
+        x.innerText = `X: ${this.item.data.loc.x}`;
+        const y = document.createElement('span');
+        y.innerText = `Y: ${this.item.data.loc.y}`;
+        const z = document.createElement('span');
+        z.innerText = `Z: ${this.item.data.loc.z}`;
+        const pitch = document.createElement('span');
+        pitch.innerText = `p: ${this.item.data.loc.pitch}`;
+        const yaw = document.createElement('span');
+        yaw.innerText = `y: ${this.item.data.loc.yaw}`;
+        tooltip.append(x,document.createElement('br'),y,document.createElement('br'),z,document.createElement('br'),pitch,document.createElement('br'),yaw);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `loc [${this.item.data.loc.x},${this.item.data.loc.y},${this.item.data.loc.z},${this.item.data.loc.pitch},${this.item.data.loc.yaw}]`;
+    }
+}
+function locationEditor(item : Location,Slot: number,e: Event,lx: HTMLInputElement,ly: HTMLInputElement,lz: HTMLInputElement,lpitch: HTMLInputElement,lyaw: HTMLInputElement,ctxBox: ContextMenu){
+    const x = parseFloat(lx.value);
+    const y = parseFloat(ly.value);
+    const z = parseFloat(lz.value);
+    const pitch = parseFloat(lpitch.value);
+    const yaw = parseFloat(lyaw.value);
+    if(!isNaN(x) && !isNaN(y) && !isNaN(z) && !isNaN(pitch) && !isNaN(yaw)){
+        item.data.loc.x = x;
+        item.data.loc.y = y;
+        item.data.loc.z = z;
+        item.data.loc.pitch = pitch;
+        item.data.loc.yaw = yaw;
+        chestMenu(Slot);
+    }
+}
+
 /* 
 TODO: Location
 TODO: Vector
@@ -270,6 +365,7 @@ function getItem(item : Item){
         case 'num': return new Num(item);
         case 'txt': return new Txt(item);
         case 'var': return new Var(item);
+        case 'loc': return new Loc(item);
         default: return new UnknownItem(item);
     }
 }
