@@ -77,6 +77,26 @@ export class UnknownItem extends ChestItem {
     }
 }
 
+/** This is for use in the click event. */
+function deleteItem(Block : number, Slot : number, ctxBox : ContextMenu){
+    const block = code.blocks[Block] as ArgumentBlock;
+    const index = block.args.items.findIndex(slot => slot.slot === Slot);
+    block.args.items.splice(index,1);
+    chestMenu(Block);
+    ctxBox.close();
+}
+/** This if for use in the keydown event */
+function nameEditor(item: any, Slot: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
+    if(event.key === 'Enter'){
+        item.data.name = value.value;
+        chestMenu(Slot);
+        ctxBox.close();
+    }
+    if(event.key === 'Escape'){
+        ctxBox.close();
+    }
+}
+
 export class Num extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
     item : Number;
@@ -91,27 +111,12 @@ export class Num extends ChestItem {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
-        value.onkeydown = e => {
-            if(e.key === 'Enter'){
-                this.item.data.name = value.value;
-                chestMenu(Slot);
-                ctxBox.close();
-            }
-            if(e.key === 'Escape'){
-                ctxBox.close();
-            }
-        }
+        value.onkeydown = e => nameEditor(this.item, Slot, e, value, ctxBox);
         value.onclick = e => e.stopPropagation();
 
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => {
-            const block = code.blocks[Block] as ArgumentBlock;
-            const index = block.args.items.findIndex(slot => slot.slot === Slot);
-            block.args.items.splice(index,1);
-            chestMenu(Block);
-            ctxBox.close();
-        }
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
         const ctxBox = new ContextMenu('Number',[value,deleteButton]);
 
@@ -156,27 +161,12 @@ export class Txt extends ChestItem {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
-        value.onkeydown = e => {
-            if(e.key === 'Enter'){
-                this.item.data.name = value.value;
-                chestMenu(Slot);
-                ctxBox.close();
-            }
-            if(e.key === 'Escape'){
-                ctxBox.close();
-            }
-        }
+        value.onkeydown = e => nameEditor(this.item,Slot,e,value,ctxBox);
         value.onclick = e => e.stopPropagation();
 
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => {
-            const block = code.blocks[Block] as ArgumentBlock;
-            const index = block.args.items.findIndex(slot => slot.slot === Slot);
-            block.args.items.splice(index,1);
-            chestMenu(Block);
-            ctxBox.close();
-        }
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
         const ctxBox = new ContextMenu('Text',[value,deleteButton]);
 
