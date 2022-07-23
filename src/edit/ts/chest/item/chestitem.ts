@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import type { ArgumentBlock, Item, Number, Text } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { code } from "../../edit";
 import { minecraftColorHTML } from "../../../../main/main";
@@ -190,8 +190,71 @@ export class Txt extends ChestItem {
     }
 }
 
+export class Var extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
+    item : Variable;
+
+    movable = true;
+
+    constructor(item : Variable){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const value = document.createElement('input');
+
+        value.value = this.item.data.name;
+        value.onkeydown = e => nameEditor(this.item,Slot,e,value,ctxBox);
+        value.onclick = e => e.stopPropagation();
+
+        const scope = document.createElement('select');
+        scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Slot);};
+        scope.value = this.item.data.scope;
+        scope.onclick = e => e.stopPropagation();
+        scope.innerHTML = `
+        <option value="unsaved">GAME</option>
+        <option value="saved">SAVED</option>
+        <option value="local">LOCAL</option>
+        `;
+
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Var',[value,scope,deleteButton]);
+
+        return ctxBox;
+    }
+
+    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'}
+
+    icon(){
+        const itemElement = document.createElement('div');
+        itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
+        const scope = document.createElement('span');
+        scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
+        scope.style.color = this.colors[this.item.data.scope];
+        itemElement.append(scope);
+        return itemElement
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        tooltip.innerText = `${this.item.data.name}`;
+        const scope = document.createElement('span');
+        scope.innerText = ScopeToName[this.item.data.scope];
+        scope.style.color = this.colors[this.item.data.scope];
+        tooltip.append(document.createElement('br'),scope);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `var ${this.item.data.name}`;
+    }
+}
+
 /* 
-TODO: Variable
 TODO: Location
 TODO: Vector
 TODO: Potion
@@ -206,6 +269,7 @@ function getItem(item : Item){
     switch(item.id){
         case 'num': return new Num(item);
         case 'txt': return new Txt(item);
+        case 'var': return new Var(item);
         default: return new UnknownItem(item);
     }
 }
