@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { code } from "../../edit";
 import { minecraftColorHTML } from "../../../../main/main";
@@ -347,8 +347,72 @@ export class Loc extends ChestItem {
     }
 }
 
+export class Vec extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
+    item : Vector;
+
+    movable = true;
+
+    constructor(item : Vector){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const x = document.createElement('input');
+        const y = document.createElement('input');
+        const z = document.createElement('input');
+
+        x.type = 'number';
+        y.type = 'number';
+        z.type = 'number';
+
+        x.value = this.item.data.x.toString();
+        y.value = this.item.data.y.toString();
+        z.value = this.item.data.z.toString();
+
+        x.onchange = () => this.item.data.x = parseFloat(x.value);
+        y.onchange = () => this.item.data.y = parseFloat(y.value);
+        z.onchange = () => this.item.data.z = parseFloat(z.value);
+
+        x.onclick = e => e.stopPropagation();
+        y.onclick = e => e.stopPropagation();
+        z.onclick = e => e.stopPropagation();
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Vec',[x,y,z,deleteButton]);
+        return ctxBox;
+    }
+
+    icon(): HTMLDivElement {
+        return genericIcon(this.backgroundUrl);
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const title = document.createElement('span');
+        title.innerText = 'Vector';
+        title.style.color = '#2AFFAA';
+        tooltip.append(title);
+        tooltip.append(document.createElement('br'));
+        const x = document.createElement('span');
+        x.innerText = `X: ${this.item.data.x}`;
+        const y = document.createElement('span');
+        y.innerText = `Y: ${this.item.data.y}`;
+        const z = document.createElement('span');
+        z.innerText = `Z: ${this.item.data.z}`;
+        tooltip.append(x,document.createElement('br'),y,document.createElement('br'),z);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `vec <${this.item.data.x},${this.item.data.y},${this.item.data.z}>`;
+    }
+}
+
 /* 
-TODO: Vector
 TODO: Potion
 TODO: Sound
 TODO: Game Value
@@ -363,6 +427,7 @@ function getItem(item : Item){
         case 'txt': return new Txt(item);
         case 'var': return new Var(item);
         case 'loc': return new Loc(item);
+        case 'vec': return new Vec(item);
         default: return new UnknownItem(item);
     }
 }
