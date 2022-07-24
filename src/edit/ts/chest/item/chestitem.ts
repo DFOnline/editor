@@ -433,6 +433,7 @@ export class Pot extends ChestItem {
                 const pot = ActDB.potions.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.potion.toLowerCase().includes(search.value.toLowerCase()));
                 if(pot){
                     this.item.data.pot = stripColors(pot.icon.name);
+                    chestMenu(Block);
                     search.value = stripColors(pot.icon.name);
                     valueCtx.close();
                 }
@@ -448,6 +449,7 @@ export class Pot extends ChestItem {
                     const res = stripColors(p.icon.name);
                     search.value = res;
                     this.item.data.pot = res;
+                    chestMenu(Block);
                     valueCtx.close();
                 }
                 results.append(result);
@@ -481,12 +483,14 @@ export class Pot extends ChestItem {
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
-        const ctxBox = new ContextMenu('Pot',[durationLabel,amplificationLabel,deleteButton,valueCtx.subMenu]);
+        const ctxBox = new ContextMenu('Pot',[valueCtx.subMenu,durationLabel,amplificationLabel,deleteButton]);
         return ctxBox;
     }
 
     icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
+        const icon = genericIcon(this.backgroundUrl);
+        icon.style.filter = `drop-shadow(0 0 5px #${ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name.match(/(?<=&[A-F0-9x]&)[A-F1-9]/gi).join('')})`
+        return icon;
     }
 
     tooltip(): HTMLDivElement {
