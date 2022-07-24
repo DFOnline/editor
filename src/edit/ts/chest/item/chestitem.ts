@@ -462,7 +462,7 @@ export class Pot extends ChestItem {
         const valueCtx = new ContextMenu('Value',[search,results]);
 
         const durationLabel = document.createElement('label');
-        durationLabel.innerText = 'Duration:';
+        durationLabel.innerText = 'Duration: ';
         const duration = document.createElement('input');
         duration.type = 'number';
         duration.value = this.item.data.dur.toString();
@@ -471,7 +471,7 @@ export class Pot extends ChestItem {
         durationLabel.append(duration);
 
         const amplificationLabel = document.createElement('label');
-        amplificationLabel.innerText = 'Amplification ';
+        amplificationLabel.innerText = 'Amplification: ';
         const amplification = document.createElement('input');
         amplification.type = 'number';
         amplification.value = this.item.data.amp.toString();
