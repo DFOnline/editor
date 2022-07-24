@@ -2,7 +2,7 @@ import chestMenu from "../chestMenu";
 import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code } from "../../edit";
-import { minecraftColorHTML } from "../../../../main/main";
+import { minecraftColorHTML, stripColors } from "../../../../main/main";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -413,7 +413,7 @@ export class Vec extends ChestItem {
 }
 
 export class Pot extends ChestItem {
-    backgroundUrl = 'https://dfonline.dev/public/images/DRAGONS_BREATH.png';
+    backgroundUrl = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
     item : Potion;
 
     movable = true;
@@ -424,24 +424,38 @@ export class Pot extends ChestItem {
 
     contextMenu(Block: number, Slot: number): ContextMenu {
 
-        // FIXME: finish this value editor
-        const editor = document.createElement('div');
         const search = document.createElement('input');
         search.type = 'text';
         search.placeholder = 'Potion';
-        search.onchange = () => {
+        search.value = this.item.data.pot;
+        search.onkeyup = e => {
+            if(e.key === 'Enter'){
+                const pot = ActDB.potions.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.potion.toLowerCase().includes(search.value.toLowerCase()));
+                if(pot){
+                    this.item.data.pot = stripColors(pot.icon.name);
+                    search.value = stripColors(pot.icon.name);
+                    valueCtx.close();
+                }
+                return;
+            }
+
             results.innerHTML = '';
-            ActDB.potions.filter(p => p.potion.toLowerCase().startsWith(search.value.toLowerCase())).forEach(p => {
-                const result = document.createElement('div');
-                result.innerText = p.potion;
+            ActDB.potions.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.potion.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
+                const result = document.createElement('button');
+                minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
+                result.style.width = '100%';
                 result.onclick = () => {
-                    search.value = p.potion;
-                    this.item.data.potion = p.potion;
+                    const res = stripColors(p.icon.name);
+                    search.value = res;
+                    this.item.data.pot = res;
+                    valueCtx.close();
                 }
                 results.append(result);
-            }
+            });
         }
         const results = document.createElement('div');
+        results.id = 'results';
+
 
         const valueCtx = new ContextMenu('Value',[search,results]);
 
@@ -470,10 +484,30 @@ export class Pot extends ChestItem {
         const ctxBox = new ContextMenu('Pot',[durationLabel,amplificationLabel,deleteButton,valueCtx.subMenu]);
         return ctxBox;
     }
+
+    icon(): HTMLDivElement {
+        return genericIcon(this.backgroundUrl);
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const value = document.createElement('span');
+        minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
+        const amplification = document.createElement('span');
+        amplification.innerText = `Amplification: ${this.item.data.amp}`;
+        const duration = document.createElement('span');
+        duration.innerText = `Duration: ${this.item.data.dur} ticks`;
+        tooltip.append(value,document.createElement('br'),amplification,document.createElement('br'),duration);
+        
+        return tooltip;
+    }
+
+    repr(): string {
+        return `pot ${this.item.data.pot} ${this.item.data.amp} ${this.item.data.dur}t`;
+    }
 }
 
 /* 
-TODO: Potion
 TODO: Sound
 TODO: Game Value
 TODO: Particle
@@ -488,6 +522,7 @@ function getItem(item : Item){
         case 'var': return new Var(item);
         case 'loc': return new Loc(item);
         case 'vec': return new Vec(item);
+        case 'pot': return new Pot(item);
         default: return new UnknownItem(item);
     }
 }
