@@ -108,7 +108,7 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         var newItem : Sound = {
             id: 'snd',
             data: {
-                sound: '',
+                sound: 'Pling',
                 vol: 2,
                 pitch: 1,
             }

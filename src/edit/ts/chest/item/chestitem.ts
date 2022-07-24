@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
@@ -511,8 +511,115 @@ export class Pot extends ChestItem {
     }
 }
 
+export class Snd extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
+    item : Sound;
+
+    movable = true;
+
+    constructor(item : Sound){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const search = document.createElement('input');
+        search.type = 'text';
+        search.placeholder = 'Sound';
+        search.value = this.item.data.sound;
+        search.onkeyup = e => {
+            if(e.key === 'Enter'){
+                const snd = ActDB.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
+                if(snd){
+                    this.item.data.sound = stripColors(snd.icon.name);
+                    chestMenu(Block);
+                    search.value = stripColors(snd.icon.name);
+                    valueCtx.close();
+                }
+                return;
+            }
+
+            results.innerHTML = '';
+            ActDB.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
+                const result = document.createElement('button');
+                minecraftColorHTML(s.icon.name).forEach(c => result.append(c));
+                const trueName = document.createElement('span');
+                trueName.innerText = ` ${s.sound}`;
+                trueName.style.color = '#aaa';
+                result.append(trueName);
+
+                result.style.width = '100%';
+                result.onclick = () => {
+                    const res = stripColors(s.icon.name);
+                    search.value = res;
+                    this.item.data.sound = res;
+                    chestMenu(Block);
+                    valueCtx.close();
+                }
+                results.append(result);
+            });
+        }
+        const results = document.createElement('div');
+        results.id = 'results';
+        const valueCtx = new ContextMenu('Value',[search,results]);
+
+        const pitchLabel = document.createElement('label');
+        pitchLabel.innerText = 'Pitch: ';
+        const pitch = document.createElement('input');
+        pitch.type = 'number';
+        pitch.value = this.item.data.pitch.toString();
+        // limit pitch from 0 to 2
+        pitch.onchange = () => {
+            const val = parseFloat(pitch.value);
+            if(val < 0) pitch.value = '0';
+            if(val > 2) pitch.value = '2';
+            this.item.data.pitch = parseFloat(pitch.value);
+        }
+        pitch.onclick = e => e.stopPropagation();
+        pitchLabel.append(pitch);
+
+        const volumeLabel = document.createElement('label');
+        volumeLabel.innerText = 'Volume: ';
+        const volume = document.createElement('input');
+        volume.type = 'number';
+        volume.value = this.item.data.vol.toString();
+        // limit volume from 0
+        volume.onchange = () => {
+            const val = parseFloat(volume.value);
+            if(val < 0) volume.value = '0';
+            this.item.data.vol = parseFloat(volume.value);
+        }
+        volume.onclick = e => e.stopPropagation();
+        volumeLabel.append(volume);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Sound',[valueCtx.subMenu,pitchLabel,volumeLabel,deleteButton]);
+        return ctxBox;
+    }
+
+    icon(): HTMLDivElement {
+        const icon = genericIcon(this.backgroundUrl);
+        return icon;
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const value = document.createElement('span');
+        minecraftColorHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
+        const stats = document.createElement('span');
+        stats.innerText = `Pitch: ${this.item.data.pitch}\nVolume: ${this.item.data.vol}`
+        tooltip.append(value,document.createElement('br'),stats);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `snd ${this.item.data.sound} ${this.item.data.pitch} ${this.item.data.vol}`;
+    }
+}
+
 /* 
-TODO: Sound
 TODO: Game Value
 TODO: Particle
 TODO: Items
@@ -527,6 +634,7 @@ function getItem(item : Item){
         case 'loc': return new Loc(item);
         case 'vec': return new Vec(item);
         case 'pot': return new Pot(item);
+        case 'snd': return new Snd(item);
         default: return new UnknownItem(item);
     }
 }
