@@ -865,10 +865,21 @@ export default function chestMenu(BlockIndex : number){
 				itemElement.ondragstart = e => {
 					e.stopPropagation();
 
+					e.dataTransfer.clearData();
 					e.dataTransfer.setData('application/x.dfitem',JSON.stringify(item));
 					e.dataTransfer.setData('arrayIndex',String(ArrayIndex));
 					e.dataTransfer.effectAllowed = 'move';
-					e.dataTransfer.setDragImage(itemElement,0,0);
+
+					const dragIcon = document.createElement('div');
+					dragIcon.style.backgroundImage = `url(${chestItem.icon().style.backgroundImage})`;
+					dragIcon.style.width = '64px';
+					const div = document.querySelector<HTMLDivElement>('body > div#drag-icon') || document.createElement('div');
+					div.id = 'drag-icon';
+					div.style.position = "absolute"; div.style.top = "0px"; div.style.left = "-500px";
+					document.body.removeChild(div);
+					document.body.appendChild(div);
+
+					div.appendChild(div);
 
 					mouseInfo.style.display = 'none';
 				}

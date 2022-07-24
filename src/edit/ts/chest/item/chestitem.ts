@@ -98,8 +98,8 @@ function nameEditor(item: any, Slot: number, event: KeyboardEvent, value: HTMLIn
 }
 /** To be returned in icon */
 function genericIcon(backgroundUrl : string){
-    const itemElement = document.createElement('div');
-    itemElement.style.backgroundImage = `url(${backgroundUrl})`;
+    const itemElement = document.createElement('img');
+    itemElement.src = backgroundUrl;
     return itemElement
 }
 
