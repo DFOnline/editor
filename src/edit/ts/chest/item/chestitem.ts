@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, BlockTag, SubActionBlock, BlockActionID, BlockSubActionID } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code } from "../../edit";
+import { ActDB, code, findBlockTag, findValidBlockTagHolder } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
 
 export default abstract class ChestItem {
@@ -466,7 +466,13 @@ export class Pot extends ChestItem {
         const duration = document.createElement('input');
         duration.type = 'number';
         duration.value = this.item.data.dur.toString();
-        duration.onchange = () => this.item.data.dur = parseInt(duration.value);
+        duration.onchange = () => {
+            // limit to 0
+            if(parseInt(duration.value) < 0){
+                duration.value = '0';
+            }
+            this.item.data.dur = parseInt(duration.value);
+        };
         duration.onclick = e => e.stopPropagation();
         durationLabel.append(duration);
 
@@ -619,6 +625,48 @@ export class Snd extends ChestItem {
     }
 }
 
+
+// FIXME: block tags again :desolate: anyway I'm adding support for subActions and it's hell. Need to make this work.
+export class Bltag extends ChestItem {
+    backgroundUrl = 'dynamic';
+    item : BlockTag;
+
+    movable = false;
+
+    constructor(item : BlockTag){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const block = code.blocks[Block] as ArgumentBlock;
+        let blockType = block.block;
+        let action = block.action;
+        if((block as SubActionBlock).subAction) {
+            action = (block as SubActionBlock).subAction;
+            blockType = findValidBlockTagHolder(block,this.item) as BlockActionID | BlockSubActionID;
+            
+        }
+        const tag = findBlockTag(blockType,action,this.item.data.tag);
+        const options = tag.options.map(tag => {
+            const option = document.createElement('button');
+            option.innerText = tag.name;
+            option.onclick = () => {
+                this.item.data.tag = tag.name;
+                chestMenu(Block);
+                valueCtx.close();
+            }
+            return option
+        })
+        const valueCtx = new ContextMenu('Value',options);
+        return valueCtx;
+    }
+
+    icon(): HTMLDivElement {
+        const icon = genericIcon(this.backgroundUrl);
+        return icon;
+    }
+}
+
 /* 
 TODO: Game Value
 TODO: Particle
@@ -635,6 +683,7 @@ function getItem(item : Item){
         case 'vec': return new Vec(item);
         case 'pot': return new Pot(item);
         case 'snd': return new Snd(item);
+        case 'bl_tag': return new Bltag(item);
         default: return new UnknownItem(item);
     }
 }
