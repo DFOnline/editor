@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
 import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, BlockTag, SubActionBlock, BlockActionID, BlockSubActionID } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code, findBlockTag, findValidBlockTagHolder } from "../../edit";
+import { ActDB, code, findBlockTag, findBlockTagOption, findBlockTags, findValidBlockTagHolder } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
 
 export default abstract class ChestItem {
@@ -637,33 +637,48 @@ export class Bltag extends ChestItem {
         super(item);
     }
 
-    contextMenu(Block: number, Slot: number): ContextMenu {
-        const block = code.blocks[Block] as ArgumentBlock;
-        let blockType = block.block;
-        let action = block.action;
-        if((block as SubActionBlock).subAction) {
-            action = (block as SubActionBlock).subAction;
-            blockType = findValidBlockTagHolder(block,this.item) as BlockActionID | BlockSubActionID;
-            
-        }
-        const tag = findBlockTag(blockType,action,this.item.data.tag);
-        const options = tag.options.map(tag => {
+    contextMenu(Block: number, _Slot: number): ContextMenu {
+
+        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
+        const options = tags.options.map(tag => {
             const option = document.createElement('button');
             option.innerText = tag.name;
             option.onclick = () => {
-                this.item.data.tag = tag.name;
+                this.item.data.option = tag.name;
                 chestMenu(Block);
                 valueCtx.close();
             }
-            return option
+            return option;
         })
-        const valueCtx = new ContextMenu('Value',options);
+        const valueCtx = new ContextMenu('Block Tag',options);
         return valueCtx;
     }
 
     icon(): HTMLDivElement {
-        const icon = genericIcon(this.backgroundUrl);
+        const opt = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
+        return genericIcon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
+    }
+
+    tooltip(): HTMLDivElement {
+        const icon = document.createElement('div');
+        const name = document.createElement('span');
+        name.innerText = this.item.data.tag;
+        name.style.color = 'yellow';
+        icon.append(name,document.createElement('br'),document.createElement('br'));
+
+        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
+        tags.options.forEach(tag => {
+            const option = document.createElement('span');
+            option.innerText = tag.name;
+            if(this.item.data.option === tag.name) option.style.color = 'aqua';
+            icon.append(option,document.createElement('br'));
+        })
+
         return icon;
+    }
+
+    repr(): string {
+        return new Error('Not implemented').toString();
     }
 }
 
