@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, BlockTag } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, BlockTag } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
@@ -625,6 +625,98 @@ export class Snd extends ChestItem {
     }
 }
 
+// TODO: add targets
+export class Gval extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
+    item : GameValue;
+
+    movable = true;
+
+    constructor(item : GameValue){
+        super(item);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const search = document.createElement('input');
+        search.type = 'text';
+        search.placeholder = 'Game Value';
+        search.value = this.item.data.type;
+        search.onkeyup = e => {
+            if(e.key === 'Enter'){
+                const gval = ActDB.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
+                if(gval){
+                    this.item.data.type = stripColors(gval.icon.name);
+                    chestMenu(Block);
+                    search.value = stripColors(gval.icon.name);
+                    valueCtx.close();
+                }
+                return;
+            }
+
+            results.innerHTML = '';
+            ActDB.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
+                const result = document.createElement('button');
+                minecraftColorHTML(g.icon.name).forEach(c => result.append(c));
+
+                result.style.width = '100%';
+                result.onclick = () => {
+                    const res = stripColors(g.icon.name);
+                    search.value = res;
+                    this.item.data.type = res;
+                    chestMenu(Block);
+                    valueCtx.close();
+                }
+                results.append(result);
+            });
+        }
+        const results = document.createElement('div');
+        results.id = 'results';
+        const valueCtx = new ContextMenu('Value',[search,results]);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Game Value',[valueCtx.subMenu,deleteButton]);
+        return ctxBox;
+    }
+
+    icon(): HTMLDivElement {
+        const icon = genericIcon(this.backgroundUrl);
+        return icon;
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const value = document.createElement('span');
+        minecraftColorHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
+
+        const targetLabel = document.createElement('span');
+        targetLabel.style.color = '#aaa';
+        targetLabel.innerText = 'Target: ';
+        const target = document.createElement('span');
+        let color;
+        switch (this.item.data.target) {
+            case 'Selection': case 'Default': color = '#55FF55'; break;
+            case 'Killer': case 'Damager': color = '#FF5555'; break;
+            case 'LastEntity': case 'Shooter': color = '#FFFF55'; break;
+            case 'Victim': color = '#5555FF'; break;
+            case 'Projectile': color = '#55FFFF'; break;
+            default: color = '#fff'; break;
+        }
+        target.style.color = color;
+        target.innerText = this.item.data.target;
+        targetLabel.append(target);
+
+        tooltip.append(value,document.createElement('br'),targetLabel);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `gval ${this.item.data.type} ${this.item.data.target} ${this.item.data.target}`;
+    }
+}
+
 
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
@@ -688,7 +780,7 @@ TODO: Particle
 TODO: Items
 */
 
-function getItem(item : Item){
+function getItem(item : Item) : ChestItem {
     switch(item.id){
         case 'num': return new Num(item);
         case 'txt': return new Txt(item);
@@ -697,6 +789,7 @@ function getItem(item : Item){
         case 'vec': return new Vec(item);
         case 'pot': return new Pot(item);
         case 'snd': return new Snd(item);
+        case 'g_val': return new Gval(item);
         case 'bl_tag': return new Bltag(item);
         default: return new UnknownItem(item);
     }
