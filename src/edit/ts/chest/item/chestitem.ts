@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, BlockTag, SubActionBlock, BlockActionID, BlockSubActionID } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, BlockTag } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code, findBlockTag, findBlockTagOption, findBlockTags, findValidBlockTagHolder } from "../../edit";
+import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
 
 export default abstract class ChestItem {
