@@ -626,7 +626,6 @@ export class Snd extends ChestItem {
 }
 
 
-// FIXME: block tags again :desolate: anyway I'm adding support for subActions and it's hell. Need to make this work.
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
     item : BlockTag;
@@ -682,11 +681,11 @@ export class Bltag extends ChestItem {
     }
 }
 
+
 /* 
 TODO: Game Value
 TODO: Particle
 TODO: Items
-TODO: Block Tags
 */
 
 function getItem(item : Item){
