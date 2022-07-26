@@ -678,7 +678,7 @@ export class Bltag extends ChestItem {
     }
 
     repr(): string {
-        return new Error('Not implemented').toString();
+        throw Error('Not implemented.');
     }
 }
 
