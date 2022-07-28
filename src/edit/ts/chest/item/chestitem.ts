@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, BlockTag } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, BlockTag, g_valSelection, SelectionValues } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
 import { minecraftColorHTML, stripColors } from "../../../../main/main";
@@ -625,7 +625,6 @@ export class Snd extends ChestItem {
     }
 }
 
-// TODO: add targets
 export class Gval extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
     item : GameValue;
@@ -673,11 +672,30 @@ export class Gval extends ChestItem {
         results.id = 'results';
         const valueCtx = new ContextMenu('Value',[search,results]);
 
+        const targetLabel = document.createElement('label');
+        targetLabel.innerText = 'Target: ';
+        const target = document.createElement('select');
+        target.onchange = () => {
+            this.item.data.target = target.value as g_valSelection;
+            chestMenu(Block);
+        }
+        target.onclick = e => e.stopPropagation();
+        SelectionValues.forEach(s => {
+            if(s === '') return;
+            const option = document.createElement('option');
+            option.value = s;
+            option.innerText = s;
+            if(s === 'LastEntity') option.innerText = 'Last-Spawned Entity';
+            target.append(option);
+        });
+        target.value = this.item.data.target;
+        targetLabel.append(target);
+
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
 
-        const ctxBox = new ContextMenu('Game Value',[valueCtx.subMenu,deleteButton]);
+        const ctxBox = new ContextMenu('Game Value',[valueCtx.subMenu,targetLabel,deleteButton]);
         return ctxBox;
     }
 
@@ -775,7 +793,6 @@ export class Bltag extends ChestItem {
 
 
 /* 
-TODO: Game Value
 TODO: Particle
 TODO: Items
 */
