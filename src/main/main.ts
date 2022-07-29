@@ -128,7 +128,6 @@ export function MinecraftTextCompToCodes(component : string | object) : string{
     else{
         workComponents = component;
     }
-    console.log(workComponents);
 
     const codes : {[key: string]: string} = {
         "black": "0",
