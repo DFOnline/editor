@@ -1,8 +1,10 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, BlockTag, g_valSelection, SelectionValues } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
-import { minecraftColorHTML, stripColors } from "../../../../main/main";
+import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
+import { parse, stringify } from 'nbt-ts';
+import itemNames from '../itemnames.json';
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -735,6 +737,66 @@ export class Gval extends ChestItem {
     }
 }
 
+export class MCItem extends ChestItem {
+    backgroundUrl = 'dynamic';
+    item : MinecraftItem;
+
+    movable = true;
+
+    private parsedItem : ParsedItem;
+
+    constructor(item : MinecraftItem){
+        super(item);
+        this.parsedItem = parse(item.data.item) as any as ParsedItem;
+    }
+
+    contextMenu(_Block: number, _Slot: number): ContextMenu {
+        const warning = document.createElement('p');
+        warning.innerText = 'This item is not yet supported.';
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(_Block,_Slot,ctxBox);
+        const ctxBox = new ContextMenu('Minecraft Item',[warning,deleteButton]);
+        return ctxBox;
+    }
+
+    icon(): HTMLDivElement {
+        const icon = document.createElement('div');
+        console.log(this.parsedItem.tag);
+        icon.style.backgroundImage = `url(https://dfonline.dev/public/images/${this.parsedItem.id.replace('minecraft:','').toUpperCase()}.png)`;
+        const count = document.createElement('span');
+        count.innerText = this.parsedItem.Count.value.toString();
+        if(this.parsedItem.Count.value !== 1) icon.append(count);
+        return icon;
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const name = document.createElement('span');
+        if(this.parsedItem.tag){
+            if(this.parsedItem.tag.display.Name){
+                minecraftColorHTML(MinecraftTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
+            }
+            if(this.parsedItem.tag.display.Lore){
+                const lore = document.createElement('span');
+                this.parsedItem.tag.display.Lore.forEach(l => {
+                    minecraftColorHTML(MinecraftTextCompToCodes(l),'§5§o').forEach(c => lore.append(c));
+                    lore.append(document.createElement('br'));
+                });
+                tooltip.append(document.createElement('br'),lore);
+            }
+        }
+        if(!name.innerText){
+            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+        }
+        tooltip.prepend(name);
+        return tooltip;
+    }
+
+    repr(): string {
+        return `mcitem ${stringify(this.parsedItem as any)}`;
+    }
+}
 
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
@@ -794,7 +856,6 @@ export class Bltag extends ChestItem {
 
 /* 
 TODO: Particle
-TODO: Items
 */
 
 function getItem(item : Item) : ChestItem {
@@ -807,6 +868,7 @@ function getItem(item : Item) : ChestItem {
         case 'pot': return new Pot(item);
         case 'snd': return new Snd(item);
         case 'g_val': return new Gval(item);
+        case 'item': return new MCItem(item);
         case 'bl_tag': return new Bltag(item);
         default: return new UnknownItem(item);
     }

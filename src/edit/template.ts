@@ -193,7 +193,6 @@ export interface ChestItem {
 
 // copilot just generating minecraft stuff.
 export interface ParsedItem {
-    name: string;
     id: string;
     Count: NbtValue<number>;
     tag: {
