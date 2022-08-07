@@ -1,10 +1,11 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse, stringify } from 'nbt-ts';
 import itemNames from '../itemnames.json';
+import type { ParticleCategory } from "edit/ts/actiondump";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -627,6 +628,99 @@ export class Snd extends ChestItem {
     }
 }
 
+export class Part extends ChestItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/WHITE_DYE.png';
+    item : Particle;
+
+    movable = true;
+
+    private parsed : ParticleCategory
+    constructor(item : Particle){
+        super(item);
+        this.parsed = ActDB.particles.find(p => stripColors(p.icon.name) === item.data.particle);
+        if(this.parsed == undefined) throw new Error(`Particle ${item.data.particle} not found`);
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        // TODO: implement context menu for particles
+        
+        const ctxBox = new ContextMenu('Particle',[]);
+        return ctxBox;
+    }
+
+    icon(): HTMLDivElement {
+        return genericIcon(this.backgroundUrl);
+    }
+
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+
+        const particle = document.createElement('span');
+        minecraftColorHTML(this.parsed.icon.name).forEach(c => particle.append(c));
+        
+        const amount = document.createElement('span');
+        amount.innerText = `Amount: ${this.item.data.cluster.amount}`;
+        const spread = document.createElement('span');
+        spread.innerText = `Spread: ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical}`;
+        
+        tooltip.append(particle,document.createElement('br'),amount,document.createElement('br'),spread);
+
+        if(this.parsed.fields.includes('Color')) {
+            const hex = this.item.data.data.rgb.toString(16);
+            const colorLabel = document.createElement('label');
+            colorLabel.innerText = 'Color: ';
+            const color = document.createElement('span');
+            color.innerText = `#${hex.toUpperCase()}`;
+            color.style.color = `#${hex}`;
+            colorLabel.append(color);
+
+            tooltip.append(document.createElement('br'),colorLabel);
+        }
+        if(this.parsed.fields.includes('Color Variation')) {
+            const colorVariation = document.createElement('span');
+            colorVariation.innerText = `Color Variation: ${this.item.data.data.colorVariation}%`;
+
+            tooltip.append(document.createElement('br'),colorVariation);
+        }
+        if(this.parsed.fields.includes('Size')) {
+            const size = document.createElement('span');
+            size.innerText = `Size: ${this.item.data.data.size}`;
+
+            tooltip.append(document.createElement('br'),size);
+        }
+        if(this.parsed.fields.includes('Size Variation')) {
+            const sizeVariation = document.createElement('span');
+            sizeVariation.innerText = `Size Variation: ${this.item.data.data.sizeVariation}%`;
+
+            tooltip.append(document.createElement('br'),sizeVariation);
+        }
+        if(this.parsed.fields.includes('Material')) {
+            const material = document.createElement('span');
+            material.innerText = `Material: ${this.item.data.data.material.toLowerCase()}`;
+
+            tooltip.append(document.createElement('br'),material);
+        }
+        if(this.parsed.fields.includes('Motion')) {
+            const motionLabel = document.createElement('label');
+            motionLabel.innerText = 'Motion: ';
+            const motion = document.createElement('span');
+            motion.innerText = `${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z}`;
+            motion.style.color = '#2affaa';
+            motionLabel.append(motion);
+
+            tooltip.append(document.createElement('br'),motionLabel);
+        }
+        if(this.parsed.fields.includes('Motion Variation')){
+            const motionVariation = document.createElement('span');
+            motionVariation.innerText = `Motion Variation: ${this.item.data.data.motionVariation}%`;
+
+            tooltip.append(document.createElement('br'),motionVariation);
+        }
+
+        return tooltip;
+    }
+}
+
 export class Gval extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
     item : GameValue;
@@ -854,9 +948,6 @@ export class Bltag extends ChestItem {
 }
 
 
-/* 
-TODO: Particle
-*/
 
 function getItem(item : Item) : ChestItem {
     switch(item.id){
@@ -867,6 +958,7 @@ function getItem(item : Item) : ChestItem {
         case 'vec': return new Vec(item);
         case 'pot': return new Pot(item);
         case 'snd': return new Snd(item);
+        case 'part': return new Part(item);
         case 'g_val': return new Gval(item);
         case 'item': return new MCItem(item);
         case 'bl_tag': return new Bltag(item);
