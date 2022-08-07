@@ -609,8 +609,7 @@ export class Snd extends ChestItem {
     }
 
     icon(): HTMLDivElement {
-        const icon = genericIcon(this.backgroundUrl);
-        return icon;
+        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -800,8 +799,7 @@ export class Gval extends ChestItem {
     }
 
     icon(): HTMLDivElement {
-        const icon = genericIcon(this.backgroundUrl);
-        return icon;
+        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
