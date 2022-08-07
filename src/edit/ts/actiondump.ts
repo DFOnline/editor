@@ -8,6 +8,7 @@ export interface ActionDump {
     gameValueCategories: GameValueCategory[];
     gameValues: GameValue[];
     particleCategories: ParticleCategory[];
+    particles: Particle[];
     potions: Potion[];
 }
 export default ActionDump
@@ -86,6 +87,13 @@ export interface ParticleCategory {
 }
 export type ParticleCategoryName = 'Ambient Particles' | 'Entity Behavior Particles' | 'Ambient Entity Particles' | 'Entity Attack Particles' | 'Liquid Particles' | 'Ambient Block Particles' | 'Block Behavior Particles'
 export type particleField = 'Motion' | 'Motion Variation' | 'Color' | 'Color Variation' | 'Material' | 'Size' | 'Size Variation'
+
+export interface Particle {
+    particle: string;
+    icon: Icon;
+    category: ParticleCategoryName;
+    fields: particleField[];
+}
 
 export type CodeBlockIdentifier = BlockID;
 export type CodeBlockName = "PLAYER ACTION" | "IF PLAYER" | "START PROCESS" | "CALL FUNCTION" | "CONTROL" | "SET VARIABLE" | "ENTITY EVENT" | "PLAYER EVENT" | "FUNCTION" | "IF ENTITY" | "ENTITY ACTION" | "IF VARIABLE" | "SELECT OBJECT" | "GAME ACTION" | "ELSE" | "PROCESS" | "REPEAT" | "IF GAME";
