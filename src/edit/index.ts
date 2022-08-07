@@ -79,7 +79,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						blockDiv.ondragstart = e => {
 							e.stopPropagation();
 							userMeta.type = 'newBlock';
-							const newBlock: any =  {id: 'block', block: block.identifier /* lmao */}
+							const newBlock: any =  {id: 'block', block: block.identifier}
 							const newBlocks: any[] = [newBlock];
 							if(block.identifier !== 'else'){
 								newBlock.args = {'items':[]}
