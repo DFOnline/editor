@@ -641,9 +641,20 @@ export class Part extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        // TODO: implement context menu for particles
+        const amountLabel = document.createElement('label');
+        amountLabel.innerText = 'Amount: ';
+        const amount = document.createElement('input');
+        amount.type = 'number';
+        amount.value = this.item.data.cluster.amount.toString();
+        amount.onchange = () => {
+            const val = parseInt(amount.value);
+            if(val < 1) amount.value = '1';
+            this.item.data.cluster.amount = val;
+        }
+        amount.onclick = e => e.stopPropagation();
+        amountLabel.append(amount);
         
-        const ctxBox = new ContextMenu('Particle',[]);
+        const ctxBox = new ContextMenu('Particle',[amountLabel]);
         return ctxBox;
     }
 
