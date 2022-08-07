@@ -719,6 +719,10 @@ export class Part extends ChestItem {
 
         return tooltip;
     }
+
+    repr(): string {
+        return `part ${this.item.data.particle} ${this.item.data.cluster.amount} ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical} ${this.item.data.data.rgb} ${this.item.data.data.colorVariation} ${this.item.data.data.size} ${this.item.data.data.sizeVariation} ${this.item.data.data.material} ${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z} ${this.item.data.data.motionVariation}`;
+    }
 }
 
 export class Gval extends ChestItem {
