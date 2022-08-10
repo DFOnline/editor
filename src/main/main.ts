@@ -84,9 +84,8 @@ export function login(name : string, auth : string){
  */
 export function startup(){
     let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
-    document.body.onmousemove = e => {
-        mouseInfo.style.top = String(e.clientY + 10) + 'px';
-        mouseInfo.style.left = String(e.clientX + 10) + 'px';
+    document.body.onmousemove = () => {
+        mouseInfo.style.display = 'none';
     }
     let urlParams = new URLSearchParams(location.search)
     let urlMessage = urlParams.get('message');
