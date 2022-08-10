@@ -1,9 +1,9 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
-import { parse, stringify } from 'nbt-ts';
+import { parse } from 'nbt-ts';
 import itemNames from '../itemnames.json';
 import type { ParticleCategory } from "edit/ts/actiondump";
 
@@ -260,14 +260,14 @@ export class Var extends ChestItem {
         const tooltip = document.createElement('div');
         tooltip.innerText = `${this.item.data.name}`;
         const scope = document.createElement('span');
-        scope.innerText = ScopeToName[this.item.data.scope];
+        scope.innerText = ScopeName[this.item.data.scope];
         scope.style.color = this.colors[this.item.data.scope];
         tooltip.append(document.createElement('br'),scope);
         return tooltip;
     }
 
     repr(): string {
-        return `var ${this.item.data.name}`;
+        return `var ${ScopeName[this.item.data.scope]} ${this.item.data.name}`;
     }
 }
 
@@ -346,7 +346,7 @@ export class Loc extends ChestItem {
     }
 
     repr(): string {
-        return `loc [${this.item.data.loc.x},${this.item.data.loc.y},${this.item.data.loc.z},${this.item.data.loc.pitch},${this.item.data.loc.yaw}]`;
+        return `loc [${this.item.data.loc.x}, ${this.item.data.loc.y}, ${this.item.data.loc.z}, ${this.item.data.loc.pitch}, ${this.item.data.loc.yaw}]`;
     }
 }
 
@@ -411,7 +411,7 @@ export class Vec extends ChestItem {
     }
 
     repr(): string {
-        return `vec <${this.item.data.x},${this.item.data.y},${this.item.data.z}>`;
+        return `vec <${this.item.data.x}, ${this.item.data.y}, ${this.item.data.z}>`;
     }
 }
 
@@ -1040,7 +1040,7 @@ export class Gval extends ChestItem {
     }
 
     repr(): string {
-        return `gval ${this.item.data.type} ${this.item.data.target} ${this.item.data.target}`;
+        return `gval ${this.item.data.type} ${this.item.data.target}`;
     }
 }
 
@@ -1101,7 +1101,7 @@ export class MCItem extends ChestItem {
     }
 
     repr(): string {
-        return `mcitem ${stringify(this.parsedItem as any)}`;
+        return `item ${this.parsedItem.id}${JSON.stringify(this.parsedItem.tag ? this.parsedItem.tag : {})} ${this.parsedItem.Count.value}`;
     }
 }
 
