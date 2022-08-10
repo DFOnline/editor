@@ -7,6 +7,12 @@ export interface Template {
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = "saved" | "unsaved" | "local"
 export const ScopeToName = {"saved": "SAVED", "unsaved": "GAME", "local": "LOCAL"}
+export enum ScopeName {
+    saved = "SAVED",
+    unsaved = "GAME",
+    local = "LOCAL"
+
+}
 export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
 export const SelectionValues : Target[] = ["", "AllPlayers", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"]
 
