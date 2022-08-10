@@ -1,4 +1,4 @@
-import type { GameValue, Item, Potion, SelectionBlock, Sound, SubActionBlock, Variable, Vector, Location, Text, Number } from "../../template";
+import type { GameValue, Item, Potion, SelectionBlock, Sound, SubActionBlock, Variable, Vector, Location, Text, Number, Particle } from "../../template";
 import { userMeta } from "../edit";
 import chestMenu from "./chestMenu";
 import ContextMenu from "../../../main/context";
@@ -26,11 +26,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         // });
     }
 
-    const varItem = document.createElement('button');
-    varItem.classList.add('newValue');
-    varItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/MAGMA_CREAM.png")';
-    varItem.onclick = () => {
-        var newItem : Variable = {
+    const VariableItem = document.createElement('button');
+    VariableItem.classList.add('newValue');
+    VariableItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/MAGMA_CREAM.png")';
+    VariableItem.onclick = () => {
+        let newItem : Variable = {
             id: 'var',
             data: {
                 scope: 'unsaved',
@@ -40,11 +40,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const textItem = document.createElement('button');
-    textItem.classList.add('newValue');
-    textItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/BOOK.png")';
-    textItem.onclick = () => {
-        var newItem : Text = {
+    const TextItem = document.createElement('button');
+    TextItem.classList.add('newValue');
+    TextItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/BOOK.png")';
+    TextItem.onclick = () => {
+        let newItem : Text = {
             id: 'txt',
             data: {
                 name: '',
@@ -53,11 +53,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const numItem = document.createElement('button');
-    numItem.classList.add('newValue');
-    numItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/SLIME_BALL.png")';
-    numItem.onclick = () => {
-        var newItem : Number = {
+    const NumberItem = document.createElement('button');
+    NumberItem.classList.add('newValue');
+    NumberItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/SLIME_BALL.png")';
+    NumberItem.onclick = () => {
+        let newItem : Number = {
             id: 'num',
             data: {
                 name: '',
@@ -66,11 +66,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const locItem = document.createElement('button');
-    locItem.classList.add('newValue');
-    locItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PAPER.png")';
-    locItem.onclick = () => {
-        var newItem : Location = {
+    const LocationItem = document.createElement('button');
+    LocationItem.classList.add('newValue');
+    LocationItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PAPER.png")';
+    LocationItem.onclick = () => {
+        let newItem : Location = {
             id: 'loc',
             data: {
                 isBlock: false,
@@ -86,11 +86,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const vecItem = document.createElement('button');
-    vecItem.classList.add('newValue');
-    vecItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PRISMARINE_SHARD.png")';
-    vecItem.onclick = () => {
-        var newItem : Vector = {
+    const VectorItem = document.createElement('button');
+    VectorItem.classList.add('newValue');
+    VectorItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/PRISMARINE_SHARD.png")';
+    VectorItem.onclick = () => {
+        let newItem : Vector = {
             id: 'vec',
             data: {
                 x: 0,
@@ -101,11 +101,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const soundItem = document.createElement('button');
-    soundItem.classList.add('newValue');
-    soundItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAUTILUS_SHELL.png")';
-    soundItem.onclick = () => {
-        var newItem : Sound = {
+    const SoundItem = document.createElement('button');
+    SoundItem.classList.add('newValue');
+    SoundItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAUTILUS_SHELL.png")';
+    SoundItem.onclick = () => {
+        let newItem : Sound = {
             id: 'snd',
             data: {
                 sound: 'Pling',
@@ -116,11 +116,35 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const gameValueItem = document.createElement('button');
-    gameValueItem.classList.add('newValue');
-    gameValueItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAME_TAG.png")';
-    gameValueItem.onclick = () => {
-        var newItem : GameValue = {
+    const ParticleItem = document.createElement('button');
+    ParticleItem.classList.add('newValue');
+    ParticleItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/WHITE_DYE.png")';
+    ParticleItem.onclick = () => {
+        let newItem : Particle = {
+            id: 'part',
+            data: {
+                particle: 'Cloud',
+                cluster: {
+                    amount: 1,
+                    horizontal: 0,
+                    vertical: 0,
+                },
+                data: {
+                    x: 1,
+                    y: 0,
+                    z: 0,
+                    motionVariation: 100,
+                }
+            }
+        }
+        workItem(newItem);
+    }
+
+    const GameValueItem = document.createElement('button');
+    GameValueItem.classList.add('newValue');
+    GameValueItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/NAME_TAG.png")';
+    GameValueItem.onclick = () => {
+        let newItem : GameValue = {
             id: 'g_val',
             data: {
                 target: 'Default',
@@ -130,11 +154,11 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
         workItem(newItem);
     }
 
-    const potionItem = document.createElement('button');
-    potionItem.classList.add('newValue');
-    potionItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/DRAGON_BREATH.png")';
-    potionItem.onclick = () => {
-        var newItem : Potion = {
+    const PotionItem = document.createElement('button');
+    PotionItem.classList.add('newValue');
+    PotionItem.style.backgroundImage = 'url("https://dfonline.dev/public/images/DRAGON_BREATH.png")';
+    PotionItem.onclick = () => {
+        let newItem : Potion = {
             id: 'pot',
             data: {
                 amp: 0,
@@ -146,7 +170,7 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
     }
 
     const menu = document.createElement('div');
-    [varItem,textItem,numItem,locItem,vecItem,soundItem,gameValueItem,potionItem].forEach(e => {
+    [TextItem,NumberItem,LocationItem,VectorItem,SoundItem,ParticleItem,PotionItem,VariableItem,GameValueItem].forEach(e => {
         menu.append(e);
     })
     menu.style.display = 'flex';
