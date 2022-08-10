@@ -633,14 +633,17 @@ export class Part extends ChestItem {
 
     movable = true;
 
-    private parsed : ParticleCategory
+    private get parsed() : ParticleCategory {
+        return ActDB.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
+    }
     constructor(item : Particle){
         super(item);
-        this.parsed = ActDB.particles.find(p => stripColors(p.icon.name) === item.data.particle);
         if(this.parsed == undefined) throw new Error(`Particle ${item.data.particle} not found`);
     }
 
-    contextMenu(Block: number, Slot: number): ContextMenu {
+    contextMenu(_Block: number, _Slot: number): ContextMenu {
+        // TODO: Set actual values
+        //#region Amount
         const amountLabel = document.createElement('label');
         amountLabel.innerText = 'Amount: ';
         const amount = document.createElement('input');
@@ -653,8 +656,138 @@ export class Part extends ChestItem {
         }
         amount.onclick = e => e.stopPropagation();
         amountLabel.append(amount);
+        //#endregion
+
+        //#region Cluster
+        const spreadLabel = document.createElement('label');
+        spreadLabel.innerText = 'Spread: ';
+        const horizontal = document.createElement('input');
+        horizontal.type = 'number';
+        horizontal.value = this.item.data.cluster.horizontal.toString();
+        horizontal.onchange = () => {this.item.data.cluster.horizontal = parseInt(horizontal.value);}
+        horizontal.style.width = '50px';
+        const vertical = document.createElement('input');
+        vertical.type = 'number';
+        vertical.value = this.item.data.cluster.vertical.toString();
+        vertical.onchange = () => {this.item.data.cluster.vertical = parseInt(vertical.value);}
+        vertical.style.width = '50px';
+        spreadLabel.append(horizontal,vertical);
+        //#endregion
         
-        const ctxBox = new ContextMenu('Particle',[amountLabel]);
+        //#region Conditinal ones
+        const conditinals = document.createElement('div');
+        if(this.parsed.fields.includes('Color')) {
+            const colorLabel = document.createElement('label');
+            colorLabel.innerText = 'Color: ';
+            const color = document.createElement('input');
+            color.type = 'color';
+            color.value = '#' + this.item.data.data.rgb.toString(16);
+            color.onchange = () => {this.item.data.data.rgb = parseInt(color.value.replace('#',''),16);}
+            color.onclick = e => e.stopPropagation();
+            colorLabel.append(color);
+            conditinals.append(colorLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Color Variation')) {
+            const colorVarLabel = document.createElement('label');
+            colorVarLabel.innerText = 'Color Variation: ';
+            const colorVar = document.createElement('input');
+            colorVar.type = 'number';
+            colorVar.value = this.item.data.data.colorVariation.toString(16);
+            colorVar.onchange = () => {
+                const val = parseInt(colorVar.value,16);
+                if(val < 0) colorVar.value = '0';
+                if(val > 100) colorVar.value = '100';
+                this.item.data.data.colorVariation = val;
+            }
+            colorVar.onclick = e => e.stopPropagation();
+            colorVarLabel.append(colorVar);
+            conditinals.append(colorVarLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Size')) {
+            const sizeLabel = document.createElement('label');
+            sizeLabel.innerText = 'Size: ';
+            const size = document.createElement('input');
+            size.type = 'number';
+            size.value = this.item.data.data.size.toString();
+            size.onchange = () => {
+                const val = parseInt(size.value);
+                if(val < 0) size.value = '0';
+                this.item.data.data.size = val;
+            }
+            size.onclick = e => e.stopPropagation();
+            sizeLabel.append(size);
+            conditinals.append(sizeLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Size Variation')) {
+            const sizeVarLabel = document.createElement('label');
+            sizeVarLabel.innerText = 'Size Variation: ';
+            const sizeVar = document.createElement('input');
+            sizeVar.type = 'number';
+            sizeVar.value = this.item.data.data.sizeVariation.toString();
+            sizeVar.onchange = () => {
+                const val = parseInt(sizeVar.value);
+                if(val < 0) sizeVar.value = '0';
+                if(val > 100) sizeVar.value = '100';
+                this.item.data.data.sizeVariation = val;
+            }
+            sizeVar.onclick = e => e.stopPropagation();
+            sizeVarLabel.append(sizeVar);
+            conditinals.append(sizeVarLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Material')) {
+            const materialLabel = document.createElement('label');
+            materialLabel.innerText = 'Material: ';
+            const material = document.createElement('input');
+            material.type = 'text';
+            material.value = this.item.data.data.material;
+            material.onchange = () => {this.item.data.data.material = material.value;}
+            material.onclick = e => e.stopPropagation();
+            materialLabel.append(material);
+            conditinals.append(materialLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Motion')) {
+            const motionLabel = document.createElement('label');
+            motionLabel.innerText = 'Motion: ';
+            const X = document.createElement('input');
+            X.type = 'number';
+            X.value = this.item.data.data.x.toString();
+            X.onchange = () => {this.item.data.data.x = parseFloat(X.value);}
+            X.onclick = e => e.stopPropagation();
+            X.style.width = '50px';
+            const Y = document.createElement('input');
+            Y.type = 'number';
+            Y.value = this.item.data.data.y.toString();
+            Y.onchange = () => {this.item.data.data.y = parseFloat(Y.value);}
+            Y.onclick = e => e.stopPropagation();
+            Y.style.width = '50px';
+            const Z = document.createElement('input');
+            Z.type = 'number';
+            Z.value = this.item.data.data.z.toString();
+            Z.onchange = () => {this.item.data.data.z = parseFloat(Z.value);}
+            Z.onclick = e => e.stopPropagation();
+            Z.style.width = '50px';
+            motionLabel.append(X,Y,Z);
+            conditinals.append(motionLabel,document.createElement('br'));
+        }
+        if(this.parsed.fields.includes('Motion Variation')) {
+            const motionVarLabel = document.createElement('label');
+            motionVarLabel.innerText = 'Motion Variation: ';
+            const motionVar = document.createElement('input');
+            motionVar.type = 'number';
+            motionVar.value = this.item.data.data.motionVariation.toString();
+            motionVar.onchange = () => {
+                const val = parseInt(motionVar.value);
+                if(val < 0) motionVar.value = '0';
+                if(val > 100) motionVar.value = '100';
+                this.item.data.data.motionVariation = val;
+            }
+            motionVar.onclick = e => e.stopPropagation();
+            motionVarLabel.append(motionVar);
+            conditinals.append(motionVarLabel,document.createElement('br'));
+        }
+        //#endregion
+
+        const ctxBox = new ContextMenu('Particle',[amountLabel,spreadLabel,conditinals]);
         return ctxBox;
     }
 
@@ -676,7 +809,7 @@ export class Part extends ChestItem {
         tooltip.append(particle,document.createElement('br'),amount,document.createElement('br'),spread);
 
         if(this.parsed.fields.includes('Color')) {
-            const hex = this.item.data.data.rgb.toString(16);
+            const hex = this.item.data.data.rgb.toString(16).padStart(6,'0');
             const colorLabel = document.createElement('label');
             colorLabel.innerText = 'Color: ';
             const color = document.createElement('span');
