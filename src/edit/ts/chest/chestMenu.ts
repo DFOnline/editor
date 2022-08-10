@@ -824,7 +824,7 @@ export default function chestMenu(BlockIndex : number){
 			itemElement.id = 'item' + String(SlotIndex);
 			itemElement.classList.add('full')
 			
-			itemElement.onmouseover = () => {
+			itemElement.ontouchstart = itemElement.onclick = itemElement.onmouseover = () => {
 
 				mouseInfo.innerHTML = '';
 
