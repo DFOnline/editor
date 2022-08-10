@@ -641,8 +641,71 @@ export class Part extends ChestItem {
         if(this.parsed == undefined) throw new Error(`Particle ${item.data.particle} not found`);
     }
 
-    contextMenu(_Block: number, _Slot: number): ContextMenu {
-        // TODO: Set actual values
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const search = document.createElement('input');
+        search.type = 'text';
+        search.placeholder = 'Particle';
+        search.value = this.item.data.particle;
+        search.onkeyup = e => {
+            if(e.key === 'Enter'){
+                const part = ActDB.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
+                if(part){
+                    this.item.data.particle = stripColors(part.icon.name);
+                    this.item.data.data = {
+                        material: 'STONE',
+                        rgb: 0xFFFFFF,
+                        colorVariation: 0,
+                        x: 1,
+                        y: 0,
+                        z: 0,
+                        motionVariation: 0,
+                        sizeVariation: 0,
+                        size: 1,
+                    }
+                    chestMenu(Block);
+                    search.value = stripColors(part.icon.name);
+                    valueCtx.close();
+                    ctxBox.close();
+                }
+                return;
+            }
+
+            results.innerHTML = '';
+            ActDB.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
+                const result = document.createElement('button');
+                minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
+                const trueName = document.createElement('span');
+                trueName.style.color = '#aaa';
+                trueName.innerText = ` ${p.particle}`;
+                result.append(trueName);
+
+                result.style.width = '100%';
+                result.onclick = () => {
+                    const res = stripColors(p.icon.name);
+                    search.value = res;
+                    this.item.data.particle = res;
+                    this.item.data.data = {
+                        material: 'STONE',
+                        rgb: 0xFFFFFF,
+                        colorVariation: 0,
+                        x: 1,
+                        y: 0,
+                        z: 0,
+                        motionVariation: 0,
+                        sizeVariation: 0,
+                        size: 1,
+                    }
+                    chestMenu(Block);
+                    valueCtx.close();
+                    ctxBox.close();
+                }
+                results.append(result);
+            });
+        }
+        const results = document.createElement('div');
+        results.id = 'results';
+        const valueCtx = new ContextMenu('Value',[search,results]);
+
         //#region Amount
         const amountLabel = document.createElement('label');
         amountLabel.innerText = 'Amount: ';
@@ -787,7 +850,11 @@ export class Part extends ChestItem {
         }
         //#endregion
 
-        const ctxBox = new ContextMenu('Particle',[amountLabel,spreadLabel,conditinals]);
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
+
+        const ctxBox = new ContextMenu('Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals,deleteButton]);
         return ctxBox;
     }
 
