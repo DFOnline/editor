@@ -1,8 +1,10 @@
-import { ActDB, backup, code, contextMenu, setAction, userMeta } from "./edit";
-import { Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
+import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
+import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
 import { CodeBlockTypeName } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
+import ChestItem from "./chest/item/chestitem";
+import User from "main/user";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
@@ -222,6 +224,28 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 			topper.classList.add(chest ? 'chest' : 'air');
 			if(chest){
 				topper.onclick = () => {chestMenu(this.index)}
+                if(User.showItems){
+                    topper.onmouseenter = e => {
+                        mouseInfo.style.display = 'block';
+                        mouseInfo.innerText = 'Click to open chest menu\n';
+                        e.stopPropagation();
+                        (code.blocks[this.index] as ArgumentBlock).args.items.map(arg => {
+                            try {
+                                return ChestItem.getItem(arg.item).repr()
+                            }
+                            catch {
+                                return arg.item.id + '?'
+                            }
+                        }).forEach(name => {
+                            mouseInfo.innerText += name + '\n';
+                        })
+                    }
+                    topper.onmousemove = e => {
+                        e.stopPropagation();
+                        mouseInfo.style.top = e.clientY + 'px';
+                        mouseInfo.style.left = e.clientX + 'px';
+                    }
+                }
 			}
 			blockElement.classList.add(block.block, 'mat');
 			if(block.block !== "else"){
