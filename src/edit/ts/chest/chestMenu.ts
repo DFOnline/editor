@@ -854,7 +854,7 @@ export default function chestMenu(BlockIndex : number){
 				if(userMeta.canEdit){
 					e.preventDefault();
 					e.stopPropagation();
-					chestItem.contextMenu(BlockIndex,BlockIndex).toggle(e);
+					chestItem.contextMenu(BlockIndex,SlotIndex).toggle(e);
 				}
 			}
 
