@@ -235,7 +235,6 @@ export function minecraftColorHTML(text : string, defaultColor = '§r',font?:str
                 }
                 else if(hexColor > 0){
                     last += str[1];
-                    console.log(str[1]);
                     if(hexColor === 1){
                         last += ';';
                     }
