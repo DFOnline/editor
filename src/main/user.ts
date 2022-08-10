@@ -31,6 +31,13 @@ export default class User {
         User.set('shiftBlocks', value);
     }
 
+    public static get showItems() : boolean {
+        return User.get('showItems', false);
+    }
+    public static set showItems(value : boolean) {
+        User.set('showItems', value);
+    }
+
     static menu : Menu = new Menu('User', menuDiv);
 }
 
@@ -48,5 +55,15 @@ stackBrackets.onchange = () => {
 }
 stackBracketsLabel.append(stackBrackets);
 
-menuDiv.append(p,stackBracketsLabel);
+const showItemsLabel = document.createElement('label');
+showItemsLabel.innerText = 'Show Items ';
+const showItems = document.createElement('input');
+showItems.type = 'checkbox';
+showItems.checked = User.showItems;
+showItems.onchange = () => {
+    User.showItems = showItems.checked;
+}
+showItemsLabel.append(showItems);
+
+menuDiv.append(p,stackBracketsLabel,document.createElement('br'),showItemsLabel);
 
