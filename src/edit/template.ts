@@ -6,6 +6,13 @@ export interface Template {
 
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = "saved" | "unsaved" | "local"
+export const ScopeToName = {"saved": "SAVED", "unsaved": "GAME", "local": "LOCAL"}
+export enum ScopeName {
+    saved = "SAVED",
+    unsaved = "GAME",
+    local = "LOCAL"
+
+}
 export type g_valSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
 export const SelectionValues : Target[] = ["", "AllPlayers", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"]
 
@@ -21,9 +28,14 @@ export const SelectionBlocks : BlockID[] = ["player_action", "entity_event", "en
 export type BlockSubActionID = "if_entity" | "if_game" | "if_player" | "if_var";
 export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
-export type Block = PhysicalBlock | Killable // + Killable type, used in filtering.
-export type PlacedBlock = SelectionBlock | SubActionBlock | DataBlock | Else // All the types you place
-export type PhysicalBlock = PlacedBlock | Bracket // All the types we use
+/** Everything that can be in the array. Killable is used for filtering. */
+export type Block = PhysicalBlock | Killable
+/** All types placed by the player */
+export type PlacedBlock = ArgumentBlock | DataBlock | Else 
+/** All the types with arguments */
+export type ArgumentBlock = SelectionBlock | SubActionBlock 
+/** All types that appear in the codespace */
+export type PhysicalBlock = PlacedBlock | Bracket 
 
 export interface Bracket {
     id: "bracket";
@@ -72,28 +84,23 @@ export interface Argument<i = Item> {
 
 // Item Code ========================================================
 
-export interface Item {
-    id: string;
-    data: any
-}
+export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
 
-// export type Item = Number | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
-
-export interface Number extends Item {
+export interface Number {
     id: 'num';
     data: {
         name: string;
     }
 }
 
-export interface Text extends Item {
+export interface Text {
     id: 'txt';
     data: {
         name: string;
     }
 }
 
-export interface Variable extends Item {
+export interface Variable {
     id: 'var'
     data: {
         name: string;
@@ -101,7 +108,7 @@ export interface Variable extends Item {
     }
 }
 
-export interface Location extends Item {
+export interface Location {
     id: 'loc';
     data: {
         isBlock: boolean;
@@ -115,7 +122,7 @@ export interface Location extends Item {
     }
 }
 
-export interface Vector extends Item {
+export interface Vector {
     id: 'vec';
     data: {
         x: number;
@@ -124,7 +131,7 @@ export interface Vector extends Item {
     }
 }
 
-export interface Potion extends Item {
+export interface Potion {
     id: 'pot';
     data: {
         pot: string;
@@ -133,7 +140,7 @@ export interface Potion extends Item {
     }
 }
 
-export interface Sound extends Item {
+export interface Sound {
     id: 'snd';
     data: {
         sound: string
@@ -142,7 +149,7 @@ export interface Sound extends Item {
     }
 }
 
-export interface GameValue extends Item {
+export interface GameValue {
     id: 'g_val';
     data: {
         type: string;
@@ -150,7 +157,7 @@ export interface GameValue extends Item {
     }
 }
 
-export interface Particle extends Item {
+export interface Particle {
     id: 'part';
     data: {
         particle: string
@@ -173,7 +180,7 @@ export interface Particle extends Item {
     }
 }
 
-export interface BlockTag extends Item {
+export interface BlockTag {
     id: 'bl_tag';
     data: {
         option: string;
@@ -183,7 +190,7 @@ export interface BlockTag extends Item {
     }
 }
 
-export interface ChestItem extends Item {
+export interface ChestItem {
     id: 'item';
     data: {
         item: string;
@@ -192,7 +199,6 @@ export interface ChestItem extends Item {
 
 // copilot just generating minecraft stuff.
 export interface ParsedItem {
-    name: string;
     id: string;
     Count: NbtValue<number>;
     tag: {
