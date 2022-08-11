@@ -164,7 +164,8 @@ export class Num extends ChestItem {
     }
 
     repr(): string {
-        return `num ${this.item.data.name}`;
+        return `
+        ${this.item.data.name}`;
     }
 }
 
@@ -204,7 +205,7 @@ export class Txt extends ChestItem {
     }
 
     repr(): string {
-        return `txt ${this.item.data.name.replace('\n','\\n')}`;
+        return `${this.item.data.name.replace('\n','\\n')}`;
     }
 }
 
@@ -267,7 +268,7 @@ export class Var extends ChestItem {
     }
 
     repr(): string {
-        return `var ${ScopeName[this.item.data.scope]} ${this.item.data.name}`;
+        return `${ScopeName[this.item.data.scope]} ${this.item.data.name}`;
     }
 }
 
@@ -346,7 +347,7 @@ export class Loc extends ChestItem {
     }
 
     repr(): string {
-        return `loc [${this.item.data.loc.x}, ${this.item.data.loc.y}, ${this.item.data.loc.z}, ${this.item.data.loc.pitch}, ${this.item.data.loc.yaw}]`;
+        return `[${this.item.data.loc.x}, ${this.item.data.loc.y}, ${this.item.data.loc.z}, ${this.item.data.loc.pitch}, ${this.item.data.loc.yaw}]`;
     }
 }
 
@@ -411,7 +412,7 @@ export class Vec extends ChestItem {
     }
 
     repr(): string {
-        return `vec <${this.item.data.x}, ${this.item.data.y}, ${this.item.data.z}>`;
+        return `<${this.item.data.x}, ${this.item.data.y}, ${this.item.data.z}>`;
     }
 }
 
@@ -516,7 +517,7 @@ export class Pot extends ChestItem {
     }
 
     repr(): string {
-        return `pot ${this.item.data.pot} ${this.item.data.amp} ${this.item.data.dur}t`;
+        return `${this.item.data.pot} ${this.item.data.amp} ${this.item.data.dur}t`;
     }
 }
 
@@ -623,7 +624,7 @@ export class Snd extends ChestItem {
     }
 
     repr(): string {
-        return `snd ${this.item.data.sound} ${this.item.data.pitch} ${this.item.data.vol}`;
+        return `${this.item.data.sound} ${this.item.data.pitch} ${this.item.data.vol}`;
     }
 }
 
@@ -931,7 +932,7 @@ export class Part extends ChestItem {
     }
 
     repr(): string {
-        return `part ${this.item.data.particle} ${this.item.data.cluster.amount} ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical} ${this.item.data.data.rgb} ${this.item.data.data.colorVariation} ${this.item.data.data.size} ${this.item.data.data.sizeVariation} ${this.item.data.data.material} ${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z} ${this.item.data.data.motionVariation}`;
+        return `${this.item.data.particle} ${this.item.data.cluster.amount} ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical} ${this.item.data.data.rgb} ${this.item.data.data.colorVariation} ${this.item.data.data.size} ${this.item.data.data.sizeVariation} ${this.item.data.data.material} ${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z} ${this.item.data.data.motionVariation}`;
     }
 }
 
@@ -1040,7 +1041,7 @@ export class Gval extends ChestItem {
     }
 
     repr(): string {
-        return `gval ${this.item.data.type} ${this.item.data.target}`;
+        return `${this.item.data.type} ${this.item.data.target}`;
     }
 }
 
@@ -1101,7 +1102,20 @@ export class MCItem extends ChestItem {
     }
 
     repr(): string {
-        return `item ${this.parsedItem.id}${JSON.stringify(this.parsedItem.tag ? this.parsedItem.tag : {})} ${this.parsedItem.Count.value}`;
+        return `${this.parsedItem.id}${JSON.stringify(this.parsedItem.tag ? this.parsedItem.tag : {})} ${this.parsedItem.Count.value}`;
+    }
+
+    minecraftName(): HTMLSpanElement {
+        const name = document.createElement('span');
+        if(this.parsedItem.tag){
+            if(this.parsedItem.tag.display.Name){
+                minecraftColorHTML(MinecraftTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
+            }
+        }
+        if(!name.innerText){
+            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+        }
+        return name;
     }
 }
 
