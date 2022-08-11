@@ -84,9 +84,8 @@ export function login(name : string, auth : string){
  */
 export function startup(){
     let mouseInfo : HTMLDivElement = document.querySelector('#mouseinfo');
-    document.body.onmousemove = e => {
-        mouseInfo.style.top = String(e.clientY + 10) + 'px';
-        mouseInfo.style.left = String(e.clientX + 10) + 'px';
+    document.body.onmousemove = () => {
+        mouseInfo.style.display = 'none';
     }
     let urlParams = new URLSearchParams(location.search)
     let urlMessage = urlParams.get('message');
@@ -128,7 +127,6 @@ export function MinecraftTextCompToCodes(component : string | object) : string{
     else{
         workComponents = component;
     }
-    console.log(workComponents);
 
     const codes : {[key: string]: string} = {
         "black": "0",
@@ -236,7 +234,6 @@ export function minecraftColorHTML(text : string, defaultColor = '§r',font?:str
                 }
                 else if(hexColor > 0){
                     last += str[1];
-                    console.log(str[1]);
                     if(hexColor === 1){
                         last += ';';
                     }

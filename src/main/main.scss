@@ -28,12 +28,12 @@ $color1: #00ffff;
 }
 
 @keyframes fadepulse {
-    0% {opacity: 0.25;}
-    100% {opacity: 0.75;}
+    0% {opacity: 0.45;}
+    100% {opacity: 0.9;}
 }
 
 .fadepulse {
-    animation: fadepulse 1s infinite alternate ease-in-out;
+    animation: fadepulse 0.9s infinite alternate cubic-bezier(.45,.05,.55,.95);
 }
 
 /* main */
@@ -233,8 +233,10 @@ button {
     padding: 5px;
     user-select: none;
     border-radius: 5px;
+    border-top-left-radius: 0px;
     background-color: $level3;
     box-shadow: #0009 3px 3px 5px;
+    outline: black solid 1px;
     display: none;
 }
 

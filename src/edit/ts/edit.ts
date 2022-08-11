@@ -1,5 +1,5 @@
 import { encodeTemplate, user } from "../../main/main";
-import type { Argument, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
+import type { Argument, ArgumentBlock, BlockTag, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
 import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
@@ -98,6 +98,12 @@ export function findBlockTag(block: CodeBlockIdentifier, action: String, tag: St
 
 export function findBlockTagOption(block: CodeBlockIdentifier, action: String, tag: String, option: string){
 	return findBlockTag(block,action,tag).options.find(x => x.name === option);
+}
+
+export function findValidBlockTagHolder(block: SubActionBlock, tag: BlockTag){
+	const validBlocks = ActDB.codeblocks.filter(c => ActDB.actions.find(x => x.name === block.action).subActionBlocks.includes(c.identifier as any)).map(c => c.name);
+	const validTagBlock = ActDB.actions.find(a => a.name === block.subAction && validBlocks.includes(a.codeblockName));
+	return ActDB.codeblocks.find(c => c.name === validTagBlock.codeblockName);
 }
 
 /**

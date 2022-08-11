@@ -9,19 +9,20 @@ $ctx-padding: 0.2em;
     top: 0;
     left: 0;
 
-    div {
-        display: grid;
+    > div {
+        display: flex;
         min-width: 3em;
         position: fixed;
         background-color: $level2;
         padding: $ctx-padding;
         border-radius: 5px;
+        flex-direction: column;
+        outline: black solid 1px;
         * {
             margin: 0;
         }
         button {
             text-align: left;
-            padding-left: $ctx-padding;
             box-shadow: none;
             border-radius: 3px;
         }

@@ -1,8 +1,11 @@
-import { ActDB, backup, code, contextMenu, setAction, userMeta } from "./edit";
-import { Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
-import { CodeBlockTypeName } from "./actiondump";
+import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
+import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
+import { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
+import ChestItem, { MCItem } from "./chest/item/chestitem";
+import User from "../../main/user";
+import sanitize from "sanitize-html";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
@@ -222,6 +225,32 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 			topper.classList.add(chest ? 'chest' : 'air');
 			if(chest){
 				topper.onclick = () => {chestMenu(this.index)}
+                if(User.showItems){
+                    topper.onmouseenter = e => {
+                        mouseInfo.style.display = 'block';
+                        mouseInfo.innerHTML = '<u>Click to open chest menu</u><br><hr>';
+                        e.stopPropagation();
+                        (code.blocks[this.index] as ArgumentBlock).args.items.forEach(arg => {
+                            mouseInfo.innerHTML += `<b style="color: ${ItemTypeColors[arg.item.id]}">${arg.item.id.toUpperCase()}</b> `
+                            if (arg.item.id === 'item'){
+                                mouseInfo.append(new MCItem(arg.item).minecraftName());
+                                mouseInfo.append(document.createElement('br'));
+                                return;
+                            }
+                            try {
+                                mouseInfo.innerHTML += `${sanitize(ChestItem.getItem(arg.item).repr())}<br>`
+                            }
+                            catch {
+                                mouseInfo.innerHTML += '<span style="color: red"> ?</span><br>'
+                            }
+                        })
+                    }
+                    topper.onmousemove = e => {
+                        e.stopPropagation();
+                        mouseInfo.style.top = e.clientY + 'px';
+                        mouseInfo.style.left = e.clientX + 'px';
+                    }
+                }
 			}
 			blockElement.classList.add(block.block, 'mat');
 			if(block.block !== "else"){
