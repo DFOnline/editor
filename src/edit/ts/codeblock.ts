@@ -1,10 +1,11 @@
 import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
 import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
-import { CodeBlockTypeName } from "./actiondump";
+import { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
-import ChestItem from "./chest/item/chestitem";
-import User from "main/user";
+import ChestItem, { MCItem } from "./chest/item/chestitem";
+import User from "../../main/user";
+import sanitize from "sanitize-html";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
@@ -227,17 +228,21 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                 if(User.showItems){
                     topper.onmouseenter = e => {
                         mouseInfo.style.display = 'block';
-                        mouseInfo.innerText = 'Click to open chest menu\n';
+                        mouseInfo.innerHTML = '<u>Click to open chest menu</u><br><hr>';
                         e.stopPropagation();
-                        (code.blocks[this.index] as ArgumentBlock).args.items.map(arg => {
+                        (code.blocks[this.index] as ArgumentBlock).args.items.forEach(arg => {
+                            mouseInfo.innerHTML += `<b style="color: ${ItemTypeColors[arg.item.id]}">${arg.item.id.toUpperCase()}</b> `
+                            if (arg.item.id === 'item'){
+                                mouseInfo.append(new MCItem(arg.item).minecraftName());
+                                mouseInfo.append(document.createElement('br'));
+                                return;
+                            }
                             try {
-                                return ChestItem.getItem(arg.item).repr()
+                                mouseInfo.innerHTML += `${sanitize(ChestItem.getItem(arg.item).repr())}<br>`
                             }
                             catch {
-                                return arg.item.id + '?'
+                                mouseInfo.innerHTML += '<span style="color: red"> ?</span><br>'
                             }
-                        }).forEach(name => {
-                            mouseInfo.innerText += name + '\n';
                         })
                     }
                     topper.onmousemove = e => {
