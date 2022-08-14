@@ -38,6 +38,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
     className: string = 'block';
     draggable: boolean = true;
 
+    // these comments are honestly quite incredible
     dropevent : (e : DragEvent) => void = e => { // and when you drop on a codeblock
         e.stopPropagation();
 
@@ -300,7 +301,3 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 }
 
 customElements.define('df-block', HTMLCodeBlockElement, { extends: 'div' });
-
-
-		
-// this.style.position = 'relative';
