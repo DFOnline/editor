@@ -24,6 +24,7 @@ export default
                 comment: resolve(root,'edit/comment/index.html'),
                 how: resolve(root,'edit/how/index.html'),
                 home: resolve(root,'home/index.html'),
+                ip: resolve(root, 'ip/index.html'), // very imrportante !.
             }
         },
         outDir: '../dist',
