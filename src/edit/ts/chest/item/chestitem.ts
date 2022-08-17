@@ -89,10 +89,10 @@ function deleteItem(Block : number, Slot : number, ctxBox : ContextMenu){
     ctxBox.close();
 }
 /** This if for use in the keydown event */
-function nameEditor(item: any, Slot: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
+function nameEditor(item: any, Block: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
     if(event.key === 'Enter'){
         item.data.name = value.value;
-        chestMenu(Slot);
+        chestMenu(Block);
         ctxBox.close();
     }
     if(event.key === 'Escape'){
@@ -120,7 +120,7 @@ export class Num extends ChestItem {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item, Slot, e, value, ctxBox);
+        value.onkeydown = e => nameEditor(this.item, Block, e, value, ctxBox);
         value.onclick = e => e.stopPropagation();
 
         const deleteButton = document.createElement('button');
@@ -183,7 +183,7 @@ export class Txt extends ChestItem {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Slot,e,value,ctxBox);
+        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
         value.onclick = e => e.stopPropagation();
 
         const deleteButton = document.createElement('button');
@@ -223,11 +223,11 @@ export class Var extends ChestItem {
         const value = document.createElement('input');
 
         value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Slot,e,value,ctxBox);
+        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
         value.onclick = e => e.stopPropagation();
 
         const scope = document.createElement('select');
-        scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Slot);};
+        scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Block);};
         scope.value = this.item.data.scope;
         scope.onclick = e => e.stopPropagation();
         scope.innerHTML = `
