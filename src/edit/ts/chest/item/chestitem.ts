@@ -228,13 +228,13 @@ export class Var extends ChestItem {
 
         const scope = document.createElement('select');
         scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Block);};
-        scope.value = this.item.data.scope;
         scope.onclick = e => e.stopPropagation();
         scope.innerHTML = `
         <option value="unsaved">GAME</option>
         <option value="saved">SAVED</option>
         <option value="local">LOCAL</option>
         `;
+        scope.value = this.item.data.scope;
 
 
         const deleteButton = document.createElement('button');
