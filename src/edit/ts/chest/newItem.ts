@@ -16,7 +16,7 @@ export default function newItem(e : MouseEvent, slotID : number, block : SubActi
             slot: slotID,
             item: item
         });
-        const menu = chestMenu(id);
+        chestMenu(id);
 
         // setTimeout(() => {
         //     (menu.querySelectorAll('*.slot > .item')[slotID] as HTMLElement).oncontextmenu(e);
