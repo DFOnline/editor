@@ -1,6 +1,6 @@
 import { code, compareTemplate, userMeta } from "./edit";
 import { isDeveloperMode } from "../../main/developers";
-import HTMLCodeBlockElement from "./codeblock";
+import HTMLCodeBlockElement from "./HTMLCodeBlockElement";
 import { diffArrays } from 'diff'
 import type { Block } from "edit/template";
 import User from "../../main/user";
