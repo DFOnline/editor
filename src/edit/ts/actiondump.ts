@@ -1,11 +1,11 @@
 import { snackbar } from "../../main/main";
 import type { BlockID } from "../template";
 
-const ActionDump = fetch(`${sessionStorage.getItem('apiEndpoint')}db`).then(r => r.json()).catch(e => {
+const ActDB = fetch(`${sessionStorage.getItem('apiEndpoint')}db`).then(r => r.json()).catch(e => {
     snackbar('An error occured whilst loading required data.','error');
     console.error(e);
 }) as Promise<ActionDump>;
-export default ActionDump;
+export default ActDB;
 
 export interface ActionDump {
     codeblocks: CodeBlock[];
