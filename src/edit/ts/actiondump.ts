@@ -1,4 +1,11 @@
+import { snackbar } from "../../main/main";
 import type { BlockID } from "../template";
+
+const ActionDump = fetch(`${sessionStorage.getItem('apiEndpoint')}db`).then(r => r.json()).catch(e => {
+    snackbar('An error occured whilst loading required data.','error');
+    console.error(e);
+}) as Promise<ActionDump>;
+export default ActionDump;
 
 export interface ActionDump {
     codeblocks: CodeBlock[];
@@ -11,7 +18,6 @@ export interface ActionDump {
     particles: Particle[];
     potions: Potion[];
 }
-export default ActionDump
 export interface CodeBlock {
     name: string;
     identifier: CodeBlockIdentifier;
@@ -22,6 +28,7 @@ export interface Action {
     name: string;
     codeblockName: string;
     tags: Tag[];
+    aliases: string[];
     icon: Icon;
     subActionBlocks?: subActionBlocks;
 }
