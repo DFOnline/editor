@@ -1,6 +1,6 @@
 import { encodeTemplate, user } from "../../main/main";
 import type { Argument, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
-import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
+import { ActDB, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
 
@@ -8,7 +8,7 @@ export type tree = {
 	[key: string]: tree | string;
 }
 export let Sounds : tree
-export let ActDB : ActionDump
+export let ActDB : ActDB
 export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
 export let userMeta:
@@ -122,7 +122,7 @@ window.addEventListener('load',() => {
 	contextMenu = document.querySelector('div#context');
 })
 
-export function onactdb(data : ActionDump){
+export function onactdb(data : ActDB){
 	ActDB = data;
 	Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 }
