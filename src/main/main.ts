@@ -15,7 +15,13 @@ export function snackbar(message : string, type: 'error' | 'development' | '' = 
     if(type){ bar.classList.add(type); }
     bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}};
     bar.onanimationend = event => (event.target as HTMLElement).remove();
-    document.getElementById('snackbars').appendChild(bar);
+    let snackbars = document.getElementById('snackbars');
+    if(!snackbars){
+        snackbars = document.createElement('div');
+        snackbars.id = 'snackbars';
+        document.body.appendChild(snackbars);
+    }
+    snackbars.appendChild(bar);
     setTimeout(() => {if(!bar.classList.contains('snackbarout')){bar.classList.add('snackbartime')}},4000);
 }
 
