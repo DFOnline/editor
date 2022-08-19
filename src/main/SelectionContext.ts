@@ -43,18 +43,18 @@ export default class SelectionContext extends ContextMenu {
 
     hilight(){
         this.SearchOutput.querySelector('.selected')?.classList.remove('selected');
-        this.SearchOutput.children[this.SelectedIndex].classList.add('selected');
+        if(this.selectedButton != null) this.selectedButton.classList.add('selected');
     }
     
     private onchange(e : KeyboardEvent){
+        e.stopPropagation();
         if(e.key === 'Enter'){
-            (this.SearchOutput.children[this.SelectedIndex] as HTMLButtonElement).click();
+            if(this.selectedButton != null) this.selectedButton.click();
             return;
         }
         if(e.key === 'Tab' && this.doTabulator){
             if(!e.shiftKey) this.SelectedIndex++;
             else            this.SelectedIndex--;
-            console.log(this.SelectedIndex);
             if(this.SelectedIndex >= this.SearchOutput.children.length){
                 this.SelectedIndex = 0;
             }
