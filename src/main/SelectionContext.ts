@@ -10,21 +10,17 @@ export default class SelectionContext extends ContextMenu {
      */
     callback = (_value: string) => {return;};
 
-    constructor(name: string, private values: {[key: string]: string[]}, hasTitle: boolean){
+    constructor(name: string, private values: {[key: string]: string[]}, doTabulator = false, hasTitle = false){
         const searchOutput = document.createElement('div');
+        searchOutput.style.display = 'grid';
         const valueInput = document.createElement('input');
         super(name,[valueInput,searchOutput],hasTitle);
+        this.doTabulator = doTabulator;
         this.SearchOutput = searchOutput;
         this.ValueInput = valueInput;
         this.ValueInput.type = 'text';
-        this.ValueInput.addEventListener('input',() => {
-            this.querySearch();
-        });
-        Object.entries(values).forEach(([key,value]) => {
-            value.forEach(v => {
-                this.SearchValues[v] = key;
-            });
-        });
+        this.ValueInput.addEventListener('input',this.querySearch.bind(this));
+        this.ValueInput.addEventListener('keydown',this.onchange.bind(this));
     }
 
     querySearch(){
@@ -41,17 +37,81 @@ export default class SelectionContext extends ContextMenu {
                 } );
                 this.SearchOutput.appendChild(button);
             }
-        })
+        });
+        this.hilight();
+    }
+
+    hilight(){
+        this.SearchOutput.querySelector('.selected')?.classList.remove('selected');
+        this.SearchOutput.children[this.SelectedIndex].classList.add('selected');
+    }
+    
+    private onchange(e : KeyboardEvent){
+        if(e.key === 'Enter'){
+            (this.SearchOutput.children[this.SelectedIndex] as HTMLButtonElement).click();
+            return;
+        }
+        if(e.key === 'Tab' && this.doTabulator){
+            if(!e.shiftKey) this.SelectedIndex++;
+            else            this.SelectedIndex--;
+            console.log(this.SelectedIndex);
+            if(this.SelectedIndex >= this.SearchOutput.children.length){
+                this.SelectedIndex = 0;
+            }
+            if(this.SelectedIndex < 0){
+                this.SelectedIndex = this.SearchOutput.children.length - 1;
+            }
+            this.doSelectIndex();
+            this.hilight();
+            e.preventDefault();
+            return;
+        }
+        if(e.key === 'ArrowDown' && this.doTabulator){
+            this.SelectedIndex++;
+            if(this.SelectedIndex >= this.SearchOutput.children.length){
+                this.SelectedIndex = 0;
+            }
+            this.doSelectIndex();
+            this.hilight();
+            e.preventDefault();
+            return;
+        }
+        if(e.key === 'ArrowUp' && this.doTabulator){
+            this.SelectedIndex--;
+            if(this.SelectedIndex < 0){
+                this.SelectedIndex = this.SearchOutput.children.length - 1;
+            }
+            this.doSelectIndex();
+            this.hilight();
+            e.preventDefault();
+            return;
+        }
+        this.SelectedIndex = 0;
+    }
+
+    doSelectIndex(){
+        const value = this.value;
+        const selectionStart = value.length;
+        const text = this.ValueInput.value = (this.SearchOutput.children[this.SelectedIndex] as HTMLButtonElement).innerText;
+        const selectionEnd = text.length;
+        this.ValueInput.setSelectionRange(selectionStart,selectionEnd);
     }
 
     open(x: number, y: number): void {
+        this.SelectedIndex = 0;
         this.querySearch();
         super.open(x,y);
+        this.ValueInput.focus();
     }
 
-    private SearchValues: {[key: string]: string} = {}
     private SearchOutput: HTMLDivElement;
     private ValueInput: HTMLInputElement;
-    get value(){ return this.ValueInput.value; }
+    private SelectedIndex = 0;
+    private doTabulator = false;
+    get value(){
+        // return all the text before the selectedRange
+        return this.ValueInput.value.substring(0,this.ValueInput.selectionStart);
+    }
     set value(value: string){ this.ValueInput.value = value; }
+    private get selectedButton(){ return this.SearchOutput.children[this.SelectedIndex] as HTMLButtonElement; }
 }
