@@ -1,5 +1,5 @@
 import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
-import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
+import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
 import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
@@ -7,6 +7,7 @@ import ChestItem, { MCItem } from "./chest/item/chestitem";
 import User from "../../main/user";
 import sanitize from "sanitize-html";
 import SelectionContext from "../../main/SelectionContext";
+import ContextMenu from "../../main/context";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
@@ -125,6 +126,27 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
 
                         userMeta.ctxKeys['s'] = targetButton;
                         contextMenu.append(targetButton);
+                    }
+                    if(SubActionBlocks.includes(block.block as any)){
+                        const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
+                        if(subAction){
+                            const subActions = subAction.subActionBlocks;
+                            console.log(subActions);
+                            const acts = await ActionDump;
+                            const types = subActions.map(sa => {
+                                const SubActionCategory = new SelectionContext(CodeBlockTypeName[sa], Object.fromEntries(acts.actions.filter(a => a.codeblockName === CodeBlockTypeName[sa]).map(a => [a.name,[...a.aliases,a.name]])), true, false);
+                                SubActionCategory.callback = (name) => {
+                                    contextMenu.click();
+                                    (block as SubActionBlock).subAction = name;
+                                    if(sa === 'if_player' && name === 'HasRoomForItem') (block as SubActionBlock).subAction = 'PHasRoomForItem';
+                                    rendBlocks();
+                                    // TODO: set tags for subaction
+                                }
+                                return SubActionCategory.subMenu;
+                            })
+                            let subactionSearcher = new ContextMenu('Sub Actions', types, false);
+                            contextMenu.append(subactionSearcher.subMenu);
+                        }
                     }
                     if(block.block.includes('if_')){ // NOT button
                         let not = document.createElement('button');
