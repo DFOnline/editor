@@ -1,11 +1,12 @@
 import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
 import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, Target } from "../template";
-import { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
+import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
 import ChestItem, { MCItem } from "./chest/item/chestitem";
 import User from "../../main/user";
 import sanitize from "sanitize-html";
+import SelectionContext from "../../main/SelectionContext";
 
 export default class HTMLCodeBlockElement extends HTMLDivElement {
     constructor (block : Block, i : number, bracketIndex : number) {
@@ -68,7 +69,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
             rendBlocks();
         }
     }
-    contextmenuevent : (e : MouseEvent, block : Block) => void = (e, block) => { // the right click menu :D
+    contextmenuevent = async (e : MouseEvent, block : Block) => { // the right click menu :D
         if(block.id !== 'killable'){
             e.preventDefault();
             contextMenu.innerHTML = '';
@@ -79,86 +80,19 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
             if(block.id !== 'bracket'){
                 if(block.block !== 'else'){
 
-                    let valueButton = document.createElement('button');
-                    if((block as DataBlock).data !== undefined) valueButton.innerHTML = 'D<u>a</u>ta';
-                    if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined) valueButton.innerHTML = '<u>A</u>ction'
-
-                    valueButton.onclick = () => { // YEEE CONTEXT FOR EDITING ACTIONS
-                        setTimeout(() => {
-                            contextMenu.style.display = 'grid';
-                                let value = document.createElement('input');
-                                if((block as DataBlock).data === undefined){ // default action type block.
-                                    value.value = (block as SelectionBlock | SubActionBlock).action;
-                                    let results = document.createElement('div');
-                                    let pre = value.value.substring(value.selectionStart,0);
-                                    value.onkeydown = e => { // ENTER, ESCAPE AND TAB
-                                        if(e.key === 'Enter'){
-                                            setAction(this.index,value.value);
-                                            contextMenu.click();
-                                            rendBlocks();
-                                        }
-                                        else if(e.key === 'Escape'){
-                                            contextMenu.click();
-                                        }
-                                        else if(e.key === 'Tab'){
-                                            e.preventDefault();
-                                            if(userMeta.search.value.length !== 0){
-                                                value.value = userMeta.search.value[userMeta.search.index].name;
-                                                value.setSelectionRange(pre.length,value.value.length);
-                                                userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
-                                            }
-                                        }
-                                        else if(e.key === 'Backspace') pre = value.value.substring(value.selectionStart + 1,0);
-                                        else{
-                                            userMeta.search.value = undefined;
-                                            pre = value.value.substring(value.selectionStart,0);
-                                        }
-                                    }
-                                    value.oninput = () => { // EVERYTHING ELSE THAT YOU TYPE
-                                        results.innerHTML = '';
-                                        if(value.value.length - pre.length >= 0){
-                                            userMeta.search.value = ActDB.actions.filter(x => x.codeblockName === CodeBlockTypeName[block.block as 'player_action'] && x.icon.description.length !== 0).filter(x => x.name.toLowerCase().startsWith(value.value.toLowerCase()));
-                                            userMeta.search.index = 0;
-                                            if(userMeta.search.value.length !== 0){
-                                                let length = value.value.length;
-                                                value.value = userMeta.search.value[userMeta.search.index].name;
-                                                value.setSelectionRange(length,value.value.length);
-                                                userMeta.search.index = (1 + userMeta.search.index) % userMeta.search.value.length;
-                                                userMeta.search.value.forEach(v => {
-                                                    let res = document.createElement('button');
-                                                    res.innerText = v.name;
-                                                    res.onclick = () => {
-                                                        (block as SelectionBlock | SubActionBlock).action = v.name;
-                                                        rendBlocks()
-                                                    }
-                                                    results.append(res);
-                                                    results.append(document.createElement('br'));
-                                                })
-                                            }
-                                            else userMeta.search.value = undefined;
-                                        }
-                                        pre = value.value.substring(value.selectionStart,0);
-                                    }
-                                    contextMenu.append(results);
-                                }
-                                else { // data type block.
-                                    value.value = (block as DataBlock).data
-                                    value.onkeydown = e => {
-                                        if(e.key === 'Enter'){
-                                            (block as DataBlock).data = value.value;
-                                            contextMenu.click();
-                                            rendBlocks();
-                                        }
-                                        else if(e.key === 'Escape'){
-                                            contextMenu.click();
-                                        }
-                                    }
-                                }
-                                value.onclick = e => { e.stopPropagation(); }
-                                contextMenu.prepend(value);
-                                value.focus()
-                        })
+                    //#region value edit
+                    let name = 'Block is invalid';
+                    if((block as DataBlock).data !== undefined) name = 'Data';
+                    if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined) name = 'Action'
+                    const values = Object.fromEntries((await ActionDump).actions.filter(a => a.codeblockName === CodeBlockTypeName[block.block]).map(a => [a.name,[...a.aliases,a.name]]));
+                    const value = new SelectionContext(name, values, true, false);
+                    value.callback = (name) => {
+                        contextMenu.click();
+                        setAction(this.index, name);
+                        rendBlocks();
                     }
+                    const valueButton = value.subMenu;
+                    //#endregion
 
                     userMeta.ctxKeys['a'] = valueButton;
                     contextMenu.append(valueButton);
