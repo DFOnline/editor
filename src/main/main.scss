@@ -73,8 +73,11 @@ button, input[type=submit], input[type=button] {
     padding-left: 15px;
     padding-right: 15px;
     transition: filter .2s ease;
-    &:not(:disabled):hover {
-        filter: brightness(1.3);
+    &:not(:disabled){
+        &.selected,
+        &:hover {
+            filter: brightness(1.3);
+        }
     }
 }
 
