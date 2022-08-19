@@ -33,7 +33,7 @@ export interface Action {
     subActionBlocks?: subActionBlocks;
 }
 
-type subActionBlocks = 
+export type subActionBlocks = 
     ['if_player', 'if_var', 'if_game',] |
     ['if_entity', 'if_var', 'if_game',] |
     ['if_player', 'if_entity', 'if_var', 'if_game']

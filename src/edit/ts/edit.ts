@@ -1,6 +1,6 @@
 import { encodeTemplate, user } from "../../main/main";
 import type { Argument, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
-import { ActDB, CodeBlockIdentifier, CodeBlockTypeName } from "./actiondump";
+import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName, subActionBlocks } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
 
@@ -8,7 +8,7 @@ export type tree = {
 	[key: string]: tree | string;
 }
 export let Sounds : tree
-export let ActDB : ActDB
+export let ActDB : ActionDump
 export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
 export let userMeta:
@@ -100,6 +100,11 @@ export function findBlockTagOption(block: CodeBlockIdentifier, action: String, t
 	return findBlockTag(block,action,tag).options.find(x => x.name === option);
 }
 
+export function getCodeAction(actionName : string, types : subActionBlocks) {
+	let names = types.map(t => ActDB.codeblocks.find(x => x.identifier === t).name);
+	return ActDB.actions.find(x => x.name === actionName && names.includes(x.codeblockName));
+}
+
 /**
  * This exports that code and various info about it in an object.
  * @param code Stringified version of a template to compile
@@ -122,7 +127,7 @@ window.addEventListener('load',() => {
 	contextMenu = document.querySelector('div#context');
 })
 
-export function onactdb(data : ActDB){
+export function onactdb(data : ActionDump){
 	ActDB = data;
 	Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 }
