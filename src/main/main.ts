@@ -12,7 +12,7 @@ export let cuopen = false;
 export function snackbar(message : string, type: 'error' | 'development' | '' = ''){
     const bar = document.createElement('span');
     bar.innerText = message;
-    bar.classList.add(type);
+    if(type){ bar.classList.add(type); }
     bar.onclick = event => {if(!bar.classList.contains('snackbartime')){(event.target as HTMLElement).classList.add('snackbarout')}};
     bar.onanimationend = event => (event.target as HTMLElement).remove();
     document.getElementById('snackbars').appendChild(bar);
