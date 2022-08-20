@@ -262,3 +262,20 @@ code {
 :root {
     color-scheme: dark;
 }
+
+a {
+    color: #94d4d6;
+    $active-color: #839aff;
+    &:link {
+        color: #94d4d6;
+    }
+    // &:visited {
+    //     color: #ab63db;
+    // }
+    &:hover {
+        color: $active-color;
+    }
+    &:active {
+        color: $active-color;
+    }
+}
