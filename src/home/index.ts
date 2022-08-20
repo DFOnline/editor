@@ -22,7 +22,7 @@ codeutilities.onmessage = event => {
     }
 }
 
-const prefrences = document.querySelector<HTMLHeadingElement>('h1#perf');
+const prefrences = document.querySelector<HTMLHeadingElement>('button#perf');
 prefrences.onclick = () => {
     User.menu.open();
 }
