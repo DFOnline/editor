@@ -43,9 +43,6 @@ export class ImportMenu extends Menu {
         const content = document.createElement('div');
         const p = document.createElement('p');
         p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
-        const a = document.createElement('a');
-        a.innerText = 'Info';
-        a.href = '/edit/how';
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = 'Template Data';
@@ -59,7 +56,16 @@ export class ImportMenu extends Menu {
                 sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
             }
         }
-        content.append(a,p,input,activateImport);
+        const a = document.createElement('a');
+        a.innerText = 'ⓘ Help';
+        a.href = '/edit/how';
+        a.style.display = 'inline-block';
+        // a.style.textDecoration = 'none';
+        // a.style.fontSize = '1.5em';
+        a.style.width = '100%'
+        a.style.textAlign = 'end';
+        a.title = 'Help';
+        content.append(p,input,activateImport,a);
         super('Import', content);
     }
     
