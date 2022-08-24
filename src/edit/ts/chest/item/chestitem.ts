@@ -6,7 +6,7 @@ import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../..
 import { parse } from 'nbt-ts';
 import itemNames from '../itemnames.json';
 import type { ParticleCategory } from "edit/ts/actiondump";
-import SelectionContext from "../../../../main/context";
+import SelectionContext from "../../../../main/SelectionContext";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -473,7 +473,7 @@ export class Pot extends ChestItem {
 
     icon(): HTMLDivElement {
         const icon = genericIcon(this.backgroundUrl);
-        icon.style.filter = `drop-shadow(0 0 5px #${ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name.match(/(?<=&[A-F0-9x]&)[A-F1-9]/gi).join('')})`
+        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
         return icon;
     }
 
