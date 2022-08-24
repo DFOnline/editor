@@ -6,6 +6,7 @@ import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../..
 import { parse } from 'nbt-ts';
 import itemNames from '../itemnames.json';
 import type { ParticleCategory } from "edit/ts/actiondump";
+import SelectionContext from "../../../../main/context";
 
 export default abstract class ChestItem {
     backgroundUrl : string;
@@ -427,43 +428,16 @@ export class Pot extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
+        const search = Object.fromEntries(ActDB.potions.map(p => {
+            const clear = stripColors(p.icon.name)
+            return [clear,[clear,p.potion]]
+        }));
 
-        const search = document.createElement('input');
-        search.type = 'text';
-        search.placeholder = 'Potion';
-        search.value = this.item.data.pot;
-        search.onkeyup = e => {
-            if(e.key === 'Enter'){
-                const pot = ActDB.potions.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.potion.toLowerCase().includes(search.value.toLowerCase()));
-                if(pot){
-                    this.item.data.pot = stripColors(pot.icon.name);
-                    chestMenu(Block);
-                    search.value = stripColors(pot.icon.name);
-                    valueCtx.close();
-                }
-                return;
-            }
-
-            results.innerHTML = '';
-            ActDB.potions.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.potion.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
-                const result = document.createElement('button');
-                minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
-                result.style.width = '100%';
-                result.onclick = () => {
-                    const res = stripColors(p.icon.name);
-                    search.value = res;
-                    this.item.data.pot = res;
-                    chestMenu(Block);
-                    valueCtx.close();
-                }
-                results.append(result);
-            });
+        const valueCtx = new SelectionContext('Potion Value',search,true,false);
+        valueCtx.callback = pot => {
+            this.item.data.pot = pot;
+            chestMenu(Block);
         }
-        const results = document.createElement('div');
-        results.id = 'results';
-
-
-        const valueCtx = new ContextMenu('Value',[search,results]);
 
         const durationLabel = document.createElement('label');
         durationLabel.innerText = 'Duration: ';
