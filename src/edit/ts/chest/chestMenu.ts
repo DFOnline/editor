@@ -86,12 +86,13 @@ export default function chestMenu(BlockIndex : number){
 					const div = document.querySelector<HTMLDivElement>('body > div#drag-icon') || document.createElement('div');
 					div.id = 'drag-icon';
 					div.style.position = "absolute"; div.style.top = "0px"; div.style.left = "-500px";
-					document.body.removeChild(div);
+					document.querySelectorAll('body > div#drag-icon').forEach(div => div.remove());
 					document.body.appendChild(div);
 
-					div.appendChild(div);
-
 					mouseInfo.style.display = 'none';
+				}
+				itemElement.ondragend = () => {
+					document.querySelectorAll('body > div#drag-icon').forEach(i => i.remove());
 				}
 
 				itemElement.ondragover = e => e.preventDefault();
