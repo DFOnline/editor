@@ -1,4 +1,4 @@
-import { ActDB, backup, code, contextMenu, mouseInfo, setAction, userMeta } from "./edit";
+import { ActDB, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
 import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
 import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
@@ -131,16 +131,15 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
                         if(subAction){
                             const subActions = subAction.subActionBlocks;
-                            console.log(subActions);
                             const acts = await ActionDump;
-                            const types = subActions.map(sa => {
-                                const SubActionCategory = new SelectionContext(CodeBlockTypeName[sa], Object.fromEntries(acts.actions.filter(a => a.codeblockName === CodeBlockTypeName[sa]).map(a => [a.name,[...a.aliases,a.name]])), true, false);
-                                SubActionCategory.callback = (name) => {
+                            const types = subActions.map(ActionType => {
+                                const SubActionCategory = new SelectionContext(CodeBlockTypeName[ActionType], Object.fromEntries(acts.actions.filter(a => a.codeblockName === CodeBlockTypeName[ActionType]).map(a => [a.name,[...a.aliases,a.name]])), true, false);
+                                SubActionCategory.callback = (ActionName) => {
                                     contextMenu.click();
-                                    (block as SubActionBlock).subAction = name;
-                                    if(sa === 'if_player' && name === 'HasRoomForItem') (block as SubActionBlock).subAction = 'PHasRoomForItem';
+                                    (block as SubActionBlock).subAction = ActionName;
+                                    if(ActionType === 'if_player' && ActionName === 'HasRoomForItem') (block as SubActionBlock).subAction = 'PHasRoomForItem';
                                     rendBlocks();
-                                    // TODO: set tags for subaction
+                                    populateBlockTags(this.index,ActDB.actions.find(a => a.codeblockName === CodeBlockTypeName[ActionType] && a.name === ActionName));
                                 }
                                 return SubActionCategory.subMenu;
                             })
