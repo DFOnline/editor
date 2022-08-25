@@ -1,6 +1,6 @@
 import { encodeTemplate, user } from "../../main/main";
-import type { Argument, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
-import { ActionDump, CodeBlockIdentifier, CodeBlockTypeName, subActionBlocks } from "./actiondump";
+import type { Argument, BlockTag, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
+import { Action, ActionDump, CodeBlockIdentifier, CodeBlockNameType, CodeBlockTypeName, subActionBlocks } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
 
@@ -40,32 +40,13 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 			if((block as DataBlock).data) (block as DataBlock).data = value;
 			else if((block as SubActionBlock)){
 
-				let action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
+				const action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
 
 				if(value !== '' && !ignoreInvalidAction && action === undefined) throw new TypeError(`Action ${value} doesn't exist on block type ${CodeBlockTypeName[(block as PlacedBlock).block as 'else']}`);
 
-				else{ // logic for block tags
-
+				else{
 					(block as SubActionBlock).action = value;
-					let newItems = (block as SubActionBlock).args.items.filter(item => item.item.id !== 'bl_tag');
-					if(action !== undefined){
-						action.tags.forEach((tag,i) => {
-							let newTag : Argument = ({
-								slot: (26 - i),
-								item: {
-									id: 'bl_tag',
-									data: {
-										action: value,
-										block: (block as PlacedBlock).block,
-										option: tag.defaultOption,
-										tag: tag.name,
-									}
-								}
-							});
-							newItems.push(newTag);
-						});
-					}
-					(block as SubActionBlock).args.items = newItems;
+					populateBlockTags(index,action);
 				}
 			}
 			else throw new TypeError(`Block ${index} doesn't have a value.`)
@@ -73,6 +54,28 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 		else throw new TypeError(`Block ${index} is probably a ${block.id} which doesn't have a value.`)
 	}
 	else throw new RangeError(`Block ${index} doesn't exist.`)
+}
+export function populateBlockTags(index: number, action : Action){
+	const block = code.blocks[index] as SubActionBlock;
+	if(!block) throw ReferenceError(`Block at ${index} is out of bounds`); 
+	if(block.id !== 'block') throw TypeError(`Block at ${index} is not a codeblock`); 
+	// Clear previous tags
+	block.args.items = block.args.items.filter(i => !((i.item.id === 'bl_tag') || (i.slot > 26 - action.tags.length )));
+	action.tags.forEach((tag,i) => {
+		const newTag : Argument<BlockTag> = {
+			slot: (26 - i),
+			item: {
+				id: 'bl_tag',
+				data: {
+					action: action.name,
+					block: CodeBlockNameType[action.codeblockName as 'CONTROL'],
+					option: tag.defaultOption,
+					tag: tag.name,
+				}
+			}
+		}
+		block.args.items.push(newTag);
+	})
 }
 
 /**
