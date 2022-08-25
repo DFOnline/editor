@@ -1,0 +1,48 @@
+body {
+    display: flex;
+}
+
+#content {
+    margin: auto;
+    h1 {
+        margin: 0;
+        padding: 0;
+    }
+
+    #container {
+        width: min(40em,100vw);
+        outline: 1px dotted gray;
+        border-radius: 0.3em;
+        padding: 0.5em;
+        
+        .step {
+            &.hidden {
+                display: none;
+            }
+
+            h2 {
+                margin-top: 0;
+            }
+
+            input {
+                width: 98%; // it just goes past the end??
+                &.bad {
+                    outline: 1px solid red;
+                }
+            }
+        }
+
+        #controller {
+            margin-top: 1em;
+            display: flex;
+            
+            #prev {
+                background: linear-gradient(150deg, rgba(200,160,36,1) 0%, rgba(255,226,0,1) 100%); color: black;
+            }
+            #next {
+                background: linear-gradient(150deg, rgba(72,185,29,1) 0%, rgba(0,255,21,1) 100%); color: black;
+                margin-inline-start: auto;
+            }
+        }
+    }
+}

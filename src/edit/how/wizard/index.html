@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFOnline Import Wizard</title>
+    <link rel="stylesheet" href="../../../main/main.scss">
+    <link rel="stylesheet" href="./wizard.scss">
+    <script src="./wizard.ts" defer type="module"></script>
+</head>
+<body>
+    <div id="content">
+        <h1>DFOnline Import Wizard</h1>
+        <p>Use this tool to easily share your DiamondFire code</p>
+        <div id="container">
+            <div id="steps">    
+                <div class="step" id="1">
+                    <h2>Step 1:</h2>
+                    <p>
+                        Go to the start of your code line (event, function, ect)
+                        <br>
+                        and Crouch Destory the first block (default <kbd>Shift</kbd> + <kbd>Left Click</kbd>)
+                    </p>
+                </div>
+                <div class="step hidden" id="2">
+                    <h2>Step 2:</h2>
+                    <p>
+                        Hold the ender chest given to you
+                        <br>
+                        Type <code>/i nbt</code> into chat
+                        <br>
+                        At the bottom of the large message, open chat and click <em>Click to copy unformatted NBT</em>
+                    </p>
+                </div>
+                <div class="step hidden" id="3">
+                    <h2>Step 3:</h2>
+                    Paste what you just copied into this magic box:
+                    <br>
+                    <input type="text" id="input" placeholder="Paste your data here">
+                </div>
+            </div>
+            <hr>
+            <div id="controller">
+                <button disabled="disabled" id="prev">Previous</button>
+                <button id="next">Next</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
