@@ -1,3 +1,4 @@
+import { templateLike } from "../../../main/main";
 
 const stepCount = document.getElementById('steps').childElementCount;
 let activeStep = 1;
@@ -30,8 +31,16 @@ function setActivePage(index : number){
 
 
 const input = document.getElementById('input') as HTMLInputElement;
-input.onchange = () => {
-    if(input.value === ''){
-
+input.onchange = input.onkeydown = input.onkeyup = () => {
+    if(input.value === '') {
+        input.classList.remove('bad');
+        input.classList.remove('good');
+        return
     }
+    if(templateLike.test(input.value)) {
+        input.classList.add('good');
+        return;
+    }
+    input.classList.add('bad');
+    
 }

@@ -26,8 +26,18 @@ body {
 
             input {
                 width: 98%; // it just goes past the end??
+                transition: 100ms outline;
                 &.bad {
                     outline: 1px solid red;
+                    &:focus {
+                        outline-width: 4px;
+                    }
+                }
+                &.good {
+                    outline: 2px solid limegreen;
+                    &:focus {
+                        outline-width: 4px;
+                    }
                 }
             }
         }
