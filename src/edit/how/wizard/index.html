@@ -12,10 +12,16 @@
 <body>
     <div id="content">
         <h1>DFOnline Import Wizard</h1>
-        <p>Use this tool to easily share your DiamondFire code</p>
+        <p>
+            <span id="big">
+                Use this tool to easily share your DiamondFire code
+            </span>
+            <br>
+            <a href="#input" id="jump">Jump to import menu</a>
+        </p>
         <div id="container">
             <div id="steps">    
-                <div class="step" id="1">
+                <div class="step v" id="1">
                     <h2>Step 1:</h2>
                     <p>
                         Go to the start of your code line (event, function, ect)
@@ -23,7 +29,7 @@
                         and Crouch Destory the first block (default <kbd>Shift</kbd> + <kbd>Left Click</kbd>)
                     </p>
                 </div>
-                <div class="step hidden" id="2">
+                <div class="step hidden v" id="2">
                     <h2>Step 2:</h2>
                     <p>
                         Hold the ender chest given to you
@@ -33,11 +39,31 @@
                         At the bottom of the large message, open chat and click <em>Click to copy unformatted NBT</em>
                     </p>
                 </div>
-                <div class="step hidden" id="3">
+                <div class="step hidden v" id="3">
                     <h2>Step 3:</h2>
-                    Paste what you just copied into this magic box:
-                    <br>
-                    <input type="text" id="input" placeholder="Paste your data here">
+                    <p>
+                        Paste what you just copied into this magic box:
+                        <br>
+                        <input type="text" id="input" placeholder="Paste your data here">
+                        <br>
+                        And press <a href="#link" id="enter">Enter</a> to get your link
+                    </p>
+                </div>
+                <div class="step hidden v" id="4">
+                    <h2>Step 4:</h2>
+                    <div id="valid" class="hidden">
+                        Copy this link and paste is for people to see:
+                        <br>
+                        <input id="link" type="text" readonly>
+                    </div>
+                    <div id="invalid">
+                        Go back and generate a link.
+                    </div>
+                </div>
+
+                <div class="step hidden" id="0">
+                    <h2>Wait a moment</h2>
+                    <p>Your link is being generated right now</p>
                 </div>
             </div>
             <hr>
