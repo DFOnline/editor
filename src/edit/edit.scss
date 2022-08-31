@@ -198,7 +198,7 @@ header {
 }
 
 #newblocks {
-    display: grid;
+    display: inline-flex;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -221,7 +221,7 @@ header {
     }
     #blocks {
         cursor: grab;
-        display: flex;
+        display: inline-flex;
         div {
             background-size: cover;
             width: 5em;
