@@ -1,5 +1,5 @@
 import { encodeTemplate, user } from "../../main/main";
-import type { Argument, BlockTag, DataBlock, PlacedBlock, SubActionBlock, Template } from "../template";
+import { Argument, BlockTag, DataBlock, DataBlocks, PlacedBlock, SubActionBlock, Template } from "../template";
 import { Action, ActionDump, CodeBlockIdentifier, CodeBlockNameType, CodeBlockTypeName, subActionBlocks } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
@@ -37,7 +37,7 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 	let block = code.blocks[index]
 	if(block){
 		if(block.id === 'block'){
-			if((block as DataBlock).data) (block as DataBlock).data = value;
+			if((block as DataBlock).data || DataBlocks.includes((block as DataBlock).block)) (block as DataBlock).data = value;
 			else if((block as SubActionBlock)){
 
 				const action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
