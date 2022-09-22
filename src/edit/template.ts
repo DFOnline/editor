@@ -29,6 +29,7 @@ export type BlockDataID = "func" | "call_func" | "process" | "start_process";
 
 export const SelectionBlocks : BlockID[] = ["player_action", "entity_event", "entity_action", "if_entity", "if_player"]
 export const SubActionBlocks : BlockSubActionID[] = ["repeat", "select_obj"]
+export const DataBlocks : BlockDataID[] = ["call_func", "func", "process", "start_process"]
 
 /** Everything that can be in the array. Killable is used for filtering. */
 export type Block = PhysicalBlock | Killable

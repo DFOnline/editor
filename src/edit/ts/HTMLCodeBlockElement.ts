@@ -1,5 +1,5 @@
 import { ActDB, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
-import { ArgumentBlock, Block, DataBlock, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
+import { ArgumentBlock, Block, DataBlock, DataBlocks, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
 import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
 import { rendBlocks } from "./codeSpace";
@@ -82,17 +82,32 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                 if(block.block !== 'else'){
 
                     //#region value edit
+                    let valuebutton;
                     let name = 'Block is invalid';
-                    if((block as DataBlock).data !== undefined) name = 'Data';
-                    if((block as SelectionBlock).action !== undefined || (block as SubActionBlock).subAction !== undefined) name = 'Action'
-                    const values = Object.fromEntries((await ActionDump).actions.filter(a => a.codeblockName === CodeBlockTypeName[block.block]).map(a => [a.name,[...a.aliases,a.name]]));
-                    const value = new SelectionContext(name, values, true, false);
-                    value.callback = (name) => {
-                        contextMenu.click();
-                        setAction(this.index, name);
-                        rendBlocks();
+                    if(!DataBlocks.includes((block as DataBlock).block)) {
+                        name = 'Action'
+                        const values = Object.fromEntries((await ActionDump).actions.filter(a => a.codeblockName === CodeBlockTypeName[block.block]).map(a => [a.name,[...a.aliases,a.name]]));
+                        const value = new SelectionContext(name, values, true, false);
+                        value.callback = (name) => {
+                            contextMenu.click();
+                            setAction(this.index, name);
+                            rendBlocks();
+                        }
+                        valuebutton = value.subMenu;
                     }
-                    const valueButton = value.subMenu;
+                    else {
+                        const input = document.createElement('input');
+                        name = 'Data';
+                        input.onchange = () => {
+                            contextMenu.click();
+                            setAction(this.index, input.value, true);
+                            rendBlocks();
+                        }
+                        input.onkeydown = e => e.stopImmediatePropagation();
+                        const value = new ContextMenu(name,[input],false);
+                        valuebutton = value.subMenu;
+                    }
+                    const valueButton = valuebutton;
                     //#endregion
 
                     userMeta.ctxKeys['a'] = valueButton;
