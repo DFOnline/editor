@@ -4,6 +4,11 @@ const root = './src';
 import { resolve } from 'path';
 
 /**
+ * @param {string} dir le directory
+ */
+const mkpath = dir => resolve(root, `${dir}/index.html`);
+
+/**
  * @type {import('vite').UserConfig}
  */
 export default 
@@ -19,11 +24,11 @@ export default
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                main: resolve(root,'index.html'),
-                edit: resolve(root,'edit/index.html'),
-                comment: resolve(root,'edit/comment/index.html'),
-                how: resolve(root,'edit/how/index.html'),
-                home: resolve(root,'home/index.html'),
+                main: mkpath('.'),
+                home: mkpath('home'),
+                how: mkpath('edit/how'),
+                edit: mkpath('edit'),
+                comment: mkpath('edit/comment'),
             }
         },
         outDir: '../dist',
