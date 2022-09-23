@@ -24,6 +24,8 @@ export default
         emptyOutDir: true,
         rollupOptions: {
             input: {
+                ip: mkpath("ip"),
+                //
                 main: mkpath('.'),
                 home: mkpath('home'),
                 how: mkpath('edit/how'),
