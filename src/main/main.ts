@@ -1,5 +1,5 @@
 import type { Template } from "../edit/template";
-import { inflate, gzip } from "pako";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { developerMenu } from "./developers";
 
 export let cuopen = false;
@@ -106,19 +106,11 @@ codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = t
 codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
 export function decodeTemplate(base64data : string) : Template{
-    const compressData = atob(base64data);
-    const uint = compressData.split('').map(function(e) {
-        return e.charCodeAt(0);
-    });
-    const binData = new Uint8Array(uint);
-    const string = inflate(binData,{to: 'string'});
-    return JSON.parse(string);
+    return JSON.parse(gunzipSync(Buffer.from(base64data, "base64")).toString()) as Template;
 }
 
 export function encodeTemplate(codedata : string){
-    let data = gzip(codedata);
-    let data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
-    return btoa(data2);
+    return gzipSync(codedata).toString("base64");
 }
 
 export function stripColors(text : string){
