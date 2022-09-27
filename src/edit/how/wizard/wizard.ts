@@ -1,4 +1,4 @@
-import { templateLike, snackbar, decodeTemplate } from "../../../main/main";
+import { snackbar, decodeTemplate, timelessTemplateLike } from "../../../main/main";
 
 const stepCount = document.querySelectorAll('div.step.v').length;
 let activeStep = 1;
@@ -47,8 +47,8 @@ link.onclick = () => {
 
 const enter = document.querySelector<HTMLAnchorElement>('a#enter');
 enter.onclick = e => {
-    if(!templateLike.test(input.value)){ snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
-    const data = input.value.match(templateLike)[0];
+    if(!timelessTemplateLike.test(input.value)){ snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
+    const data = input.value.match(timelessTemplateLike)[0];
     // check it can be decompressed
     const template = decodeTemplate(data);
     if(!template.blocks && template.blocks.length){ snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
@@ -72,15 +72,14 @@ input.onkeyup = e => {
     }
 }
 input.onload = input.onpaste = input.onkeydown = input.onchange = () => {
-    if(input.value === '') {
-        input.classList.remove('bad');
-        input.classList.remove('good');
-        return
-    }
-    if(templateLike.test(input.value)) {
+    input.classList.remove('bad');
+    input.classList.remove('good');
+
+    if(timelessTemplateLike.test(input.value)) {
         input.classList.add('good');
         return;
     }
+    
     input.classList.add('bad');
 }
 document.onkeydown = e => {

@@ -284,4 +284,5 @@ document.addEventListener('keydown',(e) => {
     }
 })
 
-export const templateLike = /H4sIA*[0-9A-Za-z+/]*={0,2}/;
+export const templateLike = /H4sIA*[0-9A-Za-z+\/]*={0,2}/;
+export const timelessTemplateLike = /H4sIA{8}[0-9A-Za-z+\/]*={0,2}/
