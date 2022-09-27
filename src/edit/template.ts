@@ -201,31 +201,24 @@ export interface ChestItem {
 }
 
 // copilot just generating minecraft stuff.
-export interface ParsedItem {
-    id: string;
-    Count: NbtValue<number>;
-    tag: {
-        display?: {
-            Name: string;
-            Lore: string[];
-        },
-        enchantments?: {
-            [key: string]: {
-                id: number | string;
-                lvl: number;
-            };
-        },
-        unbreakable?: boolean;
-        hideFlags?: number;
-        attributes?: {
-            [key: string]: {
-                name: string;
-                value: string;
-                slot: string;
-                id: string;
-            };
-        };
-    }
+interface ParsedItem {
+	id: string;
+	Count: NbtValue<number>;
+	tag: {
+		display?: {
+			Name: string;
+			Lore: string[];
+		},
+		enchantments?: Record<string, { id: number | string; lvl: number; }>;
+	},
+	unbreakable?: boolean;
+	hideFlags?: number;
+	attributes?: Record<string, {
+		name: string;
+		value: string;
+		slot: string;
+		id: string;
+	}>
 }
 export interface NbtValue<t> {
     value: t;
