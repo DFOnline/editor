@@ -201,7 +201,7 @@ export interface ChestItem {
 }
 
 // copilot just generating minecraft stuff.
-interface ParsedItem {
+export interface ParsedItem {
 	id: string;
 	Count: NbtValue<number>;
 	tag: {

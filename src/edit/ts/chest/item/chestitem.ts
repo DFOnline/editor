@@ -48,7 +48,7 @@ export default abstract class ChestItem {
 
 export class UnknownItem extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BARRIER.png';
-    item: Item;
+    declare item: Item;
 
     movable = false;
 
@@ -109,7 +109,7 @@ function genericIcon(backgroundUrl : string){
 
 export class Num extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
-    item : Number;
+    declare item : Number;
 
     movable = true;
 
@@ -172,7 +172,7 @@ export class Num extends ChestItem {
 
 export class Txt extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
-    item : Text;
+    declare item : Text;
 
     movable = true;
 
@@ -212,7 +212,7 @@ export class Txt extends ChestItem {
 
 export class Var extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
-    item : Variable;
+    declare item : Variable;
 
     movable = true;
 
@@ -275,7 +275,7 @@ export class Var extends ChestItem {
 
 export class Loc extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/PAPER.png';
-    item : Location;
+    declare item : Location;
 
     movable = true;
 
@@ -354,7 +354,7 @@ export class Loc extends ChestItem {
 
 export class Vec extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
-    item : Vector;
+    declare item : Vector;
 
     movable = true;
 
@@ -419,7 +419,7 @@ export class Vec extends ChestItem {
 
 export class Pot extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
-    item : Potion;
+    declare item : Potion;
 
     movable = true;
 
@@ -497,7 +497,7 @@ export class Pot extends ChestItem {
 
 export class Snd extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
-    item : Sound;
+    declare item : Sound;
 
     movable = true;
 
@@ -604,7 +604,7 @@ export class Snd extends ChestItem {
 
 export class Part extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/WHITE_DYE.png';
-    item : Particle;
+    declare item : Particle;
 
     movable = true;
 
@@ -912,7 +912,7 @@ export class Part extends ChestItem {
 
 export class Gval extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
-    item : GameValue;
+    declare item : GameValue;
 
     movable = true;
 
@@ -1021,7 +1021,7 @@ export class Gval extends ChestItem {
 
 export class MCItem extends ChestItem {
     backgroundUrl = 'dynamic';
-    item : MinecraftItem;
+    declare item : MinecraftItem;
 
     movable = true;
 
@@ -1095,7 +1095,7 @@ export class MCItem extends ChestItem {
 
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
-    item : BlockTag;
+    declare item : BlockTag;
 
     movable = false;
 
