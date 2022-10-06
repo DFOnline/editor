@@ -106,6 +106,18 @@ function genericIcon(backgroundUrl : string){
     itemElement.src = backgroundUrl;
     return itemElement
 }
+/** Utility for tooltips */
+function makeTooltip(data : {value: string, color?: string, label?: string}[]) : HTMLDivElement {
+    const tooltip = document.createElement('div');
+    data.forEach(value => {
+        const label = document.createElement('label');
+        label.innerText = value.label ? value.label + ' ' : '';
+        const text = document.createElement('span');
+        text.innerText = value.value;
+        text.style.color = value.color ? value.color : 'white'
+    })
+    return tooltip;
+}
 
 export class Num extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
