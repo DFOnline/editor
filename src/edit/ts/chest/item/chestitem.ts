@@ -77,7 +77,7 @@ export class UnknownItem extends ChestItem {
     }
 
     repr(): string {
-        return `unkown ${this.item}`;
+        return `unknown ${this.item}`;
     }
 }
 
@@ -165,8 +165,7 @@ export class Num extends ChestItem {
     }
 
     repr(): string {
-        return `
-        ${this.item.data.name}`;
+        return `${this.item.data.name}`;
     }
 }
 
