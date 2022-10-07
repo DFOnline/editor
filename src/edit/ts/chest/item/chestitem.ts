@@ -37,7 +37,11 @@ export default abstract class ChestItem {
     /**
      * Get the representation of the item as a HTML element.
      */
-    abstract icon() : HTMLDivElement;
+    icon(backgroundUrl = this.backgroundUrl) : HTMLDivElement | HTMLImageElement {
+        const itemElement = document.createElement('img');
+        itemElement.src = backgroundUrl;
+        return itemElement;
+    };
 
     /**
      * A HTML div with all the tooltip information.
@@ -104,12 +108,6 @@ function nameEditor(item: any, Block: number, event: KeyboardEvent, value: HTMLI
     if(event.key === 'Escape'){
         ctxBox.close();
     }
-}
-/** To be returned in icon */
-function genericIcon(backgroundUrl : string){
-    const itemElement = document.createElement('img');
-    itemElement.src = backgroundUrl;
-    return itemElement
 }
 /** Utility for tooltips */
 function makeTooltip(data : {value: string, color?: string, label?: string}[]) : HTMLDivElement {
@@ -201,10 +199,6 @@ export class Txt extends ChestItem {
 
         const ctxBox = super.contextMenu(Block,Slot,'Text',[value]);
         return ctxBox;
-    }
-
-    icon(){
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -322,10 +316,6 @@ export class Loc extends ChestItem {
         return ctxBox;
     }
 
-    icon(){
-        return genericIcon(this.backgroundUrl);
-    }
-
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const title = document.createElement('span');
@@ -385,10 +375,6 @@ export class Vec extends ChestItem {
 
         const ctxBox = super.contextMenu(Block,Slot,'Vec',[x,y,z]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -464,7 +450,7 @@ export class Pot extends ChestItem {
     }
 
     icon(): HTMLDivElement {
-        const icon = genericIcon(this.backgroundUrl);
+        const icon = super.icon();
         icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
         return icon;
     }
@@ -569,10 +555,6 @@ export class Snd extends ChestItem {
 
         const ctxBox = super.contextMenu(Block,Slot,'Sound',[valueCtx.subMenu,pitchLabel,volumeLabel]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -817,10 +799,6 @@ export class Part extends ChestItem {
         return ctxBox;
     }
 
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
-    }
-
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
 
@@ -964,10 +942,6 @@ export class Gval extends ChestItem {
         return ctxBox;
     }
 
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
-    }
-
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
@@ -1099,7 +1073,7 @@ export class Bltag extends ChestItem {
 
     icon(): HTMLDivElement {
         const opt = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
-        return genericIcon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
+        return super.icon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
     }
 
     tooltip(): HTMLDivElement {
