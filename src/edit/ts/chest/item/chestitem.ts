@@ -62,6 +62,34 @@ export default abstract class ChestItem {
         return getItem(item);
     }
 }
+abstract class NamedItem extends ChestItem {
+    declare item : Text | Number | Variable;
+
+    contextMenu(Block: number, Slot: number, name: string, values: HTMLElement[] = []): ContextMenu {
+        const value = document.createElement('input');
+        value.value = this.item.data.name;
+
+        value.onclick = e => e.stopPropagation();
+        value.onkeydown = e => {
+            if(e.key === 'Enter' || e.key === 'Tab'){
+                this.item.data.name = value.value;
+                if(e.key === 'Enter') {
+                    ctxBox.close();
+                }
+            }
+            if(e.key === 'Escape'){
+                if(value.value !== this.item.data.name) {
+                    value.value = this.item.data.name;
+                    value.select();
+                }
+                else ctxBox.close();
+            }
+        }
+
+        const ctxBox = super.contextMenu(Block,Slot,name,[value,...values]);
+        return ctxBox;
+    }
+}
 
 export class UnknownItem extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BARRIER.png';
@@ -98,17 +126,6 @@ export class UnknownItem extends ChestItem {
     }
 }
 
-/** This if for use in the keydown event */
-function nameEditor(item: any, Block: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
-    if(event.key === 'Enter'){
-        item.data.name = value.value;
-        chestMenu(Block);
-        ctxBox.close();
-    }
-    if(event.key === 'Escape'){
-        ctxBox.close();
-    }
-}
 /** Utility for tooltips */
 function makeTooltip(data : {value: string, color?: string, label?: string}[]) : HTMLDivElement {
     const tooltip = document.createElement('div');
@@ -122,7 +139,7 @@ function makeTooltip(data : {value: string, color?: string, label?: string}[]) :
     return tooltip;
 }
 
-export class Num extends ChestItem {
+export class Num extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
     declare item : Number;
 
@@ -130,17 +147,6 @@ export class Num extends ChestItem {
 
     constructor(item : Number){
         super(item);
-    }
-
-    contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item, Block, e, value, ctxBox);
-        value.onclick = e => e.stopPropagation();
-
-        const ctxBox = super.contextMenu(Block,Slot, 'Number', [value]);
-        return ctxBox;
     }
 
     icon(){
@@ -180,7 +186,7 @@ export class Num extends ChestItem {
     }
 }
 
-export class Txt extends ChestItem {
+export class Txt extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
     declare item : Text;
 
@@ -188,17 +194,6 @@ export class Txt extends ChestItem {
 
     constructor(item : Text){
         super(item);
-    }
-
-    contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
-        value.onclick = e => e.stopPropagation();
-
-        const ctxBox = super.contextMenu(Block,Slot,'Text',[value]);
-        return ctxBox;
     }
 
     tooltip(): HTMLDivElement {
@@ -212,7 +207,7 @@ export class Txt extends ChestItem {
     }
 }
 
-export class Var extends ChestItem {
+export class Var extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
     declare item : Variable;
 
@@ -223,12 +218,6 @@ export class Var extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
-        value.onclick = e => e.stopPropagation();
-
         const scope = document.createElement('select');
         scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Block);};
         scope.onclick = e => e.stopPropagation();
@@ -239,7 +228,7 @@ export class Var extends ChestItem {
         `;
         scope.value = this.item.data.scope;
 
-        const ctxBox = super.contextMenu(Block,Slot,'Var',[value,scope]);
+        const ctxBox = super.contextMenu(Block,Slot,'Variable',[scope]);
         return ctxBox;
     }
 
