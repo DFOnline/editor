@@ -1,6 +1,6 @@
 {
   "name": "dfonline",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "devDependencies": {
     "@types/sanitize-html": "^2.6.2",
     "buffer": "^6.0.3",
