@@ -19,7 +19,20 @@ export default abstract class ChestItem {
     }
 
 
-    abstract contextMenu(Block : number,Slot : number) : ContextMenu;
+    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[]) : ContextMenu {
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => {
+                const block = code.blocks[Block] as ArgumentBlock;
+                const index = block.args.items.findIndex(slot => slot.slot === Slot);
+                block.args.items.splice(index,1);
+                chestMenu(Block);
+                ctxBox.close();
+            }
+        const ctxBox = new ContextMenu(name,[...values, deleteButton]);
+
+        return ctxBox;
+    }
 
     /**
      * Get the representation of the item as a HTML element.
@@ -66,7 +79,7 @@ export class UnknownItem extends ChestItem {
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         itemElement.classList.add('fadepulse');
 
-        return itemElement
+        return itemElement;
     }
 
     tooltip(){
@@ -81,14 +94,6 @@ export class UnknownItem extends ChestItem {
     }
 }
 
-/** This is for use in the click event. */
-function deleteItem(Block : number, Slot : number, ctxBox : ContextMenu){
-    const block = code.blocks[Block] as ArgumentBlock;
-    const index = block.args.items.findIndex(slot => slot.slot === Slot);
-    block.args.items.splice(index,1);
-    chestMenu(Block);
-    ctxBox.close();
-}
 /** This if for use in the keydown event */
 function nameEditor(item: any, Block: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
     if(event.key === 'Enter'){
@@ -136,11 +141,7 @@ export class Num extends ChestItem {
         value.onkeydown = e => nameEditor(this.item, Block, e, value, ctxBox);
         value.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Number',[value,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot, 'Number', [value]);
         return ctxBox;
     }
 
@@ -198,11 +199,7 @@ export class Txt extends ChestItem {
         value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
         value.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Text',[value,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Text',[value]);
         return ctxBox;
     }
 
@@ -248,16 +245,12 @@ export class Var extends ChestItem {
         `;
         scope.value = this.item.data.scope;
 
-
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Var',[value,scope,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Var',[value,scope]);
         return ctxBox;
     }
 
-    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'}
+    // TODO: take this out for an enum
+    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'};
 
     icon(){
         const itemElement = document.createElement('div');
@@ -266,7 +259,7 @@ export class Var extends ChestItem {
         scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
         scope.style.color = this.colors[this.item.data.scope];
         itemElement.append(scope);
-        return itemElement
+        return itemElement;
     }
 
     tooltip(): HTMLDivElement {
@@ -325,11 +318,7 @@ export class Loc extends ChestItem {
         pitch.onclick = e => e.stopPropagation();
         yaw.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Loc',[x,y,z,pitch,yaw,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Loc',[x,y,z,pitch,yaw]);
         return ctxBox;
     }
 
@@ -394,11 +383,7 @@ export class Vec extends ChestItem {
         y.onclick = e => e.stopPropagation();
         z.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Vec',[x,y,z,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Vec',[x,y,z]);
         return ctxBox;
     }
 
@@ -474,11 +459,7 @@ export class Pot extends ChestItem {
         amplification.onclick = e => e.stopPropagation();
         amplificationLabel.append(amplification);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Pot',[valueCtx.subMenu,durationLabel,amplificationLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Pot',[valueCtx.subMenu,durationLabel,amplificationLabel]);
         return ctxBox;
     }
 
@@ -586,11 +567,7 @@ export class Snd extends ChestItem {
         volume.onclick = e => e.stopPropagation();
         volumeLabel.append(volume);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Sound',[valueCtx.subMenu,pitchLabel,volumeLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Sound',[valueCtx.subMenu,pitchLabel,volumeLabel]);
         return ctxBox;
     }
 
@@ -836,11 +813,7 @@ export class Part extends ChestItem {
         }
         //#endregion
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals]);
         return ctxBox;
     }
 
@@ -987,11 +960,7 @@ export class Gval extends ChestItem {
         target.value = this.item.data.target;
         targetLabel.append(target);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Game Value',[valueCtx.subMenu,targetLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Game Value',[valueCtx.subMenu,targetLabel]);
         return ctxBox;
     }
 
@@ -1043,13 +1012,10 @@ export class MCItem extends ChestItem {
         this.parsedItem = parse(item.data.item) as any as ParsedItem;
     }
 
-    contextMenu(_Block: number, _Slot: number): ContextMenu {
+    contextMenu(Block: number, Slot: number): ContextMenu {
         const warning = document.createElement('p');
         warning.innerText = 'This item is not yet supported.';
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(_Block,_Slot,ctxBox);
-        const ctxBox = new ContextMenu('Minecraft Item',[warning,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Minecraft Item',[warning]);
         return ctxBox;
     }
 
