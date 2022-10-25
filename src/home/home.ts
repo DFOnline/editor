@@ -53,12 +53,12 @@ export class ImportMenu extends Menu {
         activateImport.onclick = () => {
             const data = input.value.match(templateLike);
             if(data !== null){
-                sessionStorage.setItem('import',data[0]); location.href = `/edit/`;
+                sessionStorage.setItem('import',data[0]); window.open("../edit/","_self");
             }
         }
         const a = document.createElement('a');
         a.innerText = 'ⓘ Help';
-        a.href = '/edit/how';
+        a.href = '../edit/how/';
         a.style.display = 'inline-block';
         // a.style.textDecoration = 'none';
         // a.style.fontSize = '1.5em';
@@ -83,7 +83,7 @@ const createMenuButton = document.createElement('button');
 createMenuButton.innerText = 'Create Template';
 createMenuButton.onclick = () => {
     sessionStorage.setItem('import','H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
-    location.href = '/edit/';
+    window.open("../edit/","_self");
 }
 createMenuContents.append(createMenuButton);
 

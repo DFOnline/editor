@@ -13,6 +13,7 @@ const mkpath = dir => resolve(root, `${dir}/index.html`);
  */
 export default 
 {
+    base: "./",
     root,
     server: {
         port: 1234,
