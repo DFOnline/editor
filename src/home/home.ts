@@ -74,9 +74,9 @@ export class ImportMenu extends Menu {
 const createMenuContents = document.createElement('div');
 const createMenuParagraph = document.createElement('p');
 createMenuParagraph.innerHTML = `
-Editing templates is not fully implemented yet. <br>
-Mainly placing blocks which need them, do not place brackets. <br>
-So in that means it's impossible to create working code. <br>
+Create a new template here. <br>
+Note that editing templates outside of DF itself is inpractical, but however can be used to quickly sketch up code. <br>
+Note that editing item values cannot be done yet. <br>
 `;
 createMenuContents.append(createMenuParagraph);
 const createMenuButton = document.createElement('button');

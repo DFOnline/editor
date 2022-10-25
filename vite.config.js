@@ -28,8 +28,9 @@ export default
                 //
                 main: mkpath('.'),
                 home: mkpath('home'),
-                how: mkpath('edit/how'),
                 edit: mkpath('edit'),
+                how: mkpath('edit/how'),
+                wizard: mkpath('edit/how/wizard'),
                 comment: mkpath('edit/comment'),
             }
         },
