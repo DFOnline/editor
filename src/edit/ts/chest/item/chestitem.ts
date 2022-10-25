@@ -19,12 +19,29 @@ export default abstract class ChestItem {
     }
 
 
-    abstract contextMenu(Block : number,Slot : number) : ContextMenu;
+    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[]) : ContextMenu {
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.onclick = () => {
+                const block = code.blocks[Block] as ArgumentBlock;
+                const index = block.args.items.findIndex(slot => slot.slot === Slot);
+                block.args.items.splice(index,1);
+                chestMenu(Block);
+                ctxBox.close();
+            }
+        const ctxBox = new ContextMenu(name,[...values, deleteButton]);
+
+        return ctxBox;
+    }
 
     /**
      * Get the representation of the item as a HTML element.
      */
-    abstract icon() : HTMLDivElement;
+    icon(backgroundUrl = this.backgroundUrl) : HTMLDivElement | HTMLImageElement {
+        const itemElement = document.createElement('img');
+        itemElement.src = backgroundUrl;
+        return itemElement;
+    };
 
     /**
      * A HTML div with all the tooltip information.
@@ -45,10 +62,38 @@ export default abstract class ChestItem {
         return getItem(item);
     }
 }
+abstract class NamedItem extends ChestItem {
+    declare item : Text | Number | Variable;
+
+    contextMenu(Block: number, Slot: number, name: string, values: HTMLElement[] = []): ContextMenu {
+        const value = document.createElement('input');
+        value.value = this.item.data.name;
+
+        value.onclick = e => e.stopPropagation();
+        value.onkeydown = e => {
+            if(e.key === 'Enter' || e.key === 'Tab'){
+                this.item.data.name = value.value;
+                if(e.key === 'Enter') {
+                    ctxBox.close();
+                }
+            }
+            if(e.key === 'Escape'){
+                if(value.value !== this.item.data.name) {
+                    value.value = this.item.data.name;
+                    value.select();
+                }
+                else ctxBox.close();
+            }
+        }
+
+        const ctxBox = super.contextMenu(Block,Slot,name,[value,...values]);
+        return ctxBox;
+    }
+}
 
 export class UnknownItem extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BARRIER.png';
-    item: Item;
+    declare item: Item;
 
     movable = false;
 
@@ -66,7 +111,7 @@ export class UnknownItem extends ChestItem {
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         itemElement.classList.add('fadepulse');
 
-        return itemElement
+        return itemElement;
     }
 
     tooltip(){
@@ -77,59 +122,31 @@ export class UnknownItem extends ChestItem {
     }
 
     repr(): string {
-        return `unkown ${this.item}`;
+        return `unknown ${this.item}`;
     }
 }
 
-/** This is for use in the click event. */
-function deleteItem(Block : number, Slot : number, ctxBox : ContextMenu){
-    const block = code.blocks[Block] as ArgumentBlock;
-    const index = block.args.items.findIndex(slot => slot.slot === Slot);
-    block.args.items.splice(index,1);
-    chestMenu(Block);
-    ctxBox.close();
-}
-/** This if for use in the keydown event */
-function nameEditor(item: any, Block: number, event: KeyboardEvent, value: HTMLInputElement, ctxBox: ContextMenu){
-    if(event.key === 'Enter'){
-        item.data.name = value.value;
-        chestMenu(Block);
-        ctxBox.close();
-    }
-    if(event.key === 'Escape'){
-        ctxBox.close();
-    }
-}
-/** To be returned in icon */
-function genericIcon(backgroundUrl : string){
-    const itemElement = document.createElement('img');
-    itemElement.src = backgroundUrl;
-    return itemElement
+/** Utility for tooltips */
+function makeTooltip(data : {value: string, color?: string, label?: string}[]) : HTMLDivElement {
+    const tooltip = document.createElement('div');
+    data.forEach(value => {
+        const label = document.createElement('label');
+        label.innerText = value.label ? value.label + ' ' : '';
+        const text = document.createElement('span');
+        text.innerText = value.value;
+        text.style.color = value.color ? value.color : 'white'
+    })
+    return tooltip;
 }
 
-export class Num extends ChestItem {
+export class Num extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
-    item : Number;
+    declare item : Number;
 
     movable = true;
 
     constructor(item : Number){
         super(item);
-    }
-
-    contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item, Block, e, value, ctxBox);
-        value.onclick = e => e.stopPropagation();
-
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Number',[value,deleteButton]);
-        return ctxBox;
     }
 
     icon(){
@@ -165,38 +182,18 @@ export class Num extends ChestItem {
     }
 
     repr(): string {
-        return `
-        ${this.item.data.name}`;
+        return `${this.item.data.name}`;
     }
 }
 
-export class Txt extends ChestItem {
+export class Txt extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
-    item : Text;
+    declare item : Text;
 
     movable = true;
 
     constructor(item : Text){
         super(item);
-    }
-
-    contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
-        value.onclick = e => e.stopPropagation();
-
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Text',[value,deleteButton]);
-        return ctxBox;
-    }
-
-    icon(){
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -210,9 +207,9 @@ export class Txt extends ChestItem {
     }
 }
 
-export class Var extends ChestItem {
+export class Var extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
-    item : Variable;
+    declare item : Variable;
 
     movable = true;
 
@@ -221,12 +218,6 @@ export class Var extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        const value = document.createElement('input');
-
-        value.value = this.item.data.name;
-        value.onkeydown = e => nameEditor(this.item,Block,e,value,ctxBox);
-        value.onclick = e => e.stopPropagation();
-
         const scope = document.createElement('select');
         scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Block);};
         scope.onclick = e => e.stopPropagation();
@@ -237,16 +228,12 @@ export class Var extends ChestItem {
         `;
         scope.value = this.item.data.scope;
 
-
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Var',[value,scope,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Variable',[scope]);
         return ctxBox;
     }
 
-    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'}
+    // TODO: take this out for an enum
+    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'};
 
     icon(){
         const itemElement = document.createElement('div');
@@ -255,7 +242,7 @@ export class Var extends ChestItem {
         scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
         scope.style.color = this.colors[this.item.data.scope];
         itemElement.append(scope);
-        return itemElement
+        return itemElement;
     }
 
     tooltip(): HTMLDivElement {
@@ -275,7 +262,7 @@ export class Var extends ChestItem {
 
 export class Loc extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/PAPER.png';
-    item : Location;
+    declare item : Location;
 
     movable = true;
 
@@ -314,16 +301,8 @@ export class Loc extends ChestItem {
         pitch.onclick = e => e.stopPropagation();
         yaw.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Loc',[x,y,z,pitch,yaw,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Loc',[x,y,z,pitch,yaw]);
         return ctxBox;
-    }
-
-    icon(){
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -354,7 +333,7 @@ export class Loc extends ChestItem {
 
 export class Vec extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
-    item : Vector;
+    declare item : Vector;
 
     movable = true;
 
@@ -383,16 +362,8 @@ export class Vec extends ChestItem {
         y.onclick = e => e.stopPropagation();
         z.onclick = e => e.stopPropagation();
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Vec',[x,y,z,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Vec',[x,y,z]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -419,7 +390,7 @@ export class Vec extends ChestItem {
 
 export class Pot extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
-    item : Potion;
+    declare item : Potion;
 
     movable = true;
 
@@ -463,16 +434,12 @@ export class Pot extends ChestItem {
         amplification.onclick = e => e.stopPropagation();
         amplificationLabel.append(amplification);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Pot',[valueCtx.subMenu,durationLabel,amplificationLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Pot',[valueCtx.subMenu,durationLabel,amplificationLabel]);
         return ctxBox;
     }
 
     icon(): HTMLDivElement {
-        const icon = genericIcon(this.backgroundUrl);
+        const icon = super.icon();
         icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
         return icon;
     }
@@ -497,7 +464,7 @@ export class Pot extends ChestItem {
 
 export class Snd extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
-    item : Sound;
+    declare item : Sound;
 
     movable = true;
 
@@ -575,16 +542,8 @@ export class Snd extends ChestItem {
         volume.onclick = e => e.stopPropagation();
         volumeLabel.append(volume);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Sound',[valueCtx.subMenu,pitchLabel,volumeLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Sound',[valueCtx.subMenu,pitchLabel,volumeLabel]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -604,7 +563,7 @@ export class Snd extends ChestItem {
 
 export class Part extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/WHITE_DYE.png';
-    item : Particle;
+    declare item : Particle;
 
     movable = true;
 
@@ -825,16 +784,8 @@ export class Part extends ChestItem {
         }
         //#endregion
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -912,7 +863,7 @@ export class Part extends ChestItem {
 
 export class Gval extends ChestItem {
     backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
-    item : GameValue;
+    declare item : GameValue;
 
     movable = true;
 
@@ -976,16 +927,8 @@ export class Gval extends ChestItem {
         target.value = this.item.data.target;
         targetLabel.append(target);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(Block,Slot,ctxBox);
-
-        const ctxBox = new ContextMenu('Game Value',[valueCtx.subMenu,targetLabel,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Game Value',[valueCtx.subMenu,targetLabel]);
         return ctxBox;
-    }
-
-    icon(): HTMLDivElement {
-        return genericIcon(this.backgroundUrl);
     }
 
     tooltip(): HTMLDivElement {
@@ -1021,7 +964,7 @@ export class Gval extends ChestItem {
 
 export class MCItem extends ChestItem {
     backgroundUrl = 'dynamic';
-    item : MinecraftItem;
+    declare item : MinecraftItem;
 
     movable = true;
 
@@ -1032,13 +975,10 @@ export class MCItem extends ChestItem {
         this.parsedItem = parse(item.data.item) as any as ParsedItem;
     }
 
-    contextMenu(_Block: number, _Slot: number): ContextMenu {
+    contextMenu(Block: number, Slot: number): ContextMenu {
         const warning = document.createElement('p');
         warning.innerText = 'This item is not yet supported.';
-        const deleteButton = document.createElement('button');
-        deleteButton.innerText = 'Delete';
-        deleteButton.onclick = () => deleteItem(_Block,_Slot,ctxBox);
-        const ctxBox = new ContextMenu('Minecraft Item',[warning,deleteButton]);
+        const ctxBox = super.contextMenu(Block,Slot,'Minecraft Item',[warning]);
         return ctxBox;
     }
 
@@ -1095,7 +1035,7 @@ export class MCItem extends ChestItem {
 
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
-    item : BlockTag;
+    declare item : BlockTag;
 
     movable = false;
 
@@ -1122,7 +1062,7 @@ export class Bltag extends ChestItem {
 
     icon(): HTMLDivElement {
         const opt = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
-        return genericIcon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
+        return super.icon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
     }
 
     tooltip(): HTMLDivElement {

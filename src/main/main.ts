@@ -1,5 +1,5 @@
 import type { Template } from "../edit/template";
-import { gunzipSync, gzipSync } from "node:zlib";
+import { inflate, gzip } from "pako";
 import { developerMenu } from "./developers";
 
 export let cuopen = false;
@@ -106,11 +106,19 @@ codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = t
 codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
 
 export function decodeTemplate(base64data : string) : Template{
-    return JSON.parse(gunzipSync(Buffer.from(base64data, "base64")).toString()) as Template;
+    const compressData = atob(base64data);
+    const uint = compressData.split('').map(function(e) {
+        return e.charCodeAt(0);
+    });
+    const binData = new Uint8Array(uint);
+    const string = inflate(binData,{to: 'string'});
+    return JSON.parse(string);
 }
 
 export function encodeTemplate(codedata : string){
-    return gzipSync(codedata).toString("base64");
+    let data = gzip(codedata);
+    let data2 = String.fromCharCode.apply(null, new Uint16Array(data) as unknown as []);
+    return btoa(data2);
 }
 
 export function stripColors(text : string){
@@ -276,4 +284,5 @@ document.addEventListener('keydown',(e) => {
     }
 })
 
-export const templateLike = /H4sIA*[0-9A-Za-z+/]*={0,2}/;
+export const templateLike = /H4sIA*[0-9A-Za-z+\/]*={0,2}/;
+export const timelessTemplateLike = /H4sIA{8}[0-9A-Za-z+\/]*={0,2}/
