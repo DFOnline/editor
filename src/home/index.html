@@ -9,13 +9,10 @@
         <link rel="stylesheet" type="text/css" href="./home.scss">
         <script src="./home.ts" type="module"></script>
         <script src="./index.ts" type ="module" defer></script>
-        <meta content="DFOnline" property="title">
         <meta content="DFOnline" property="og:title">
-        <meta content="DiamondFire Online: Create, edit and shares templates online, even on your phone." property="description">
         <meta content="DiamondFire Online: Create, edit and shares templates online, even on your phone." property="og:description">
         <meta content="https://dfonline.dev/" property="og:url">
         <meta content="#31353B" name="theme-color">
-        <meta content="../media/enderchest.png" property="image">
         <meta content="../media/enderchest.png" property="og:image">
     </head>
     <div id='header'>
@@ -25,25 +22,25 @@
         <h1 id="user" hidden>Login</h1>
         <button id="perf">Preferences</button>
     </div>
-    <main id="panel">
-        <section id="templates">
-            <article class="template">
-                <img src="../media/add.png" alt="Icon" role="">
+    <div id="panel">
+        <div id="templates">
+            <div class="template">
+                <img src="../media/add.png" alt="Icon">
                 <h2>New Template</h2>
                 <p>Import, create and share code or templates.</p>
-                <button id="start" class="bigbutton" role="button">Start</button>
-                <button id="import" class="bigbutton" role="button">Import</button>
-            </article>
+                <button id="start" class="bigbutton">Start</button>
+                <button id="import" class="bigbutton">Import</button>
+            </div>
             <!-- <div class="template">
                 <img src="../media/enderchest.png" alt="Icon">
                 <h2>Not actually a template</h2>
                 <p>A description, neither this or the last one is a template.</p>
                 <button id="edit" class="bigbutton">Edit</button>
             </div> -->
-        </section>
-    </main>
+        </div>
+    </div>
     <div id="menus">
-        <noscript class="background" style="display: block;" aria-modal="true">
+        <noscript class="background" style="display: block;">
             <div>
                 <h1>Is JavaScript not enabled?</h1>
                 <p>This website depends on JavaScript</p>
