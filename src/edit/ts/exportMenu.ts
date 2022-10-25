@@ -44,9 +44,7 @@ options.append(CodeUtilsSend);
 const CopyLinkButton = document.createElement('button');
 CopyLinkButton.innerText = 'Copy Link';
 CopyLinkButton.onclick = async e => { // this code is for copying the link to the template, so you can share the template with others.
-    let href : string
-    if(e.shiftKey || e.ctrlKey) href = 'https://dfonline.dev/edit/';
-    else href = location.origin + '/edit/';
+    let href = 'https://dfonline.dev/edit/';
     let searchParams = new URLSearchParams(location.search);
     let exportData = exportTemplate(JSON.stringify(code)).data;
     searchParams.set('template',exportData);
@@ -57,10 +55,8 @@ options.append(CopyLinkButton);
 const CopyShortLinkButton = document.createElement('button');
 CopyShortLinkButton.innerText = 'Copy Short Link';
 CopyShortLinkButton.onclick = async e => {
-    let href : string
-    if(e.ctrlKey) href = 'https://dfonline.dev/edit/';
-    else if(e.shiftKey) href = 'https://diamondfire.gitlab.io/template/';
-    else href = location.origin + '/edit/';
+    let href = 'https://dfonline.dev/edit/';
+    if(e.shiftKey) href = 'https://diamondfire.gitlab.io/template/';
     let searchParams = new URLSearchParams(location.search);
     let exportData : string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`,{'body':exportTemplate(JSON.stringify(code)).data,'method':'POST'}).then(res => res.json())).id;
     searchParams.set(e.shiftKey ? 't' : 'template',e.shiftKey ? 'dfo:' + exportData : exportData);
