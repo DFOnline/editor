@@ -7,7 +7,8 @@
     "buffer": "*",
     "sass": "*",
     "typescript": "*",
-    "vite": "*"
+    "vite": "*",
+    "electron": "^21.2.0",
   },
   "dependencies": {
     "@types/diff": "^5.0.2",
@@ -16,7 +17,6 @@
     "@types/pako": "^1.0.2",
     "diff": "^5.1.0",
     "drag-drop-touch": "^1.3.1",
-    "electron": "^21.2.0",
     "flat": "^5.0.2",
     "nbt-ts": "^1.3.4",
     "pako": "^2.0.4",
