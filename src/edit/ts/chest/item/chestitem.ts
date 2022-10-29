@@ -4,7 +4,6 @@ import ContextMenu from "../../../../main/context";
 import { ActDB, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import itemNames from '../itemnames.json';
 import type { ParticleCategory } from "edit/ts/actiondump";
 import SelectionContext from "../../../../main/SelectionContext";
 
