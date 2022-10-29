@@ -18,7 +18,7 @@ export default abstract class ChestItem {
     }
 
 
-    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[]) : ContextMenu {
+    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[] = []) : ContextMenu {
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => {
