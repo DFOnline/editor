@@ -1009,7 +1009,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = names.get(this.parsedItem.id)
+            name.innerText = names.get(this.parsedItem.id);
         }
         tooltip.prepend(name);
         return tooltip;
@@ -1027,7 +1027,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = names.get(this.parsedItem.id)
+            name.innerText = names.get(this.parsedItem.id);
         }
         return name;
     }

@@ -1,6 +1,6 @@
 export default class { // a class for this lmfao
     private readyFunctions : Function[] = [];
-    private data : Record<string, string>
+    private data : Record<string, string>;
     
     constructor() {
         fetch(sessionStorage.getItem('apiEndpoint') + 'names').then(res => res.json()).then(json => {
