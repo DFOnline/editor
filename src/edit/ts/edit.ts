@@ -3,6 +3,7 @@ import { Argument, BlockTag, DataBlock, DataBlocks, PlacedBlock, SubActionBlock,
 import { Action, ActionDump, CodeBlockIdentifier, CodeBlockNameType, CodeBlockTypeName, subActionBlocks } from "./actiondump";
 import 'drag-drop-touch';
 import { unflatten } from "flat";
+import Names from './names';
 
 export type tree = {
 	[key: string]: tree | string;
@@ -20,6 +21,8 @@ export let userMeta:
  */
 export let contextMenu : HTMLDivElement;
 export let mouseInfo : HTMLDivElement;
+
+export const names = new Names();
 
 /**
  * Set the action of a CodeBlock, this will fill in the block tags.
