@@ -1,7 +1,7 @@
 import ContextMenu from "../main/context";
 import { snackbar, startup } from "../main/main";
 import Menu from "../main/menu";
-import { ActDB, contextMenu, onactdb, oncode, userMeta } from "./ts/edit";
+import { LegacyActDB, contextMenu, onactdb, oncode, userMeta } from "./ts/edit";
 import { Bracket, loadTemplate } from "./template";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from "./ts/menubar/menubar";
@@ -72,7 +72,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						console.error(e);
 					}
 					const blockPicker = document.getElementById('blocks');
-					ActDB.codeblocks.forEach(block => { // placing blocks menu
+					LegacyActDB.codeblocks.forEach(block => { // placing blocks menu
 						const blockDiv = document.createElement('div');
 						blockDiv.draggable = true;
 						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;

@@ -9,7 +9,10 @@ export type tree = {
 	[key: string]: tree | string;
 }
 export let Sounds : tree
-export let ActDB : ActionDump
+/**
+ * @deprecated Use `actiondump.ts` default export
+ */
+export let LegacyActDB : ActionDump
 export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
 export let userMeta:
@@ -43,7 +46,7 @@ export function setAction(index: number, value: string, ignoreInvalidAction = fa
 			if((block as DataBlock).data || DataBlocks.includes((block as DataBlock).block)) (block as DataBlock).data = value;
 			else if((block as SubActionBlock)){
 
-				const action = ActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
+				const action = LegacyActDB.actions.find(act => (act.codeblockName === CodeBlockTypeName[(block as PlacedBlock).block as 'else'] && act.name === value)) // this is the action in db
 
 				if(value !== '' && !ignoreInvalidAction && action === undefined) throw new TypeError(`Action ${value} doesn't exist on block type ${CodeBlockTypeName[(block as PlacedBlock).block as 'else']}`);
 
@@ -95,7 +98,7 @@ export function backup(element : HTMLElement) : HTMLDivElement {
 }
 
 export function findBlockTags(block: CodeBlockIdentifier, action: String) {
-	return ActDB.actions.find(x => CodeBlockTypeName[block as 'else'] === x.codeblockName && (x.name === action || x.name === 'dynamic')).tags;
+	return LegacyActDB.actions.find(x => CodeBlockTypeName[block as 'else'] === x.codeblockName && (x.name === action || x.name === 'dynamic')).tags;
 }
 
 export function findBlockTag(block: CodeBlockIdentifier, action: String, tag: String){
@@ -107,8 +110,8 @@ export function findBlockTagOption(block: CodeBlockIdentifier, action: String, t
 }
 
 export function getCodeAction(actionName : string, types : subActionBlocks) {
-	let names = types.map(t => ActDB.codeblocks.find(x => x.identifier === t).name);
-	return ActDB.actions.find(x => x.name === actionName && names.includes(x.codeblockName));
+	let names = types.map(t => LegacyActDB.codeblocks.find(x => x.identifier === t).name);
+	return LegacyActDB.actions.find(x => x.name === actionName && names.includes(x.codeblockName));
 }
 
 /**
@@ -134,8 +137,8 @@ window.addEventListener('load',() => {
 })
 
 export function onactdb(data : ActionDump){
-	ActDB = data;
-	Sounds = unflatten(Object.fromEntries(ActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
+	LegacyActDB = data;
+	Sounds = unflatten(Object.fromEntries(LegacyActDB.sounds.map(sound => [sound.sound,sound.sound])),{delimiter: '_'});
 }
 export function oncode(data : Template, compareData : Template){
 	code = data;

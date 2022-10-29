@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
 import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code, findBlockTag, findBlockTagOption, names } from "../../edit";
+import { LegacyActDB, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
 import type { ParticleCategory } from "edit/ts/actiondump";
@@ -398,7 +398,7 @@ export class Pot extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        const search = Object.fromEntries(ActDB.potions.map(p => {
+        const search = Object.fromEntries(LegacyActDB.potions.map(p => {
             const clear = stripColors(p.icon.name)
             return [clear,[clear,p.potion]]
         }));
@@ -439,14 +439,14 @@ export class Pot extends ChestItem {
 
     icon(): HTMLDivElement {
         const icon = super.icon();
-        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
+        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(LegacyActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
         return icon;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(LegacyActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
         const amplification = document.createElement('span');
         amplification.innerText = `Amplification: ${this.item.data.amp}`;
         const duration = document.createElement('span');
@@ -478,7 +478,7 @@ export class Snd extends ChestItem {
         search.value = this.item.data.sound;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const snd = ActDB.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
+                const snd = LegacyActDB.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
                 if(snd){
                     this.item.data.sound = stripColors(snd.icon.name);
                     chestMenu(Block);
@@ -489,7 +489,7 @@ export class Snd extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
+            LegacyActDB.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
                 const result = document.createElement('button');
                 minecraftColorHTML(s.icon.name).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
@@ -548,7 +548,7 @@ export class Snd extends ChestItem {
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(LegacyActDB.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
         const stats = document.createElement('span');
         stats.innerText = `Pitch: ${this.item.data.pitch}\nVolume: ${this.item.data.vol}`
         tooltip.append(value,document.createElement('br'),stats);
@@ -567,7 +567,7 @@ export class Part extends ChestItem {
     movable = true;
 
     private get parsed() : ParticleCategory {
-        return ActDB.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
+        return LegacyActDB.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
     }
     constructor(item : Particle){
         super(item);
@@ -581,7 +581,7 @@ export class Part extends ChestItem {
         search.value = this.item.data.particle;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const part = ActDB.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
+                const part = LegacyActDB.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
                 if(part){
                     this.item.data.particle = stripColors(part.icon.name);
                     this.item.data.data = {
@@ -604,7 +604,7 @@ export class Part extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
+            LegacyActDB.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
                 const result = document.createElement('button');
                 minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
@@ -877,7 +877,7 @@ export class Gval extends ChestItem {
         search.value = this.item.data.type;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const gval = ActDB.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
+                const gval = LegacyActDB.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
                 if(gval){
                     this.item.data.type = stripColors(gval.icon.name);
                     chestMenu(Block);
@@ -888,7 +888,7 @@ export class Gval extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
+            LegacyActDB.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
                 const result = document.createElement('button');
                 minecraftColorHTML(g.icon.name).forEach(c => result.append(c));
 
@@ -933,7 +933,7 @@ export class Gval extends ChestItem {
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(LegacyActDB.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
 
         const targetLabel = document.createElement('span');
         targetLabel.style.color = '#aaa';
