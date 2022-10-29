@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
 import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
+import { ActDB, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
 import itemNames from '../itemnames.json';
@@ -1009,7 +1009,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+            name.innerText = names.get(this.parsedItem.id)
         }
         tooltip.prepend(name);
         return tooltip;
@@ -1027,7 +1027,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+            name.innerText = names.get(this.parsedItem.id)
         }
         return name;
     }
