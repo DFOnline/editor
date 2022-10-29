@@ -5,7 +5,7 @@ import { codeutilities, cuopen, snackbar } from "../../main/main";
 const exportDiv = document.createElement('div');
 
 const p = document.createElement('p');
-p.innerText = `Get the template data${cuopen ? ', or send it to codeutilities,' : ', or connect to codeutilities to use the Item API,'} with the template you are currently working on.`;
+p.innerText = `Get the template data${cuopen ? ', or send it to recode,' : ', or connect to recode to use the Item API,'} with the template you are currently working on.`;
 exportDiv.append(p);
 
 const options = document.createElement('div');
@@ -23,7 +23,7 @@ copyTemplate.onclick = e => {
 options.append(copyTemplate);
 
 const CodeUtilsSend = document.createElement('button');
-CodeUtilsSend.innerText = 'Send to CodeUtilities';
+CodeUtilsSend.innerText = 'Send to Recode';
 CodeUtilsSend.disabled = !cuopen;
 CodeUtilsSend.onclick = () => { // the code for sending :D
     codeutilities.send(JSON.stringify(
