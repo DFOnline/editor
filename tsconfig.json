@@ -5,6 +5,7 @@
 		"moduleResolution": "node",
 		"jsx": "preserve",
 		"baseUrl": "./src",
+		"module": "esnext",
 		"target": "ES2022",
 		"allowSyntheticDefaultImports": true,
 		"importsNotUsedAsValues": "error",

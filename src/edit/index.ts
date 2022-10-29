@@ -1,7 +1,7 @@
 import ContextMenu from "../main/context";
 import { snackbar, startup } from "../main/main";
 import Menu from "../main/menu";
-import { LegacyActDB, contextMenu, onactdb, oncode, userMeta } from "./ts/edit";
+import { actiondump, contextMenu, oncode, userMeta } from "./ts/edit";
 import { Bracket, loadTemplate } from "./template";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from "./ts/menubar/menubar";
@@ -63,8 +63,8 @@ window.onload = async function onload() { // when everything loads - this functi
 fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
-				onactdb(data);
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
+				// TODO: seperate this for better block pallete
 				if(userMeta.canEdit){
 					try{ rendBlocks(); }
 					catch (e) {
@@ -72,7 +72,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						console.error(e);
 					}
 					const blockPicker = document.getElementById('blocks');
-					LegacyActDB.codeblocks.forEach(block => { // placing blocks menu
+					actiondump.codeblocks.forEach(block => { // placing blocks menu
 						const blockDiv = document.createElement('div');
 						blockDiv.draggable = true;
 						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
