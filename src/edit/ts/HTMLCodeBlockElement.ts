@@ -1,4 +1,4 @@
-import { ActDB, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
+import { actiondump, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
 import { ArgumentBlock, Block, DataBlock, DataBlocks, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
 import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
@@ -154,7 +154,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                                     (block as SubActionBlock).subAction = ActionName;
                                     if(ActionType === 'if_player' && ActionName === 'HasRoomForItem') (block as SubActionBlock).subAction = 'PHasRoomForItem';
                                     rendBlocks();
-                                    populateBlockTags(this.index,ActDB.actions.find(a => a.codeblockName === CodeBlockTypeName[ActionType] && a.name === ActionName));
+                                    populateBlockTags(this.index,actiondump.actions.find(a => a.codeblockName === CodeBlockTypeName[ActionType] && a.name === ActionName));
                                 }
                                 return SubActionCategory.subMenu;
                             })
