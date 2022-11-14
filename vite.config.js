@@ -35,6 +35,7 @@ export default
             }
         },
         outDir: '../dist',
+        target: 'esnext',
     }
 }
 
