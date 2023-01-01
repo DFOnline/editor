@@ -221,6 +221,10 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         mouseInfo.style.top = e.clientY + 'px';
                         mouseInfo.style.left = e.clientX + 'px';
                     }
+                    topper.onmouseleave = e => {
+                        mouseInfo.style.display = 'none';
+                        mouseInfo.innerHTML = '';
+                    }
                 }
 			}
 			blockElement.classList.add(block.block, 'mat');
