@@ -42,14 +42,16 @@ $codeBlockSize: 20em;
             &.else          { background-image: url( ../media/blocks/else.png          );}
             &.loader        { background-image: url( ../media/blocks/loader.png        );}
             &.call_loader   { background-image: url( ../media/blocks/call_loader.png   );}
-            &.piston        {
-                              background-image: url(../media/blocks/piston.png);
+            &.piston        { background-image: url(../media/blocks/piston.png);
                 &.repeat    { background-image: url(../media/blocks/pistonSticky.png   );}
                 &.close     { transform: scaleX(-1); width: $codeBlockSize; background-position: left; display: flex;}
             }
         }
         .air {background-image: none;}
-        .chest {background-image: url(../media/blocks/chest.png);}
+        .chest {
+            background-image: url(../media/blocks/chest.png);
+            cursor: pointer;
+        }
         .stone {height: $codeBlockSize; background-image: url(../media/blocks/stone.png);}
         .sign {
             font-family:"minecraft-ten-regular";
