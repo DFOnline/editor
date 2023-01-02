@@ -142,8 +142,8 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         userMeta.ctxKeys['s'] = targetButton;
                         contextMenu.append(targetButton);
                     }
+                    const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
                     if(SubActionBlocks.includes(block.block as any)){
-                        const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
                         if(subAction){
                             const subActions = subAction.subActionBlocks;
                             const acts = await ActionDump;
@@ -162,7 +162,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                             contextMenu.append(subactionSearcher.subMenu);
                         }
                     }
-                    if(block.block.includes('if_')){ // NOT button
+                    if(block.block.includes('if_') || subAction){ // NOT button
                         let not = document.createElement('button');
                         not.innerHTML = '<u>N</u>OT';
                         not.onclick = () => {
