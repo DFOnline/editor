@@ -199,9 +199,11 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                 if(User.showItems){
                     topper.onmouseenter = e => {
                         mouseInfo.style.display = 'block';
-                        mouseInfo.innerHTML = '<u>Click to open chest menu</u><br><hr>';
+                        mouseInfo.innerHTML = '<u>Click to open chest menu</u>';
+                        const items = (code.blocks[this.index] as ArgumentBlock).args.items;
+                        if(items.length !== 0) mouseInfo.innerHTML += '<br /><hr />';
                         e.stopPropagation();
-                        (code.blocks[this.index] as ArgumentBlock).args.items.forEach(arg => {
+                        items.forEach(arg => {
                             mouseInfo.innerHTML += `<b style="color: ${ItemTypeColors[arg.item.id]}">${arg.item.id.toUpperCase()}</b> `
                             if (arg.item.id === 'item'){
                                 mouseInfo.append(new MCItem(arg.item).minecraftName());
