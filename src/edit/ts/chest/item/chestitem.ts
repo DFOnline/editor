@@ -4,7 +4,7 @@ import ContextMenu from "../../../../main/context";
 import { actiondump, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import type { ParticleCategory } from "edit/ts/actiondump";
+import type { Icon, ParticleCategory, Tag } from "edit/ts/actiondump";
 import SelectionContext from "../../../../main/SelectionContext";
 
 export default abstract class ChestItem {
@@ -1035,17 +1035,23 @@ export class MCItem extends ChestItem {
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
     declare item : BlockTag;
+    public tags: Tag;
+    public tag: {
+        name: string;
+        icon: Icon;
+        alaises: any[];
+    }
 
     movable = false;
 
     constructor(item : BlockTag){
         super(item);
+        this.tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
+        this.tag = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
     }
 
     contextMenu(Block: number, _Slot: number): ContextMenu {
-
-        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
-        const options = tags.options.map(tag => {
+        const options = this.tags.options.map(tag => {
             const option = document.createElement('button');
             option.innerText = tag.name;
             option.onclick = () => {
@@ -1060,8 +1066,7 @@ export class Bltag extends ChestItem {
     }
 
     icon(): HTMLDivElement {
-        const opt = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
-        return super.icon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
+        return super.icon(`https://dfonline.dev/public/images/${this.tag.icon.material}.png`);
     }
 
     tooltip(): HTMLDivElement {
@@ -1071,8 +1076,7 @@ export class Bltag extends ChestItem {
         name.style.color = 'yellow';
         icon.append(name,document.createElement('br'),document.createElement('br'));
 
-        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
-        tags.options.forEach(tag => {
+        this.tags.options.forEach(tag => {
             const option = document.createElement('span');
             option.innerText = tag.name;
             if(this.item.data.option === tag.name) option.style.color = 'aqua';
@@ -1083,7 +1087,7 @@ export class Bltag extends ChestItem {
     }
 
     repr(): string {
-        throw Error('Not implemented.');
+        return `${this.tags.name} > ${this.tag.name}`;
     }
 }
 
