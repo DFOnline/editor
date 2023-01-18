@@ -209,12 +209,13 @@ header {
     padding: 3px;
     #toggle {
         cursor: pointer;
-        width: 100%;
+        // width: 100%;
         height: 15px;
         display: flex;
+        flex: 1;
         span {
-            margin: auto;
-            margin-right: 0;
+            // margin: auto;
+            // margin-right: 0;
             background-color: black;
             width: 10px;
             height: 10px;
@@ -224,10 +225,13 @@ header {
     #blocks {
         cursor: grab;
         display: inline-flex;
+        flex-wrap: wrap;
         div {
+            // margin-right: auto;
             background-size: cover;
-            width: 5em;
             height: 5em;
+            width: 5em;
+            aspect-ratio: 1-1;
         }
     }
 }
