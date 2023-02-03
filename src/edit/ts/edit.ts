@@ -7,9 +7,6 @@ import Names from './names';
 export type tree = {
 	[key: string]: tree | string;
 }
-/**
- * @deprecated Use `actiondump.ts` default export
- */
 export let compareTemplate : Template;
 export let code: Template = {'blocks':[]};
 export let userMeta:
