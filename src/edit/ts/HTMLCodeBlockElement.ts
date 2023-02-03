@@ -143,9 +143,9 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         contextMenu.append(targetButton);
                     }
                     const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
+                    const subActions = subAction?.subActionBlocks;
                     if(SubActionBlocks.includes(block.block as any)){
-                        if(subAction){
-                            const subActions = subAction.subActionBlocks;
+                        if(subAction && subActions){
                             const acts = await ActionDump;
                             const types = subActions.map(ActionType => {
                                 const SubActionCategory = new SelectionContext(CodeBlockTypeName[ActionType], Object.fromEntries(acts.actions.filter(a => a.codeblockName === CodeBlockTypeName[ActionType]).map(a => [a.name,[...a.aliases,a.name]])), true, false);
@@ -162,7 +162,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                             contextMenu.append(subactionSearcher.subMenu);
                         }
                     }
-                    if(block.block.includes('if_') || subAction){ // NOT button
+                    if(block.block.includes('if_') || (subAction && subActions)){ // NOT button
                         let not = document.createElement('button');
                         not.innerHTML = '<u>N</u>OT';
                         not.onclick = () => {
