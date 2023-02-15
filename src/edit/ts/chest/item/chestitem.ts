@@ -1,10 +1,11 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName, VarScopeEnum } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import { actiondump, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import type { Icon, ParticleCategory, Tag } from "edit/ts/actiondump";
+import type { Icon, ParticleCategory, Tag } from "../../../ts/actiondump";
+import { VarScopeColor } from '../../../template';
 import SelectionContext from "../../../../main/SelectionContext";
 
 export default abstract class ChestItem {
@@ -231,15 +232,12 @@ export class Var extends NamedItem {
         return ctxBox;
     }
 
-    // TODO: take this out for an enum
-    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'};
-
     icon(){
         const itemElement = document.createElement('div');
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         const scope = document.createElement('span');
         scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
-        scope.style.color = this.colors[this.item.data.scope];
+        scope.style.color = VarScopeColor[this.item.data.scope];
         itemElement.append(scope);
         return itemElement;
     }
@@ -249,7 +247,7 @@ export class Var extends NamedItem {
         tooltip.innerText = `${this.item.data.name}`;
         const scope = document.createElement('span');
         scope.innerText = ScopeName[this.item.data.scope];
-        scope.style.color = this.colors[this.item.data.scope];
+        scope.style.color = VarScopeColor[this.item.data.scope];
         tooltip.append(document.createElement('br'),scope);
         return tooltip;
     }
@@ -1046,12 +1044,13 @@ export class Bltag extends ChestItem {
 
     constructor(item : BlockTag){
         super(item);
+        console.log(item);
         this.tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
         this.tag = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
     }
 
     contextMenu(Block: number, _Slot: number): ContextMenu {
-        const options = this.tags.options.map(tag => {
+        const options : HTMLElement[] = this.tags.options.map(tag => {
             const option = document.createElement('button');
             option.innerText = tag.name;
             option.onclick = () => {
@@ -1060,8 +1059,48 @@ export class Bltag extends ChestItem {
                 valueCtx.close();
             }
             return option;
-        })
-        const valueCtx = new ContextMenu('Block Tag',options);
+        });
+
+        const updateVarTag = () => {
+            if(input.value != '') {
+                const tag : Variable = {
+                    id: 'var',
+                    data: {
+                        name: input.value,
+                        scope: select.value as VarScope
+                    }
+                }
+                this.item.data.variable = tag;
+            }
+            else {
+                this.item.data.variable = undefined;
+            }
+        }
+        const variableRow = document.createElement('div');
+        
+        const select = document.createElement('select');
+        select.innerHTML = `
+        <option value="unsaved">G</option>
+        <option value="saved">S</option>
+        <option value="local">L</option>
+        `;
+        select.value = this.item.data.variable?.data?.scope ?? 'unsaved';
+        select.onchange = () => {updateVarTag()}
+        const input = document.createElement('input');
+        input.value = this.item.data.variable?.data?.name ?? '';
+        input.onchange = () => {updateVarTag()}
+        input.onkeydown = e => {
+            updateVarTag();
+            if(e.key == 'Enter') valueCtx.close();
+        }
+        variableRow.append(input,select);
+        const varTag = [
+            variableRow,
+            document.createElement('hr'),
+        ];
+
+
+        const valueCtx = new ContextMenu('Block Tag',[...varTag,...options]);
         return valueCtx;
     }
 
@@ -1074,14 +1113,27 @@ export class Bltag extends ChestItem {
         const name = document.createElement('span');
         name.innerText = this.item.data.tag;
         name.style.color = 'yellow';
-        icon.append(name,document.createElement('br'),document.createElement('br'));
+
+        
+        icon.append(name,document.createElement('br'));
+
+        icon.append(document.createElement('br'));
 
         this.tags.options.forEach(tag => {
             const option = document.createElement('span');
             option.innerText = tag.name;
             if(this.item.data.option === tag.name) option.style.color = 'aqua';
             icon.append(option,document.createElement('br'));
-        })
+        });
+
+        if(this.item.data.variable != null) {
+            const description = document.createElement('span');
+            description.innerText = 'Var Tag:'
+            const variable = document.createElement('span');
+            variable.innerText = `[${VarScopeEnum[this.item.data.variable.data.scope][0]}] ${this.item.data.variable.data.name}`;
+            variable.style.color = VarScopeColor[this.item.data.variable.data.scope];
+            icon.append(document.createElement('br'),description,document.createElement('br'),variable);
+        };
 
         return icon;
     }
