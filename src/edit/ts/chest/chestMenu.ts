@@ -133,8 +133,8 @@ export default function chestMenu(BlockIndex : number){
 				items[items.findIndex(i => i.slot == draggingIndex)].slot = Number(target.id.replace('empty',''));
 				chestMenu(BlockIndex);
 			}
-			itemElement.onclick = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
-			itemElement.oncontextmenu = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
+			itemElement.onclick = e => newItem(e,SlotIndex,BlockIndex).toggle(e);
+			itemElement.oncontextmenu = e => newItem(e,SlotIndex,BlockIndex).toggle(e);
 		}
 
 		itemElement.classList.add('item');
