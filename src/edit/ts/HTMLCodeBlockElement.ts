@@ -1,4 +1,4 @@
-import { ActDB, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
+import { actiondump, backup, code, contextMenu, mouseInfo, populateBlockTags, setAction, userMeta } from "./edit";
 import { ArgumentBlock, Block, DataBlock, DataBlocks, SelectionBlock, SelectionBlocks, SelectionValues, SubActionBlock, SubActionBlocks, Target } from "../template";
 import ActionDump, { CodeBlockTypeName, ItemTypeColors } from "./actiondump";
 import chestMenu from "./chest/chestMenu";
@@ -142,10 +142,10 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         userMeta.ctxKeys['s'] = targetButton;
                         contextMenu.append(targetButton);
                     }
+                    const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
+                    const subActions = subAction?.subActionBlocks;
                     if(SubActionBlocks.includes(block.block as any)){
-                        const subAction = (await ActionDump).actions.find(a => a.codeblockName === CodeBlockTypeName[block.block] && a.name === (block as SubActionBlock).action);
-                        if(subAction){
-                            const subActions = subAction.subActionBlocks;
+                        if(subAction && subActions){
                             const acts = await ActionDump;
                             const types = subActions.map(ActionType => {
                                 const SubActionCategory = new SelectionContext(CodeBlockTypeName[ActionType], Object.fromEntries(acts.actions.filter(a => a.codeblockName === CodeBlockTypeName[ActionType]).map(a => [a.name,[...a.aliases,a.name]])), true, false);
@@ -154,7 +154,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                                     (block as SubActionBlock).subAction = ActionName;
                                     if(ActionType === 'if_player' && ActionName === 'HasRoomForItem') (block as SubActionBlock).subAction = 'PHasRoomForItem';
                                     rendBlocks();
-                                    populateBlockTags(this.index,ActDB.actions.find(a => a.codeblockName === CodeBlockTypeName[ActionType] && a.name === ActionName));
+                                    populateBlockTags(this.index,actiondump.actions.find(a => a.codeblockName === CodeBlockTypeName[ActionType] && a.name === ActionName));
                                 }
                                 return SubActionCategory.subMenu;
                             })
@@ -162,7 +162,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                             contextMenu.append(subactionSearcher.subMenu);
                         }
                     }
-                    if(block.block.includes('if_')){ // NOT button
+                    if(block.block.includes('if_') || (subAction && subActions)){ // NOT button
                         let not = document.createElement('button');
                         not.innerHTML = '<u>N</u>OT';
                         not.onclick = () => {
@@ -199,9 +199,11 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                 if(User.showItems){
                     topper.onmouseenter = e => {
                         mouseInfo.style.display = 'block';
-                        mouseInfo.innerHTML = '<u>Click to open chest menu</u><br><hr>';
+                        mouseInfo.innerHTML = '<u>Click to open chest menu</u>';
+                        const items = (code.blocks[this.index] as ArgumentBlock).args.items;
+                        if(items.length !== 0) mouseInfo.innerHTML += '<br /><hr />';
                         e.stopPropagation();
-                        (code.blocks[this.index] as ArgumentBlock).args.items.forEach(arg => {
+                        items.forEach(arg => {
                             mouseInfo.innerHTML += `<b style="color: ${ItemTypeColors[arg.item.id]}">${arg.item.id.toUpperCase()}</b> `
                             if (arg.item.id === 'item'){
                                 mouseInfo.append(new MCItem(arg.item).minecraftName());
@@ -220,6 +222,10 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         e.stopPropagation();
                         mouseInfo.style.top = e.clientY + 'px';
                         mouseInfo.style.left = e.clientX + 'px';
+                    }
+                    topper.onmouseleave = e => {
+                        mouseInfo.style.display = 'none';
+                        mouseInfo.innerHTML = '';
                     }
                 }
 			}

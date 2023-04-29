@@ -35,7 +35,6 @@ export default function chestMenu(BlockIndex : number){
 			itemElement.classList.add('full')
 			
 			itemElement.ontouchstart = itemElement.onclick = itemElement.onmouseover = () => {
-
 				mouseInfo.innerHTML = '';
 
 				mouseInfo.style.display = 'block';
@@ -77,7 +76,7 @@ export default function chestMenu(BlockIndex : number){
 
 					e.dataTransfer.clearData();
 					e.dataTransfer.setData('application/x.dfitem',JSON.stringify(item));
-					e.dataTransfer.setData('arrayIndex',String(ArrayIndex));
+					e.dataTransfer.setData('index',String(item.slot));
 					e.dataTransfer.effectAllowed = 'move';
 
 					const dragIcon = document.createElement('div');
@@ -96,18 +95,23 @@ export default function chestMenu(BlockIndex : number){
 				}
 
 				itemElement.ondragover = e => e.preventDefault();
-				itemElement.ondrop = e => {
-					console.log(e)
-					e.stopPropagation();
-					e.preventDefault();
+				itemElement.ondrop = event => {
+					event.stopPropagation();
+					event.preventDefault();
 				
-					const targetIndex = Number((e.target as HTMLDivElement).id.replace('item',''));
-					const draggingIndex = Number(e.dataTransfer.getData('arrayIndex'));
+					const targetIndex = Number(item.slot);
+					const draggingIndex = Number(event.dataTransfer.getData('index'));
 
-					console.log(draggingIndex,targetIndex);
 					if(draggingIndex !== targetIndex){
-						block.args.items[draggingIndex].slot = targetIndex;
-						block.args.items[targetIndex].slot = draggingIndex;
+						// block.args.items[draggingIndex].slot = targetIndex;
+						// block.args.items[targetIndex].slot = draggingIndex;
+						const items = block.args.items;
+
+						const di = items.findIndex(i => i.slot === draggingIndex);
+						const ti = items.findIndex(i => i.slot === targetIndex);
+
+						items[di].slot = targetIndex;
+						items[ti].slot = draggingIndex;
 					}
 
 					chestMenu(BlockIndex);
@@ -118,15 +122,19 @@ export default function chestMenu(BlockIndex : number){
 			itemElement.id = 'empty' + String(SlotIndex);
 			itemElement.classList.add('empty');
 			itemElement.ondragover = e => e.preventDefault();
-			itemElement.ondrop = e => {
-				e.stopPropagation();
-				e.preventDefault();
-				const target = e.target as HTMLDivElement;
-				(code.blocks[BlockIndex] as ArgumentBlock).args.items[Number(e.dataTransfer.getData('arrayIndex'))].slot = Number(target.id.replace('empty',''));
+			itemElement.ondrop = event => {
+				event.stopPropagation();
+				event.preventDefault();
+				const target = event.target as HTMLDivElement;
+				// (code.blocks[BlockIndex] as ArgumentBlock).args.items[Number(e.dataTransfer.getData('arrayIndex'))].slot = Number(target.id.replace('empty',''));
+				const items = block.args.items;
+				const draggingIndex = Number(event.dataTransfer.getData('index'));
+
+				items[items.findIndex(i => i.slot == draggingIndex)].slot = Number(target.id.replace('empty',''));
 				chestMenu(BlockIndex);
 			}
-			itemElement.onclick = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
-			itemElement.oncontextmenu = e => newItem(e,SlotIndex,block,BlockIndex).toggle(e);
+			itemElement.onclick = e => newItem(e,SlotIndex,BlockIndex).toggle(e);
+			itemElement.oncontextmenu = e => newItem(e,SlotIndex,BlockIndex).toggle(e);
 		}
 
 		itemElement.classList.add('item');

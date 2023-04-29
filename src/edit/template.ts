@@ -40,6 +40,18 @@ export type ArgumentBlock = SelectionBlock | SubActionBlock
 /** All types that appear in the codespace */
 export type PhysicalBlock = PlacedBlock | Bracket 
 
+export enum VarScopeEnum {
+    local   = "LOCAL",
+    saved   = "SAVED",
+    unsaved = "GAME" ,
+}
+
+export enum VarScopeColor {
+    local   = '#55FF55',
+    saved   = '#FFFF55',
+    unsaved = '#AAAAAA',
+}
+
 export interface Bracket {
     id: "bracket";
     type: "norm" | "repeat";
@@ -190,6 +202,7 @@ export interface BlockTag {
         tag: string;
         action: string;
         block: BlockID;
+        variable?: Variable;
     }
 }
 

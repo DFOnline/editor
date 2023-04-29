@@ -1,11 +1,11 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName } from "../../../template";
+import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName, VarScopeEnum } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { ActDB, code, findBlockTag, findBlockTagOption } from "../../edit";
+import { actiondump, code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import itemNames from '../itemnames.json';
-import type { ParticleCategory } from "edit/ts/actiondump";
+import type { Icon, ParticleCategory, Tag } from "../../../ts/actiondump";
+import { VarScopeColor } from '../../../template';
 import SelectionContext from "../../../../main/SelectionContext";
 
 export default abstract class ChestItem {
@@ -19,7 +19,7 @@ export default abstract class ChestItem {
     }
 
 
-    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[]) : ContextMenu {
+    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[] = []) : ContextMenu {
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => {
@@ -232,15 +232,12 @@ export class Var extends NamedItem {
         return ctxBox;
     }
 
-    // TODO: take this out for an enum
-    colors = {'local':'#55FF55','saved':'#FFFF55','unsaved':'#AAAAAA'};
-
     icon(){
         const itemElement = document.createElement('div');
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         const scope = document.createElement('span');
         scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
-        scope.style.color = this.colors[this.item.data.scope];
+        scope.style.color = VarScopeColor[this.item.data.scope];
         itemElement.append(scope);
         return itemElement;
     }
@@ -250,7 +247,7 @@ export class Var extends NamedItem {
         tooltip.innerText = `${this.item.data.name}`;
         const scope = document.createElement('span');
         scope.innerText = ScopeName[this.item.data.scope];
-        scope.style.color = this.colors[this.item.data.scope];
+        scope.style.color = VarScopeColor[this.item.data.scope];
         tooltip.append(document.createElement('br'),scope);
         return tooltip;
     }
@@ -399,7 +396,7 @@ export class Pot extends ChestItem {
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        const search = Object.fromEntries(ActDB.potions.map(p => {
+        const search = Object.fromEntries(actiondump.potions.map(p => {
             const clear = stripColors(p.icon.name)
             return [clear,[clear,p.potion]]
         }));
@@ -440,14 +437,14 @@ export class Pot extends ChestItem {
 
     icon(): HTMLDivElement {
         const icon = super.icon();
-        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
+        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(actiondump.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
         return icon;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(actiondump.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
         const amplification = document.createElement('span');
         amplification.innerText = `Amplification: ${this.item.data.amp}`;
         const duration = document.createElement('span');
@@ -479,7 +476,7 @@ export class Snd extends ChestItem {
         search.value = this.item.data.sound;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const snd = ActDB.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
+                const snd = actiondump.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
                 if(snd){
                     this.item.data.sound = stripColors(snd.icon.name);
                     chestMenu(Block);
@@ -490,7 +487,7 @@ export class Snd extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
+            actiondump.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
                 const result = document.createElement('button');
                 minecraftColorHTML(s.icon.name).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
@@ -549,7 +546,7 @@ export class Snd extends ChestItem {
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(actiondump.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
         const stats = document.createElement('span');
         stats.innerText = `Pitch: ${this.item.data.pitch}\nVolume: ${this.item.data.vol}`
         tooltip.append(value,document.createElement('br'),stats);
@@ -568,7 +565,7 @@ export class Part extends ChestItem {
     movable = true;
 
     private get parsed() : ParticleCategory {
-        return ActDB.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
+        return actiondump.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
     }
     constructor(item : Particle){
         super(item);
@@ -582,7 +579,7 @@ export class Part extends ChestItem {
         search.value = this.item.data.particle;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const part = ActDB.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
+                const part = actiondump.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
                 if(part){
                     this.item.data.particle = stripColors(part.icon.name);
                     this.item.data.data = {
@@ -605,7 +602,7 @@ export class Part extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
+            actiondump.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
                 const result = document.createElement('button');
                 minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
@@ -878,7 +875,7 @@ export class Gval extends ChestItem {
         search.value = this.item.data.type;
         search.onkeyup = e => {
             if(e.key === 'Enter'){
-                const gval = ActDB.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
+                const gval = actiondump.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
                 if(gval){
                     this.item.data.type = stripColors(gval.icon.name);
                     chestMenu(Block);
@@ -889,7 +886,7 @@ export class Gval extends ChestItem {
             }
 
             results.innerHTML = '';
-            ActDB.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
+            actiondump.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
                 const result = document.createElement('button');
                 minecraftColorHTML(g.icon.name).forEach(c => result.append(c));
 
@@ -934,7 +931,7 @@ export class Gval extends ChestItem {
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
+        minecraftColorHTML(actiondump.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
 
         const targetLabel = document.createElement('span');
         targetLabel.style.color = '#aaa';
@@ -1009,7 +1006,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+            name.innerText = names.get(this.parsedItem.id);
         }
         tooltip.prepend(name);
         return tooltip;
@@ -1027,7 +1024,7 @@ export class MCItem extends ChestItem {
             }
         }
         if(!name.innerText){
-            name.innerText = itemNames[this.parsedItem.id.replace('minecraft:','') as 'air'];
+            name.innerText = names.get(this.parsedItem.id);
         }
         return name;
     }
@@ -1036,17 +1033,24 @@ export class MCItem extends ChestItem {
 export class Bltag extends ChestItem {
     backgroundUrl = 'dynamic';
     declare item : BlockTag;
+    public tags: Tag;
+    public tag: {
+        name: string;
+        icon: Icon;
+        alaises: any[];
+    }
 
     movable = false;
 
     constructor(item : BlockTag){
         super(item);
+        console.log(item);
+        this.tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
+        this.tag = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
     }
 
     contextMenu(Block: number, _Slot: number): ContextMenu {
-
-        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
-        const options = tags.options.map(tag => {
+        const options : HTMLElement[] = this.tags.options.map(tag => {
             const option = document.createElement('button');
             option.innerText = tag.name;
             option.onclick = () => {
@@ -1055,14 +1059,53 @@ export class Bltag extends ChestItem {
                 valueCtx.close();
             }
             return option;
-        })
-        const valueCtx = new ContextMenu('Block Tag',options);
+        });
+
+        const updateVarTag = () => {
+            if(input.value != '') {
+                const tag : Variable = {
+                    id: 'var',
+                    data: {
+                        name: input.value,
+                        scope: select.value as VarScope
+                    }
+                }
+                this.item.data.variable = tag;
+            }
+            else {
+                this.item.data.variable = undefined;
+            }
+        }
+        const variableRow = document.createElement('div');
+        
+        const select = document.createElement('select');
+        select.innerHTML = `
+        <option value="unsaved">G</option>
+        <option value="saved">S</option>
+        <option value="local">L</option>
+        `;
+        select.value = this.item.data.variable?.data?.scope ?? 'unsaved';
+        select.onchange = () => {updateVarTag()}
+        const input = document.createElement('input');
+        input.value = this.item.data.variable?.data?.name ?? '';
+        input.onchange = () => {updateVarTag()}
+        input.onkeydown = e => {
+            updateVarTag();
+            if(e.key == 'Enter') valueCtx.close();
+        }
+        variableRow.append(input,select);
+        const varTag = [
+            variableRow,
+            document.createElement('hr'),
+        ];
+
+
+        const valueCtx = new ContextMenu('Block Tag',[...varTag,...options]);
         return valueCtx;
     }
 
     icon(): HTMLDivElement {
-        const opt = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
-        return super.icon(`https://dfonline.dev/public/images/${opt.icon.material}.png`);
+        return super.icon(`https://dfonline.dev/public/images/${this.tag.icon.material}.png`);
     }
 
     tooltip(): HTMLDivElement {
@@ -1070,21 +1113,33 @@ export class Bltag extends ChestItem {
         const name = document.createElement('span');
         name.innerText = this.item.data.tag;
         name.style.color = 'yellow';
-        icon.append(name,document.createElement('br'),document.createElement('br'));
 
-        const tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
-        tags.options.forEach(tag => {
+        
+        icon.append(name,document.createElement('br'));
+
+        icon.append(document.createElement('br'));
+
+        this.tags.options.forEach(tag => {
             const option = document.createElement('span');
             option.innerText = tag.name;
             if(this.item.data.option === tag.name) option.style.color = 'aqua';
             icon.append(option,document.createElement('br'));
-        })
+        });
+
+        if(this.item.data.variable != null) {
+            const description = document.createElement('span');
+            description.innerText = 'Var Tag:'
+            const variable = document.createElement('span');
+            variable.innerText = `[${VarScopeEnum[this.item.data.variable.data.scope][0]}] ${this.item.data.variable.data.name}`;
+            variable.style.color = VarScopeColor[this.item.data.variable.data.scope];
+            icon.append(document.createElement('br'),description,document.createElement('br'),variable);
+        };
 
         return icon;
     }
 
     repr(): string {
-        throw Error('Not implemented.');
+        return `${this.tags.name} > ${this.tag.name}`;
     }
 }
 
