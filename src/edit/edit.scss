@@ -42,14 +42,16 @@ $codeBlockSize: 20em;
             &.else          { background-image: url( ../media/blocks/else.png          );}
             &.loader        { background-image: url( ../media/blocks/loader.png        );}
             &.call_loader   { background-image: url( ../media/blocks/call_loader.png   );}
-            &.piston        {
-                              background-image: url(../media/blocks/piston.png);
+            &.piston        { background-image: url(../media/blocks/piston.png);
                 &.repeat    { background-image: url(../media/blocks/pistonSticky.png   );}
                 &.close     { transform: scaleX(-1); width: $codeBlockSize; background-position: left; display: flex;}
             }
         }
         .air {background-image: none;}
-        .chest {background-image: url(../media/blocks/chest.png);}
+        .chest {
+            background-image: url(../media/blocks/chest.png);
+            cursor: pointer;
+        }
         .stone {height: $codeBlockSize; background-image: url(../media/blocks/stone.png);}
         .sign {
             font-family:"minecraft-ten-regular";
@@ -207,12 +209,13 @@ header {
     padding: 3px;
     #toggle {
         cursor: pointer;
-        width: 100%;
+        // width: 100%;
         height: 15px;
         display: flex;
+        flex: 1;
         span {
-            margin: auto;
-            margin-right: 0;
+            // margin: auto;
+            // margin-right: 0;
             background-color: black;
             width: 10px;
             height: 10px;
@@ -222,10 +225,13 @@ header {
     #blocks {
         cursor: grab;
         display: inline-flex;
+        flex-wrap: wrap;
         div {
+            // margin-right: auto;
             background-size: cover;
-            width: 5em;
             height: 5em;
+            width: 5em;
+            aspect-ratio: 1-1;
         }
     }
 }

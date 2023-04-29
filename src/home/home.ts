@@ -32,7 +32,7 @@ Menu.setup();
 //     div.appendChild(imports)
 //     if(cuopen){
 //         let cuad = document.createElement('p')
-//         cuad.innerText = "Or, because you have codeutilities you can go into minecraft, hold your template and type /sendtemplate!"
+//         cuad.innerText = "Or, because you have recode you can go into minecraft, hold your template and type /sendtemplate!"
 //         div.appendChild(cuad)
 //     }
 //     menu('Import',div)
