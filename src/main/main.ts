@@ -5,7 +5,7 @@ import { developerMenu } from "./developers";
 export let cuopen = false;
 
 /**
- * Shows a popup like the one saying "Couldn't connect to codeutilties"
+ * Shows a popup like the one saying "Couldn't connect to recode"
  * @param message A message to show in the popup
  * @param type The type of message to show, changes style
  */
@@ -102,8 +102,8 @@ export function startup(){
 }
 
 export const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
-codeutilities.onopen = () => {snackbar('Connected to CodeUtilities'); cuopen = true;}
-codeutilities.onerror = () => {snackbar('Failed to connect to CodeUtilities'); cuopen = false;}
+codeutilities.onopen = () => {snackbar('Connected to Recode'); cuopen = true;}
+codeutilities.onerror = () => {snackbar('Failed to connect to Recode'); cuopen = false;}
 
 export function decodeTemplate(base64data : string) : Template{
     const compressData = atob(base64data);
