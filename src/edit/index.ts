@@ -1,12 +1,12 @@
 import ContextMenu from "../main/context";
-import { snackbar, startup } from "../main/main";
+import { snackbar } from "../main/main";
 import Menu from "../main/menu";
-import { ActDB, contextMenu, onactdb, oncode, userMeta } from "./ts/edit";
+import { actiondump, contextMenu, oncode, userMeta } from "./ts/edit";
 import { Bracket, loadTemplate } from "./template";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from "./ts/menubar/menubar";
 
-window.onload = async function onload() { // when everything loads - this function is pretty hard to find lol.
+(async () => { // when everything loads - this function is pretty hard to find lol.
 	try {
 		Menu.setup();
 		ContextMenu.setup();
@@ -15,29 +15,20 @@ window.onload = async function onload() { // when everything loads - this functi
 		snackbar('An error occured whilst setting up the editor. Check the console for more info.');
 		console.error(e);
 	}
-
-	let start
-	try {
-		start = startup();
-	}
-	catch (e) {
-		snackbar('An error occured whilst starting up the editor. Check the console for more info.');
-		console.error(e);
-		return;
-	}
+	
+	const urlParams = new URLSearchParams(location.search);
 
 	try {
-
-		if(start.urlParams.has('template')){
-			sessionStorage.setItem('import',start.urlParams.get('template').replace(/ /g,'+'));
+		if(urlParams.has('template')){
+			sessionStorage.setItem('import',urlParams.get('template').replace(/ /g,'+'));
 		}
         let code, compareTemplate;
 		if(sessionStorage.getItem('import')){
 			let importTemplate = sessionStorage.getItem('import');
 			code = await loadTemplate(importTemplate);
 		}
-		if(start.urlParams.get('compare')){
-			compareTemplate = await loadTemplate(start.urlParams.get('compare').replace(/ /g,'+'));
+		if(urlParams.get('compare')){
+			compareTemplate = await loadTemplate(urlParams.get('compare').replace(/ /g,'+'));
 			userMeta.canEdit = false;
 		}
         oncode(code,compareTemplate);
@@ -58,13 +49,13 @@ window.onload = async function onload() { // when everything loads - this functi
 	contextMenu.oncontextmenu = e => {(e.target as HTMLElement).click(); e.preventDefault();};
 
 	menuBar();
-}
+})()
 
 fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 			.then(response => response.json()) // some code probably from mdn docs.
 			.then(data => { // unready required init
-				onactdb(data);
 				// console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
+				// TODO: seperate this for better block pallete
 				if(userMeta.canEdit){
 					try{ rendBlocks(); }
 					catch (e) {
@@ -72,7 +63,7 @@ fetch(`${sessionStorage.getItem('apiEndpoint')}db`) // Gets ?actiondump.
 						console.error(e);
 					}
 					const blockPicker = document.getElementById('blocks');
-					ActDB.codeblocks.forEach(block => { // placing blocks menu
+					actiondump.codeblocks.forEach(block => { // placing blocks menu
 						const blockDiv = document.createElement('div');
 						blockDiv.draggable = true;
 						blockDiv.style.backgroundImage = `url(https://dfonline.dev/public/images/${block.item.material.toUpperCase()}.png)`;
