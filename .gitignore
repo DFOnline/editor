@@ -7,3 +7,4 @@ dist-ssr
 .parcel-cache
 public
 .vscode
+bin

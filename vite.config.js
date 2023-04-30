@@ -11,9 +11,9 @@ const mkpath = dir => resolve(root, `${dir}/index.html`);
 /**
  * @type {import('vite').UserConfig}
  */
-export default 
-{
+export default {
     root,
+    base: "./",
     server: {
         port: 1234,
     },
@@ -25,7 +25,6 @@ export default
         rollupOptions: {
             input: {
                 ip: mkpath("ip"),
-                //
                 main: mkpath('.'),
                 home: mkpath('home'),
                 edit: mkpath('edit'),

@@ -9,7 +9,7 @@ $ctx-padding: 0.2em;
     top: 0;
     left: 0;
 
-    > div {
+    >div {
         display: flex;
         min-width: 3em;
         position: fixed;
@@ -18,9 +18,11 @@ $ctx-padding: 0.2em;
         border-radius: 5px;
         flex-direction: column;
         outline: black solid 1px;
+
         * {
             margin: 0;
         }
+
         button {
             text-align: left;
             box-shadow: none;
@@ -33,6 +35,7 @@ button.ctx-sub-menu {
     display: flex;
     text-align: left;
     padding-right: $ctx-padding;
+
     &::after {
         content: '>';
         font-family: monospace;

@@ -3,7 +3,7 @@ import Menu from "./menu";
 const menuDiv = document.createElement('div');
 
 export default class User {
-    private static settings() : any {
+    private static settings(): any {
         return JSON.parse(localStorage.getItem('prefrences') || '{}');
     }
 
@@ -13,32 +13,32 @@ export default class User {
      * @param alt If the value is not found, return this
      * @returns The value stored in settings.
      */
-    private static get(key : string, alt : any = undefined) : any {
+    private static get(key: string, alt: any = undefined): any {
         const value = User.settings()[key];
         return value === undefined ? alt : value;
     }
-    private static set(key : string, value : any) : void {
+    private static set(key: string, value: any): void {
         let settings = User.settings();
         settings[key] = value;
         localStorage.setItem('prefrences', JSON.stringify(settings));
     }
 
     /** If blocks in brackets should be shifted down. */
-    public static get shiftBlocks() : boolean {
+    public static get shiftBlocks(): boolean {
         return User.get('shiftBlocks', true);
     }
-    public static set shiftBlocks(value : boolean) {
+    public static set shiftBlocks(value: boolean) {
         User.set('shiftBlocks', value);
     }
 
-    public static get showItems() : boolean {
+    public static get showItems(): boolean {
         return User.get('showItems', false);
     }
-    public static set showItems(value : boolean) {
+    public static set showItems(value: boolean) {
         User.set('showItems', value);
     }
 
-    static menu : Menu = new Menu('User', menuDiv);
+    static menu = new Menu('User', menuDiv);
 }
 
 
@@ -65,5 +65,5 @@ showItems.onchange = () => {
 }
 showItemsLabel.append(showItems);
 
-menuDiv.append(p,stackBracketsLabel,document.createElement('br'),showItemsLabel);
+menuDiv.append(p, stackBracketsLabel, document.createElement('br'), showItemsLabel);
 
