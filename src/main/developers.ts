@@ -14,9 +14,9 @@ apiEndpointLabel.innerText = 'API Endpoint: ';
 
 const apiEndpoint = document.createElement('input');
 apiEndpoint.type = 'text';
-apiEndpoint.value = sessionStorage.getItem('apiEndpoint');
+apiEndpoint.value = sessionStorage.getItem('apiEndpoint') || "";
 apiEndpoint.oninput = () => {
-    sessionStorage.setItem('apiEndpoint',apiEndpoint.value);
+    sessionStorage.setItem('apiEndpoint', apiEndpoint.value);
 };
 apiEndpoint.placeholder = 'api endpoint';
 
@@ -31,19 +31,19 @@ const developerModeToggle = document.createElement('input');
 developerModeToggle.type = 'checkbox';
 developerModeToggle.checked = sessionStorage.getItem('developerMode') === 'true';
 developerModeToggle.onchange = () => {
-    sessionStorage.setItem('developerMode',developerModeToggle.checked.toString());
+    sessionStorage.setItem('developerMode', developerModeToggle.checked.toString());
 };
 developerModeToggleLabel.appendChild(developerModeToggle);
 devMenu.append(developerModeToggleLabel);
 
 /** A menu opened in any document with main via Ctrl + Shift + Alt + D */
-export const developerMenu = new Menu('Developer Menu',devMenu);
+export const developerMenu = new Menu('Developer Menu', devMenu);
 
 /**
  * Gets if the developer mode, which can be set in the dev menu.
  * @returns {boolean} If the developer mode is enabled or not.
  */
-export function isDeveloperMode() : boolean{
+export function isDeveloperMode(): boolean {
     return sessionStorage.getItem('developerMode') === 'true';
 }
 
@@ -61,17 +61,17 @@ developerOverlay.style.color = 'white';
 developerOverlay.style.fontWeight = 'bold';
 developerOverlay.style.userSelect = 'none';
 
-if(isDeveloperMode()){
-    window.addEventListener('load',() => {
+if (isDeveloperMode()) {
+    window.addEventListener('load', () => {
         document.body.appendChild(developerOverlay);
         developerOverlay.style.display = 'block';
     }
-    ,{once:true});
+        , { once: true });
 }
 
-export function devOverlayText(text : string, append : boolean = false) : void{
-    if( append ) {
-        if(developerOverlay.innerText.length > 0){
+export function devOverlayText(text: string, append: boolean = false): void {
+    if (append) {
+        if (developerOverlay.innerText.length > 0) {
             developerOverlay.innerText += '\n';
         }
         developerOverlay.innerText += text;

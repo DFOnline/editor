@@ -1,14 +1,13 @@
 {
 	"include": ["src", "types"],
 	"compilerOptions": {
-		"downlevelIteration": true,
 		"moduleResolution": "node",
 		"jsx": "preserve",
 		"baseUrl": "./src",
-		"module": "ES2022",
-		"target": "ESNext",
+		"target": "ES2017",
+        "module": "ESNext",
+        "lib": ["ES2021", "DOM"],
 		"allowSyntheticDefaultImports": true,
-		"importsNotUsedAsValues": "error",
 		/* more strict checking for errors that per-file transpilers like `esbuild` would crash */
 		"isolatedModules": false,
 		/* noEmit - We only use TypeScript for type checking. */
@@ -19,6 +18,11 @@
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		// "useDefineForClassFields": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true
 	},
 }
