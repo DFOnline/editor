@@ -39,21 +39,21 @@ Menu.setup();
 // }
 
 export class ImportMenu extends Menu {
-    constructor(code = ''){
+    constructor(code = '') {
         const content = document.createElement('div');
         const p = document.createElement('p');
         p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = 'Template Data';
-        input.onkeyup = event => {if(event.key === 'Enter'){activateImport.click()}}
+        input.onkeyup = event => { if (event.key === 'Enter') { activateImport.click() } }
         input.value = code;
         const activateImport = document.createElement('button');
         activateImport.innerText = 'Import';
         activateImport.onclick = () => {
             const data = input.value.match(templateLike);
-            if(data !== null){
-                sessionStorage.setItem('import',data[0]); window.open("../edit/","_self");
+            if (data !== null) {
+                sessionStorage.setItem('import', data[0]); window.open("../edit/", "_self");
             }
         }
         const a = document.createElement('a');
@@ -65,25 +65,25 @@ export class ImportMenu extends Menu {
         a.style.width = '100%'
         a.style.textAlign = 'end';
         a.title = 'Help';
-        content.append(p,input,activateImport,a);
+        content.append(p, input, activateImport, a);
         super('Import', content);
     }
-    
+
 }
 
 const createMenuContents = document.createElement('div');
 const createMenuParagraph = document.createElement('p');
 createMenuParagraph.innerHTML = `
 Create a new template here. <br>
-Note that editing templates outside of DF itself is inpractical, but however can be used to quickly sketch up code. <br>
+Use DFOnline to sketch up and view and/or share code. Coding soley using inpractical <br>
 Note that editing item values cannot be done yet. <br>
 `;
 createMenuContents.append(createMenuParagraph);
 const createMenuButton = document.createElement('button');
 createMenuButton.innerText = 'Create Template';
 createMenuButton.onclick = () => {
-    sessionStorage.setItem('import','H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
-    window.open("../edit/","_self");
+    sessionStorage.setItem('import', 'H4sIAOL1PmIA/wVAMQoAAAT8iu4ZviILI2Uwyt+vQ/RkLVTMn5Mp5WwOAAAA');
+    window.open("../edit/", "_self");
 }
 createMenuContents.append(createMenuButton);
 

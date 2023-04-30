@@ -1,13 +1,15 @@
-const droparea = document.getElementById('drop');
-const draggable = document.getElementById('drag');
+const droparea = document.getElementById('drop')!;
+const draggable = document.getElementById('drag')!;
 
-function debug(DragEvent : DragEvent){
-    console.log(`id: ${DragEvent.type}, target: ${(DragEvent.target as any).id}, test text: ${DragEvent.dataTransfer.getData('test')} trusted: ${DragEvent.isTrusted}`);
-    console.log(DragEvent);
+function debug(e: DragEvent) {
+    if (!e.dataTransfer) throw new Error("Error whilst managing data transfer.");
+    console.log(`id: ${e.type}, target: ${(e.target as any).id}, test text: ${e.dataTransfer.getData('test')} trusted: ${e.isTrusted}`);
+    console.log(e);
 }
 
 draggable.ondragstart = e => {
-    e.dataTransfer.setData('test','text')
+    if (!e.dataTransfer) throw new Error("Error whilst managing data transfer.");
+    e.dataTransfer.setData('test', 'text');
     debug(e);
 };
 draggable.ondragend = debug;
