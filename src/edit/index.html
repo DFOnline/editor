@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang='en'>
-    <head>
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" /> <!-- haha nobody cares about cache -->
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="Expires" content="0" />
-        <title>DFOnline Editor</title>
-        <script src="./index.ts" type="module"></script>
-        <link rel="shortcut icon" type="image/jpg" href="../media/favicon.png"/>
-        <link rel="stylesheet" type="text/css" href="../main/main.scss" />
-        <link rel="stylesheet" href="../main/context.scss" />
-        <link rel="stylesheet" type="text/css" href="./edit.scss" />
-        <META name="viewport" content="initial-scale=0.66, user-scalable=no" />
-        <meta content="DFOnline Editor" property="og:title" />
-        <meta content="DiamondFire Online template editor." property="og:description" />
-        <meta content="https://dfonline.dev/" property="og:url" />
-        <meta content="#31353B" name="theme-color" />
-        <meta content="../media/enderchest.png" property="og:image" />
-        <meta http-equiv="cache-control" content="no-cache" />
-    </head>
-    <body>
-        <div id="content">
-            <div id="codeBlocks">
-                <!-- boo -->
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <!-- haha nobody cares about cache -->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>DFOnline Editor</title>
+    <script src="./index.ts" type="module"></script>
+    <link rel="shortcut icon" type="image/jpg" href="../media/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="../main/main.scss" />
+    <link rel="stylesheet" href="../main/context.scss" />
+    <link rel="stylesheet" type="text/css" href="./edit.scss" />
+    <meta name="viewport" content="initial-scale=0.66, user-scalable=no" />
+    <meta content="DFOnline Editor" property="og:title" />
+    <meta content="DiamondFire Online template editor." property="og:description" />
+    <meta content="https://dfonline.dev/" property="og:url" />
+    <meta content="#31353B" name="theme-color" />
+    <meta content="../media/enderchest.png" property="og:image" />
+    <meta http-equiv="cache-control" content="no-cache" />
+</head>
+
+<body>
+    <div id="content">
+        <div id="codeBlocks">
+            <!-- boo -->
+        </div>
+        <header id="menu" role="menubar">
+        </header>
+    </div>
+    <div id="newblocks">
+        <div id="toggle"><span></span></div>
+        <div id="blocks"></div>
+    </div>
+    <div id="menus">
+        <!-- This probably would work better outside of content, perhaps above. -->
+        <noscript class="background" style="display: block;">
+            <div>
+                <h1>Is JavaScript not enabled?</h1>
+                <p>This website depends on JavaScript</p>
             </div>
-            <header id="menu" role="menubar">
-            </header>
-        </div>
-        <div id="newblocks">
-            <div id="toggle"><span></span></div>
-            <div id="blocks"></div>
-        </div>
-        <div id="menus">
-            <!-- This probably would work better outside of content, perhaps above. -->
-            <noscript class="background" style="display: block;">
-                <div>
-                    <h1>Is JavaScript not enabled?</h1>
-                    <p>This website depends on JavaScript</p>
-                </div>
-            </noscript>
-        </div>
-        <div id="snackbars"></div>
-        <div id="mouseinfo" role="tooltip"></div>
-        <div id="context" role=""></div>
-    </body>
+        </noscript>
+    </div>
+    <div id="snackbars"></div>
+    <div id="mouseinfo" role="tooltip"></div>
+    <div id="context" role=""></div>
+</body>
+
 </html>

@@ -1,35 +1,32 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, Number, ScopeToName, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, g_valSelection, SelectionValues, ParsedItem, Particle, ScopeName, VarScopeEnum } from "../../../template";
+import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import { actiondump, code, findBlockTag, findBlockTagOption, names } from "../../edit";
-import { minecraftColorHTML, MinecraftTextCompToCodes, stripColors } from "../../../../main/main";
+import ActDB from "../../../ts/actiondump";
+import { code, findBlockTag, findBlockTagOption, names } from "../../edit";
+import { minecraftColorHTML, mcTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import type { Icon, ParticleCategory, Tag } from "../../../ts/actiondump";
+import type { Icon, Tag } from "../../../ts/actiondump";
 import { VarScopeColor } from '../../../template';
 import SelectionContext from "../../../../main/SelectionContext";
 
-export default abstract class ChestItem {
-    backgroundUrl : string;
-    item : Item;
+export default abstract class ChestItem<ItemType extends Item> {
+    backgroundUrl: string = "";
 
-    abstract movable : boolean;
+    abstract movable: boolean;
 
-    constructor(item : Item){
-        this.item = item;
-    }
+    constructor(public item: ItemType) { }
 
-
-    contextMenu(Block : number, Slot : number, name : string = this.item.id, values : HTMLElement[] = []) : ContextMenu {
+    contextMenu(Block: number, Slot: number, name: string = this.item.id, values: HTMLElement[] = []): ContextMenu {
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Delete';
         deleteButton.onclick = () => {
-                const block = code.blocks[Block] as ArgumentBlock;
-                const index = block.args.items.findIndex(slot => slot.slot === Slot);
-                block.args.items.splice(index,1);
-                chestMenu(Block);
-                ctxBox.close();
-            }
-        const ctxBox = new ContextMenu(name,[...values, deleteButton]);
+            const block = code.blocks[Block] as ArgumentBlock;
+            const index = block.args.items.findIndex(slot => slot.slot === Slot);
+            block.args.items.splice(index, 1);
+            chestMenu(Block);
+            ctxBox.close();
+        }
+        const ctxBox = new ContextMenu(name, [...values, deleteButton]);
 
         return ctxBox;
     }
@@ -37,7 +34,7 @@ export default abstract class ChestItem {
     /**
      * Get the representation of the item as a HTML element.
      */
-    icon(backgroundUrl = this.backgroundUrl) : HTMLDivElement | HTMLImageElement {
+    icon(backgroundUrl = this.backgroundUrl): HTMLDivElement | HTMLImageElement {
         const itemElement = document.createElement('img');
         itemElement.src = backgroundUrl;
         return itemElement;
@@ -46,24 +43,23 @@ export default abstract class ChestItem {
     /**
      * A HTML div with all the tooltip information.
      */
-    abstract tooltip() : HTMLDivElement;
+    abstract tooltip(): HTMLDivElement;
 
     /**
      * Returns the data in the item as a human readable string.
      */
-    abstract repr() : string;
+    abstract repr(): string;
 
     /**
      * Dynamically get the item based of it's type.
      * @param item The item to parse.
      * @returns Any type of item, matching the type of the item.
      */
-    static getItem(item : Item){
+    static getItem(item: Item) {
         return getItem(item);
     }
 }
-abstract class NamedItem extends ChestItem {
-    declare item : Text | Number | Variable;
+abstract class NamedItem extends ChestItem<Text | NumberVal | Variable> {
 
     contextMenu(Block: number, Slot: number, name: string, values: HTMLElement[] = []): ContextMenu {
         const value = document.createElement('input');
@@ -71,14 +67,14 @@ abstract class NamedItem extends ChestItem {
 
         value.onclick = e => e.stopPropagation();
         value.onkeydown = e => {
-            if(e.key === 'Enter' || e.key === 'Tab'){
+            if (e.key === 'Enter' || e.key === 'Tab') {
                 this.item.data.name = value.value;
-                if(e.key === 'Enter') {
+                if (e.key === 'Enter') {
                     ctxBox.close();
                 }
             }
-            if(e.key === 'Escape'){
-                if(value.value !== this.item.data.name) {
+            if (e.key === 'Escape') {
+                if (value.value !== this.item.data.name) {
                     value.value = this.item.data.name;
                     value.select();
                 }
@@ -86,26 +82,23 @@ abstract class NamedItem extends ChestItem {
             }
         }
 
-        const ctxBox = super.contextMenu(Block,Slot,name,[value,...values]);
+        const ctxBox = super.contextMenu(Block, Slot, name, [value, ...values]);
         return ctxBox;
     }
 }
 
-export class UnknownItem extends ChestItem {
+export class UnknownItem extends ChestItem<UndefinedItem> {
     backgroundUrl = 'https://dfonline.dev/public/images/BARRIER.png';
-    declare item: Item;
 
     movable = false;
 
-    constructor(item: Item){
-        super(item);
+    constructor(item: Item) { super(item); }
+
+    contextMenu(_: number, __: number): ContextMenu {
+        return new ContextMenu(`%${this.item.id}%`, [], true);
     }
 
-    contextMenu(_Block : number, _Slot: number): ContextMenu {
-        return new ContextMenu('Unknown',[],true);
-    }
-
-    icon(){
+    icon() {
         const itemElement = document.createElement('div');
 
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
@@ -114,7 +107,7 @@ export class UnknownItem extends ChestItem {
         return itemElement;
     }
 
-    tooltip(){
+    tooltip() {
         const tooltip = document.createElement('div');
         tooltip.innerText = `This item couldn't be parsed.`;
         tooltip.style.color = '#ff0000';
@@ -122,40 +115,43 @@ export class UnknownItem extends ChestItem {
     }
 
     repr(): string {
-        return `unknown ${this.item}`;
+        return `%${this.item}%`;
     }
 }
 
-/** Utility for tooltips */
-function makeTooltip(data : {value: string, color?: string, label?: string}[]) : HTMLDivElement {
-    const tooltip = document.createElement('div');
-    data.forEach(value => {
-        const label = document.createElement('label');
-        label.innerText = value.label ? value.label + ' ' : '';
-        const text = document.createElement('span');
-        text.innerText = value.value;
-        text.style.color = value.color ? value.color : 'white'
-    })
-    return tooltip;
-}
+/**
+ * Utility for tooltips
+ * @deprecated never used.
+ */
+// function makeTooltip(data: { value: string, color?: string, label?: string }[]): HTMLDivElement {
+//     const tooltip = document.createElement('div');
+//     data.forEach(value => {
+//         const label = document.createElement('label');
+//         label.innerText = value.label ? value.label + ' ' : '';
+//         const text = document.createElement('span');
+//         text.innerText = value.value;
+//         text.style.color = value.color ? value.color : 'white'
+//     })
+//     return tooltip;
+// }
 
 export class Num extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/SLIME_BALL.png';
-    declare item : Number;
+    declare item: NumberVal;
 
     movable = true;
 
-    constructor(item : Number){
+    constructor(item: NumberVal) {
         super(item);
     }
 
-    icon(){
+    icon() {
         const itemElement = document.createElement('div');
-        
+
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         const count = document.createElement('span');
         count.innerText = this.item.data.name;
-        count.style.color = "rgb(255, 85, 85)"
+        count.style.color = "rgb(255, 85, 85)";
         itemElement.append(count);
 
         // // when the user uses the scroll wheel
@@ -188,11 +184,11 @@ export class Num extends NamedItem {
 
 export class Txt extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
-    declare item : Text;
+    declare item: Text;
 
     movable = true;
 
-    constructor(item : Text){
+    constructor(item: Text) {
         super(item);
     }
 
@@ -203,23 +199,23 @@ export class Txt extends NamedItem {
     }
 
     repr(): string {
-        return `${this.item.data.name.replace('\n','\\n')}`;
+        return `${this.item.data.name.replace('\n', '\\n')}`;
     }
 }
 
 export class Var extends NamedItem {
     backgroundUrl = 'https://dfonline.dev/public/images/MAGMA_CREAM.png';
-    declare item : Variable;
+    declare item: Variable;
 
     movable = true;
 
-    constructor(item : Variable){
+    constructor(item: Variable) {
         super(item);
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
         const scope = document.createElement('select');
-        scope.onchange = () => {this.item.data.scope = scope.value as VarScope; chestMenu(Block);};
+        scope.onchange = () => { this.item.data.scope = scope.value as VarScope; chestMenu(Block); };
         scope.onclick = e => e.stopPropagation();
         scope.innerHTML = `
         <option value="unsaved">GAME</option>
@@ -228,15 +224,15 @@ export class Var extends NamedItem {
         `;
         scope.value = this.item.data.scope;
 
-        const ctxBox = super.contextMenu(Block,Slot,'Variable',[scope]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Variable', [scope]);
         return ctxBox;
     }
 
-    icon(){
+    icon() {
         const itemElement = document.createElement('div');
         itemElement.style.backgroundImage = `url(${this.backgroundUrl})`;
         const scope = document.createElement('span');
-        scope.innerText = ScopeToName[this.item.data.scope].substring(0,1);
+        scope.innerText = SCOPE_TO_NAME_MAP[this.item.data.scope].substring(0, 1);
         scope.style.color = VarScopeColor[this.item.data.scope];
         itemElement.append(scope);
         return itemElement;
@@ -248,7 +244,7 @@ export class Var extends NamedItem {
         const scope = document.createElement('span');
         scope.innerText = ScopeName[this.item.data.scope];
         scope.style.color = VarScopeColor[this.item.data.scope];
-        tooltip.append(document.createElement('br'),scope);
+        tooltip.append(document.createElement('br'), scope);
         return tooltip;
     }
 
@@ -257,13 +253,12 @@ export class Var extends NamedItem {
     }
 }
 
-export class Loc extends ChestItem {
+export class Loc extends ChestItem<Location> {
     backgroundUrl = 'https://dfonline.dev/public/images/PAPER.png';
-    declare item : Location;
 
     movable = true;
 
-    constructor(item : Location){
+    constructor(item: Location) {
         super(item);
     }
 
@@ -280,11 +275,11 @@ export class Loc extends ChestItem {
         pitch.type = 'number';
         yaw.type = 'number';
 
-        x.value = this.item.data.loc.x.toString();
-        y.value = this.item.data.loc.y.toString();
-        z.value = this.item.data.loc.z.toString();
-        pitch.value = this.item.data.loc.pitch.toString();
-        yaw.value = this.item.data.loc.yaw.toString();
+        x.value = `${this.item.data.loc.x}`;
+        y.value = `${this.item.data.loc.y}`;
+        z.value = `${this.item.data.loc.z}`;
+        pitch.value = `${this.item.data.loc}`;
+        yaw.value = `${this.item.data.loc.yaw}`;
 
         x.onchange = () => this.item.data.loc.x = parseFloat(x.value);
         y.onchange = () => this.item.data.loc.y = parseFloat(y.value);
@@ -298,7 +293,7 @@ export class Loc extends ChestItem {
         pitch.onclick = e => e.stopPropagation();
         yaw.onclick = e => e.stopPropagation();
 
-        const ctxBox = super.contextMenu(Block,Slot,'Loc',[x,y,z,pitch,yaw]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Loc', [x, y, z, pitch, yaw]);
         return ctxBox;
     }
 
@@ -319,7 +314,7 @@ export class Loc extends ChestItem {
         pitch.innerText = `p: ${this.item.data.loc.pitch}`;
         const yaw = document.createElement('span');
         yaw.innerText = `y: ${this.item.data.loc.yaw}`;
-        tooltip.append(x,document.createElement('br'),y,document.createElement('br'),z,document.createElement('br'),pitch,document.createElement('br'),yaw);
+        tooltip.append(x, document.createElement('br'), y, document.createElement('br'), z, document.createElement('br'), pitch, document.createElement('br'), yaw);
         return tooltip;
     }
 
@@ -328,13 +323,12 @@ export class Loc extends ChestItem {
     }
 }
 
-export class Vec extends ChestItem {
+export class Vec extends ChestItem<Vector> {
     backgroundUrl = 'https://dfonline.dev/public/images/PRISMARINE_SHARD.png';
-    declare item : Vector;
 
     movable = true;
 
-    constructor(item : Vector){
+    constructor(item: Vector) {
         super(item);
     }
 
@@ -347,9 +341,9 @@ export class Vec extends ChestItem {
         y.type = 'number';
         z.type = 'number';
 
-        x.value = this.item.data.x.toString();
-        y.value = this.item.data.y.toString();
-        z.value = this.item.data.z.toString();
+        x.value = `${Number(this.item.data.x)}`;
+        y.value = `${Number(this.item.data.y)}`;
+        z.value = `${Number(this.item.data.z)}`;
 
         x.onchange = () => this.item.data.x = parseFloat(x.value);
         y.onchange = () => this.item.data.y = parseFloat(y.value);
@@ -359,7 +353,7 @@ export class Vec extends ChestItem {
         y.onclick = e => e.stopPropagation();
         z.onclick = e => e.stopPropagation();
 
-        const ctxBox = super.contextMenu(Block,Slot,'Vec',[x,y,z]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Vec', [x, y, z]);
         return ctxBox;
     }
 
@@ -376,7 +370,7 @@ export class Vec extends ChestItem {
         y.innerText = `Y: ${this.item.data.y}`;
         const z = document.createElement('span');
         z.innerText = `Z: ${this.item.data.z}`;
-        tooltip.append(x,document.createElement('br'),y,document.createElement('br'),z);
+        tooltip.append(x, document.createElement('br'), y, document.createElement('br'), z);
         return tooltip;
     }
 
@@ -385,23 +379,22 @@ export class Vec extends ChestItem {
     }
 }
 
-export class Pot extends ChestItem {
+export class Pot extends ChestItem<Potion> {
     backgroundUrl = 'https://dfonline.dev/public/images/DRAGON_BREATH.png';
-    declare item : Potion;
 
     movable = true;
 
-    constructor(item : Potion){
+    constructor(item: Potion) {
         super(item);
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
-        const search = Object.fromEntries(actiondump.potions.map(p => {
+        const search = Object.fromEntries(ActDB.potions.map(p => {
             const clear = stripColors(p.icon.name)
-            return [clear,[clear,p.potion]]
+            return [clear, [clear, p.potion]]
         }));
 
-        const valueCtx = new SelectionContext('Potion Value',search,true,false);
+        const valueCtx = new SelectionContext('Potion Value', search, true, false);
         valueCtx.callback = pot => {
             this.item.data.pot = pot;
             chestMenu(Block);
@@ -411,10 +404,10 @@ export class Pot extends ChestItem {
         durationLabel.innerText = 'Duration: ';
         const duration = document.createElement('input');
         duration.type = 'number';
-        duration.value = this.item.data.dur.toString();
+        duration.value = `${Number(this.item.data.dur)}`;
         duration.onchange = () => {
             // limit to 0
-            if(parseInt(duration.value) < 0){
+            if (parseInt(duration.value) < 0) {
                 duration.value = '0';
             }
             this.item.data.dur = parseInt(duration.value);
@@ -426,31 +419,31 @@ export class Pot extends ChestItem {
         amplificationLabel.innerText = 'Amplification: ';
         const amplification = document.createElement('input');
         amplification.type = 'number';
-        amplification.value = this.item.data.amp.toString();
+        amplification.value = `${Number(this.item.data.amp)}`;
         amplification.onchange = () => this.item.data.amp = parseInt(amplification.value);
         amplification.onclick = e => e.stopPropagation();
         amplificationLabel.append(amplification);
 
-        const ctxBox = super.contextMenu(Block,Slot,'Pot',[valueCtx.subMenu,durationLabel,amplificationLabel]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Pot', [valueCtx.subMenu, durationLabel, amplificationLabel]);
         return ctxBox;
     }
 
     icon(): HTMLDivElement {
         const icon = super.icon();
-        icon.style.filter = `drop-shadow(0 0 5px ${minecraftColorHTML(actiondump.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name)[0].style.color})`
+        icon.style.filter = `drop-shadow(0 0 5px ${iconPropToMCHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot))[0].style.color})`;
         return icon;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(actiondump.potions.find(p => stripColors(p.icon.name) === this.item.data.pot).icon.name).forEach(c => value.append(c));
+        iconPropToMCHTML(ActDB.potions.find(p => stripColors(p.icon.name) === this.item.data.pot)).forEach(c => value.append(c));
         const amplification = document.createElement('span');
         amplification.innerText = `Amplification: ${this.item.data.amp}`;
         const duration = document.createElement('span');
         duration.innerText = `Duration: ${this.item.data.dur} ticks`;
-        tooltip.append(value,document.createElement('br'),amplification,document.createElement('br'),duration);
-        
+        tooltip.append(value, document.createElement('br'), amplification, document.createElement('br'), duration);
+
         return tooltip;
     }
 
@@ -459,13 +452,12 @@ export class Pot extends ChestItem {
     }
 }
 
-export class Snd extends ChestItem {
+export class Snd extends ChestItem<Sound> {
     backgroundUrl = 'https://dfonline.dev/public/images/NAUTILUS_SHELL.png';
-    declare item : Sound;
 
     movable = true;
 
-    constructor(item : Sound){
+    constructor(item: Sound) {
         super(item);
     }
 
@@ -475,9 +467,9 @@ export class Snd extends ChestItem {
         search.placeholder = 'Sound';
         search.value = this.item.data.sound;
         search.onkeyup = e => {
-            if(e.key === 'Enter'){
-                const snd = actiondump.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
-                if(snd){
+            if (e.key === 'Enter') {
+                const snd = ActDB.sounds.find(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase()));
+                if (snd) {
                     this.item.data.sound = stripColors(snd.icon.name);
                     chestMenu(Block);
                     search.value = stripColors(snd.icon.name);
@@ -487,9 +479,9 @@ export class Snd extends ChestItem {
             }
 
             results.innerHTML = '';
-            actiondump.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
+            ActDB.sounds.filter(s => stripColors(s.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || s.sound.toLowerCase().includes(search.value.toLowerCase())).forEach(s => {
                 const result = document.createElement('button');
-                minecraftColorHTML(s.icon.name).forEach(c => result.append(c));
+                iconPropToMCHTML(s).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
                 trueName.innerText = ` ${s.sound}`;
                 trueName.style.color = '#aaa';
@@ -508,18 +500,18 @@ export class Snd extends ChestItem {
         }
         const results = document.createElement('div');
         results.id = 'results';
-        const valueCtx = new ContextMenu('Value',[search,results]);
+        const valueCtx = new ContextMenu('Value', [search, results]);
 
         const pitchLabel = document.createElement('label');
         pitchLabel.innerText = 'Pitch: ';
         const pitch = document.createElement('input');
         pitch.type = 'number';
-        pitch.value = this.item.data.pitch.toString();
+        pitch.value = `${Number(this.item.data.pitch)}`;
         // limit pitch from 0 to 2
         pitch.onchange = () => {
             const val = parseFloat(pitch.value);
-            if(val < 0) pitch.value = '0';
-            if(val > 2) pitch.value = '2';
+            if (val < 0) pitch.value = '0';
+            if (val > 2) pitch.value = '2';
             this.item.data.pitch = parseFloat(pitch.value);
         }
         pitch.onclick = e => e.stopPropagation();
@@ -529,27 +521,27 @@ export class Snd extends ChestItem {
         volumeLabel.innerText = 'Volume: ';
         const volume = document.createElement('input');
         volume.type = 'number';
-        volume.value = this.item.data.vol.toString();
+        volume.value = `${Number(this.item.data.vol)}`;
         // limit volume from 0
         volume.onchange = () => {
             const val = parseFloat(volume.value);
-            if(val < 0) volume.value = '0';
+            if (val < 0) volume.value = '0';
             this.item.data.vol = parseFloat(volume.value);
         }
         volume.onclick = e => e.stopPropagation();
         volumeLabel.append(volume);
 
-        const ctxBox = super.contextMenu(Block,Slot,'Sound',[valueCtx.subMenu,pitchLabel,volumeLabel]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Sound', [valueCtx.subMenu, pitchLabel, volumeLabel]);
         return ctxBox;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(actiondump.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound).icon.name).forEach(c => value.append(c));
+        iconPropToMCHTML(ActDB.sounds.find(s => stripColors(s.icon.name) === this.item.data.sound)).forEach(c => value.append(c));
         const stats = document.createElement('span');
         stats.innerText = `Pitch: ${this.item.data.pitch}\nVolume: ${this.item.data.vol}`
-        tooltip.append(value,document.createElement('br'),stats);
+        tooltip.append(value, document.createElement('br'), stats);
         return tooltip;
     }
 
@@ -558,18 +550,19 @@ export class Snd extends ChestItem {
     }
 }
 
-export class Part extends ChestItem {
+export class Part extends ChestItem<Particle> {
     backgroundUrl = 'https://dfonline.dev/public/images/WHITE_DYE.png';
-    declare item : Particle;
 
     movable = true;
 
-    private get parsed() : ParticleCategory {
-        return actiondump.particles.find(p => stripColors(p.icon.name) === this.item.data.particle)
+    private get parsed() {
+        const parsed = ActDB.particles.find(p => stripColors(p.icon.name) === this.item.data.particle);
+        if (!parsed) throw new Error(`Particle name "${this.item.data.particle}" does not exist.`);
+        return parsed;
     }
-    constructor(item : Particle){
+    constructor(item: Particle) {
         super(item);
-        if(this.parsed == undefined) throw new Error(`Particle ${item.data.particle} not found`);
+        if (this.parsed == undefined) throw new Error(`Particle ${item.data.particle} not found`);
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
@@ -578,9 +571,9 @@ export class Part extends ChestItem {
         search.placeholder = 'Particle';
         search.value = this.item.data.particle;
         search.onkeyup = e => {
-            if(e.key === 'Enter'){
-                const part = actiondump.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
-                if(part){
+            if (e.key === 'Enter') {
+                const part = ActDB.particles.find(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase()));
+                if (part) {
                     this.item.data.particle = stripColors(part.icon.name);
                     this.item.data.data = {
                         material: 'STONE',
@@ -602,9 +595,9 @@ export class Part extends ChestItem {
             }
 
             results.innerHTML = '';
-            actiondump.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
+            ActDB.particles.filter(p => stripColors(p.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || p.particle.toLowerCase().includes(search.value.toLowerCase())).forEach(p => {
                 const result = document.createElement('button');
-                minecraftColorHTML(p.icon.name).forEach(c => result.append(c));
+                iconPropToMCHTML(p).forEach(c => result.append(c));
                 const trueName = document.createElement('span');
                 trueName.style.color = '#aaa';
                 trueName.innerText = ` ${p.particle}`;
@@ -635,17 +628,17 @@ export class Part extends ChestItem {
         }
         const results = document.createElement('div');
         results.id = 'results';
-        const valueCtx = new ContextMenu('Value',[search,results]);
+        const valueCtx = new ContextMenu('Value', [search, results]);
 
         //#region Amount
         const amountLabel = document.createElement('label');
         amountLabel.innerText = 'Amount: ';
         const amount = document.createElement('input');
         amount.type = 'number';
-        amount.value = this.item.data.cluster.amount.toString();
+        amount.value = `${Number(this.item.data.cluster.amount)}`;
         amount.onchange = () => {
             const val = parseInt(amount.value);
-            if(val < 1) amount.value = '1';
+            if (val < 1) amount.value = '1';
             this.item.data.cluster.amount = val;
         }
         amount.onclick = e => e.stopPropagation();
@@ -657,131 +650,134 @@ export class Part extends ChestItem {
         spreadLabel.innerText = 'Spread: ';
         const horizontal = document.createElement('input');
         horizontal.type = 'number';
-        horizontal.value = this.item.data.cluster.horizontal.toString();
-        horizontal.onchange = () => {this.item.data.cluster.horizontal = parseInt(horizontal.value);}
+        horizontal.value = `${Number(this.item.data.cluster.horizontal)}`;
+        horizontal.onchange = () => { this.item.data.cluster.horizontal = parseInt(horizontal.value); }
         horizontal.style.width = '50px';
         const vertical = document.createElement('input');
         vertical.type = 'number';
-        vertical.value = this.item.data.cluster.vertical.toString();
-        vertical.onchange = () => {this.item.data.cluster.vertical = parseInt(vertical.value);}
+        vertical.value = `${Number(this.item.data.cluster.vertical)}`;
+        vertical.onchange = () => { this.item.data.cluster.vertical = parseInt(vertical.value); }
         vertical.style.width = '50px';
-        spreadLabel.append(horizontal,vertical);
+        spreadLabel.append(horizontal, vertical);
         //#endregion
-        
+
         //#region Conditinal ones
         const conditinals = document.createElement('div');
-        if(this.parsed.fields.includes('Color')) {
+        if (this.parsed.fields.includes('Color')) {
             const colorLabel = document.createElement('label');
             colorLabel.innerText = 'Color: ';
             const color = document.createElement('input');
             color.type = 'color';
-            color.value = '#' + this.item.data.data.rgb.toString(16);
-            color.onchange = () => {this.item.data.data.rgb = parseInt(color.value.replace('#',''),16);}
+            color.value = '#' + (this.item.data.data.rgb || 0xFF0000).toString(16);
+            color.onchange = () => { this.item.data.data.rgb = parseInt(color.value.replace('#', ''), 16) || 0x000000; }
             color.onclick = e => e.stopPropagation();
             colorLabel.append(color);
-            conditinals.append(colorLabel,document.createElement('br'));
+            conditinals.append(colorLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Color Variation')) {
+        if (this.parsed.fields.includes('Color Variation')) {
             const colorVarLabel = document.createElement('label');
             colorVarLabel.innerText = 'Color Variation: ';
             const colorVar = document.createElement('input');
             colorVar.type = 'number';
-            colorVar.value = this.item.data.data.colorVariation.toString(16);
+            colorVar.value = Number(this.item.data.data.colorVariation).toString(16);
             colorVar.onchange = () => {
-                const val = parseInt(colorVar.value,16);
-                if(val < 0) colorVar.value = '0';
-                if(val > 100) colorVar.value = '100';
+                const val = parseInt(colorVar.value, 16);
+                if (val < 0) colorVar.value = '0';
+                if (val > 100) colorVar.value = '100';
                 this.item.data.data.colorVariation = val;
             }
             colorVar.onclick = e => e.stopPropagation();
             colorVarLabel.append(colorVar);
-            conditinals.append(colorVarLabel,document.createElement('br'));
+            conditinals.append(colorVarLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Size')) {
+        if (this.parsed.fields.includes('Size')) {
             const sizeLabel = document.createElement('label');
             sizeLabel.innerText = 'Size: ';
             const size = document.createElement('input');
             size.type = 'number';
-            size.value = this.item.data.data.size.toString();
+            size.value = `${Number(this.item.data.data.size)}`;
             size.onchange = () => {
                 const val = parseInt(size.value);
-                if(val < 0) size.value = '0';
+                if (val < 0) size.value = '0';
                 this.item.data.data.size = val;
             }
             size.onclick = e => e.stopPropagation();
             sizeLabel.append(size);
-            conditinals.append(sizeLabel,document.createElement('br'));
+            conditinals.append(sizeLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Size Variation')) {
+        if (this.parsed.fields.includes('Size Variation')) {
             const sizeVarLabel = document.createElement('label');
             sizeVarLabel.innerText = 'Size Variation: ';
             const sizeVar = document.createElement('input');
             sizeVar.type = 'number';
-            sizeVar.value = this.item.data.data.sizeVariation.toString();
+            sizeVar.value = `${Number(this.item.data.data.sizeVariation)}`;
             sizeVar.onchange = () => {
                 const val = parseInt(sizeVar.value);
-                if(val < 0) sizeVar.value = '0';
-                if(val > 100) sizeVar.value = '100';
+                if (val < 0) sizeVar.value = '0';
+                if (val > 100) sizeVar.value = '100';
                 this.item.data.data.sizeVariation = val;
             }
             sizeVar.onclick = e => e.stopPropagation();
             sizeVarLabel.append(sizeVar);
-            conditinals.append(sizeVarLabel,document.createElement('br'));
+            conditinals.append(sizeVarLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Material')) {
+        if (this.parsed.fields.includes('Material')) {
             const materialLabel = document.createElement('label');
             materialLabel.innerText = 'Material: ';
             const material = document.createElement('input');
             material.type = 'text';
-            material.value = this.item.data.data.material;
-            material.onchange = () => {this.item.data.data.material = material.value;}
+            material.value = `${this.item.data.data.material}`;
+            material.onchange = () => { this.item.data.data.material = material.value; }
             material.onclick = e => e.stopPropagation();
             materialLabel.append(material);
-            conditinals.append(materialLabel,document.createElement('br'));
+            conditinals.append(materialLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Motion')) {
+        if (this.parsed.fields.includes('Motion')) {
             const motionLabel = document.createElement('label');
             motionLabel.innerText = 'Motion: ';
+
             const X = document.createElement('input');
             X.type = 'number';
-            X.value = this.item.data.data.x.toString();
-            X.onchange = () => {this.item.data.data.x = parseFloat(X.value);}
+            X.value = `${Number(this.item.data.data.x)}`;
+            X.onchange = () => { this.item.data.data.x = parseFloat(X.value); }
             X.onclick = e => e.stopPropagation();
             X.style.width = '50px';
+
             const Y = document.createElement('input');
             Y.type = 'number';
-            Y.value = this.item.data.data.y.toString();
-            Y.onchange = () => {this.item.data.data.y = parseFloat(Y.value);}
+            Y.value = `${Number(this.item.data.data.y)}`;
+            Y.onchange = () => { this.item.data.data.y = parseFloat(Y.value); }
             Y.onclick = e => e.stopPropagation();
             Y.style.width = '50px';
+
             const Z = document.createElement('input');
             Z.type = 'number';
-            Z.value = this.item.data.data.z.toString();
-            Z.onchange = () => {this.item.data.data.z = parseFloat(Z.value);}
+            Z.value = `${Number(this.item.data.data.z)}`;
+            Z.onchange = () => { this.item.data.data.z = parseFloat(Z.value); }
             Z.onclick = e => e.stopPropagation();
             Z.style.width = '50px';
-            motionLabel.append(X,Y,Z);
-            conditinals.append(motionLabel,document.createElement('br'));
+            motionLabel.append(X, Y, Z);
+            conditinals.append(motionLabel, document.createElement('br'));
         }
-        if(this.parsed.fields.includes('Motion Variation')) {
+        if (this.parsed.fields.includes('Motion Variation')) {
             const motionVarLabel = document.createElement('label');
             motionVarLabel.innerText = 'Motion Variation: ';
             const motionVar = document.createElement('input');
             motionVar.type = 'number';
-            motionVar.value = this.item.data.data.motionVariation.toString();
+            motionVar.value = `${Number(this.item.data.data.motionVariation)}`;
             motionVar.onchange = () => {
                 const val = parseInt(motionVar.value);
-                if(val < 0) motionVar.value = '0';
-                if(val > 100) motionVar.value = '100';
+                if (val < 0) motionVar.value = '0';
+                if (val > 100) motionVar.value = '100';
                 this.item.data.data.motionVariation = val;
             }
             motionVar.onclick = e => e.stopPropagation();
             motionVarLabel.append(motionVar);
-            conditinals.append(motionVarLabel,document.createElement('br'));
+            conditinals.append(motionVarLabel, document.createElement('br'));
         }
         //#endregion
 
-        const ctxBox = super.contextMenu(Block,Slot,'Particle',[valueCtx.subMenu,amountLabel,spreadLabel,conditinals]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Particle', [valueCtx.subMenu, amountLabel, spreadLabel, conditinals]);
         return ctxBox;
     }
 
@@ -789,17 +785,17 @@ export class Part extends ChestItem {
         const tooltip = document.createElement('div');
 
         const particle = document.createElement('span');
-        minecraftColorHTML(this.parsed.icon.name).forEach(c => particle.append(c));
-        
+        iconPropToMCHTML(this.parsed).forEach(c => particle.append(c));
+
         const amount = document.createElement('span');
         amount.innerText = `Amount: ${this.item.data.cluster.amount}`;
         const spread = document.createElement('span');
         spread.innerText = `Spread: ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical}`;
-        
-        tooltip.append(particle,document.createElement('br'),amount,document.createElement('br'),spread);
 
-        if(this.parsed.fields.includes('Color')) {
-            const hex = this.item.data.data.rgb.toString(16).padStart(6,'0');
+        tooltip.append(particle, document.createElement('br'), amount, document.createElement('br'), spread);
+
+        if (this.parsed.fields.includes('Color')) {
+            const hex = (this.item.data.data.rgb || 0xFF0000).toString(16).padStart(6, '0');
             const colorLabel = document.createElement('label');
             colorLabel.innerText = 'Color: ';
             const color = document.createElement('span');
@@ -807,33 +803,32 @@ export class Part extends ChestItem {
             color.style.color = `#${hex}`;
             colorLabel.append(color);
 
-            tooltip.append(document.createElement('br'),colorLabel);
+            tooltip.append(document.createElement('br'), colorLabel);
         }
-        if(this.parsed.fields.includes('Color Variation')) {
+        if (this.parsed.fields.includes('Color Variation')) {
             const colorVariation = document.createElement('span');
-            colorVariation.innerText = `Color Variation: ${this.item.data.data.colorVariation}%`;
+            colorVariation.innerText = `Color Variation: ${Number(this.item.data.data.colorVariation)}%`;
 
-            tooltip.append(document.createElement('br'),colorVariation);
+            tooltip.append(document.createElement('br'), colorVariation);
         }
-        if(this.parsed.fields.includes('Size')) {
+        if (this.parsed.fields.includes('Size')) {
             const size = document.createElement('span');
-            size.innerText = `Size: ${this.item.data.data.size}`;
+            size.innerText = `Size: ${Number(this.item.data.data.size)}`;
 
-            tooltip.append(document.createElement('br'),size);
+            tooltip.append(document.createElement('br'), size);
         }
-        if(this.parsed.fields.includes('Size Variation')) {
+        if (this.parsed.fields.includes('Size Variation')) {
             const sizeVariation = document.createElement('span');
-            sizeVariation.innerText = `Size Variation: ${this.item.data.data.sizeVariation}%`;
+            sizeVariation.innerText = `Size Variation: ${Number(this.item.data.data.sizeVariation)}%`;
 
-            tooltip.append(document.createElement('br'),sizeVariation);
+            tooltip.append(document.createElement('br'), sizeVariation);
         }
-        if(this.parsed.fields.includes('Material')) {
+        if (this.parsed.fields.includes('Material')) {
             const material = document.createElement('span');
-            material.innerText = `Material: ${this.item.data.data.material.toLowerCase()}`;
-
-            tooltip.append(document.createElement('br'),material);
+            material.innerText = `Material: ${(this.item.data.data.material || "").toLowerCase()}`;
+            tooltip.append(document.createElement('br'), material);
         }
-        if(this.parsed.fields.includes('Motion')) {
+        if (this.parsed.fields.includes('Motion')) {
             const motionLabel = document.createElement('label');
             motionLabel.innerText = 'Motion: ';
             const motion = document.createElement('span');
@@ -841,30 +836,29 @@ export class Part extends ChestItem {
             motion.style.color = '#2affaa';
             motionLabel.append(motion);
 
-            tooltip.append(document.createElement('br'),motionLabel);
+            tooltip.append(document.createElement('br'), motionLabel);
         }
-        if(this.parsed.fields.includes('Motion Variation')){
+        if (this.parsed.fields.includes('Motion Variation')) {
             const motionVariation = document.createElement('span');
             motionVariation.innerText = `Motion Variation: ${this.item.data.data.motionVariation}%`;
 
-            tooltip.append(document.createElement('br'),motionVariation);
+            tooltip.append(document.createElement('br'), motionVariation);
         }
 
         return tooltip;
     }
 
     repr(): string {
-        return `${this.item.data.particle} ${this.item.data.cluster.amount} ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical} ${this.item.data.data.rgb} ${this.item.data.data.colorVariation} ${this.item.data.data.size} ${this.item.data.data.sizeVariation} ${this.item.data.data.material} ${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z} ${this.item.data.data.motionVariation}`;
+        return `${this.item.data.particle} ${this.item.data.cluster.amount} ${this.item.data.cluster.horizontal} ${this.item.data.cluster.vertical} ${(this.item.data.data.rgb || 0xFF0000)} ${this.item.data.data.colorVariation} ${this.item.data.data.size} ${this.item.data.data.sizeVariation} ${this.item.data.data.material} ${this.item.data.data.x} ${this.item.data.data.y} ${this.item.data.data.z} ${this.item.data.data.motionVariation}`;
     }
 }
 
-export class Gval extends ChestItem {
+export class Gval extends ChestItem<GameValue> {
     backgroundUrl = 'https://dfonline.dev/public/images/NAME_TAG.png';
-    declare item : GameValue;
 
     movable = true;
 
-    constructor(item : GameValue){
+    constructor(item: GameValue) {
         super(item);
     }
 
@@ -874,9 +868,9 @@ export class Gval extends ChestItem {
         search.placeholder = 'Game Value';
         search.value = this.item.data.type;
         search.onkeyup = e => {
-            if(e.key === 'Enter'){
-                const gval = actiondump.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
-                if(gval){
+            if (e.key === 'Enter') {
+                const gval = ActDB.gameValues.find(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase()));
+                if (gval) {
                     this.item.data.type = stripColors(gval.icon.name);
                     chestMenu(Block);
                     search.value = stripColors(gval.icon.name);
@@ -886,7 +880,7 @@ export class Gval extends ChestItem {
             }
 
             results.innerHTML = '';
-            actiondump.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
+            ActDB.gameValues.filter(g => stripColors(g.icon.name).toLowerCase().startsWith(search.value.toLowerCase()) || stripColors(g.icon.name).toLowerCase().includes(search.value.toLowerCase())).forEach(g => {
                 const result = document.createElement('button');
                 minecraftColorHTML(g.icon.name).forEach(c => result.append(c));
 
@@ -903,35 +897,35 @@ export class Gval extends ChestItem {
         }
         const results = document.createElement('div');
         results.id = 'results';
-        const valueCtx = new ContextMenu('Value',[search,results]);
+        const valueCtx = new ContextMenu('Value', [search, results]);
 
         const targetLabel = document.createElement('label');
         targetLabel.innerText = 'Target: ';
         const target = document.createElement('select');
         target.onchange = () => {
-            this.item.data.target = target.value as g_valSelection;
+            this.item.data.target = target.value as GvalSelection;
             chestMenu(Block);
         }
         target.onclick = e => e.stopPropagation();
-        SelectionValues.forEach(s => {
-            if(s === '') return;
+        SELECTION_VALUES.forEach(s => {
+            if (s === '') return;
             const option = document.createElement('option');
             option.value = s;
             option.innerText = s;
-            if(s === 'LastEntity') option.innerText = 'Last-Spawned Entity';
+            if (s === 'LastEntity') option.innerText = 'Last-Spawned Entity';
             target.append(option);
         });
         target.value = this.item.data.target;
         targetLabel.append(target);
 
-        const ctxBox = super.contextMenu(Block,Slot,'Game Value',[valueCtx.subMenu,targetLabel]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Game Value', [valueCtx.subMenu, targetLabel]);
         return ctxBox;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const value = document.createElement('span');
-        minecraftColorHTML(actiondump.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type).icon.name).forEach(c => value.append(c));
+        iconPropToMCHTML(ActDB.gameValues.find(g => stripColors(g.icon.name) === this.item.data.type)).forEach(c => value.append(c));
 
         const targetLabel = document.createElement('span');
         targetLabel.style.color = '#aaa';
@@ -950,7 +944,7 @@ export class Gval extends ChestItem {
         target.innerText = this.item.data.target;
         targetLabel.append(target);
 
-        tooltip.append(value,document.createElement('br'),targetLabel);
+        tooltip.append(value, document.createElement('br'), targetLabel);
         return tooltip;
     }
 
@@ -959,15 +953,14 @@ export class Gval extends ChestItem {
     }
 }
 
-export class MCItem extends ChestItem {
+export class MCItem extends ChestItem<MinecraftItem> {
     backgroundUrl = 'dynamic';
-    declare item : MinecraftItem;
 
     movable = true;
 
-    private parsedItem : ParsedItem;
+    private parsedItem: ParsedItem;
 
-    constructor(item : MinecraftItem){
+    constructor(item: MinecraftItem) {
         super(item);
         this.parsedItem = parse(item.data.item) as any as ParsedItem;
     }
@@ -975,37 +968,35 @@ export class MCItem extends ChestItem {
     contextMenu(Block: number, Slot: number): ContextMenu {
         const warning = document.createElement('p');
         warning.innerText = 'This item is not yet supported.';
-        const ctxBox = super.contextMenu(Block,Slot,'Minecraft Item',[warning]);
+        const ctxBox = super.contextMenu(Block, Slot, 'Minecraft Item', [warning]);
         return ctxBox;
     }
 
     icon(): HTMLDivElement {
         const icon = document.createElement('div');
         console.log(this.parsedItem.tag);
-        icon.style.backgroundImage = `url(https://dfonline.dev/public/images/${this.parsedItem.id.replace('minecraft:','').toUpperCase()}.png)`;
+        icon.style.backgroundImage = `url(https://dfonline.dev/public/images/${this.parsedItem.id.replace('minecraft:', '').toUpperCase()}.png)`;
         const count = document.createElement('span');
-        count.innerText = this.parsedItem.Count.value.toString();
-        if(this.parsedItem.Count.value !== 1) icon.append(count);
+        count.innerText = `${this.parsedItem.Count.value}`
+        if (this.parsedItem.Count.value !== 1) icon.append(count);
         return icon;
     }
 
     tooltip(): HTMLDivElement {
         const tooltip = document.createElement('div');
         const name = document.createElement('span');
-        if(this.parsedItem.tag){
-            if(this.parsedItem.tag.display.Name){
-                minecraftColorHTML(MinecraftTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
-            }
-            if(this.parsedItem.tag.display.Lore){
+        if (this.parsedItem.tag && this.parsedItem.tag.display) {
+            if ("Name" in this.parsedItem.tag.display) minecraftColorHTML(mcTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
+            if ("Lore" in this.parsedItem.tag.display) {
                 const lore = document.createElement('span');
                 this.parsedItem.tag.display.Lore.forEach(l => {
-                    minecraftColorHTML(MinecraftTextCompToCodes(l),'§5§o').forEach(c => lore.append(c));
+                    minecraftColorHTML(mcTextCompToCodes(l), '§5§o').forEach(c => lore.append(c));
                     lore.append(document.createElement('br'));
                 });
-                tooltip.append(document.createElement('br'),lore);
+                tooltip.append(document.createElement('br'), lore);
             }
         }
-        if(!name.innerText){
+        if (!name.innerText) {
             name.innerText = names.get(this.parsedItem.id);
         }
         tooltip.prepend(name);
@@ -1018,52 +1009,48 @@ export class MCItem extends ChestItem {
 
     minecraftName(): HTMLSpanElement {
         const name = document.createElement('span');
-        if(this.parsedItem.tag){
-            if(this.parsedItem.tag.display.Name){
-                minecraftColorHTML(MinecraftTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
-            }
-        }
-        if(!name.innerText){
-            name.innerText = names.get(this.parsedItem.id);
-        }
+        if (this.parsedItem.tag && this.parsedItem.tag.display) if ("Name" in this.parsedItem.tag.display) minecraftColorHTML(mcTextCompToCodes(this.parsedItem.tag.display.Name)).forEach(c => name.append(c));
+        else name.innerText = names.get(this.parsedItem.id);
         return name;
     }
 }
 
-export class Bltag extends ChestItem {
+export class BlTag extends ChestItem<BlockTag> {
     backgroundUrl = 'dynamic';
-    declare item : BlockTag;
     public tags: Tag;
     public tag: {
         name: string;
         icon: Icon;
-        alaises: any[];
+        aliases: any[];
     }
 
     movable = false;
 
-    constructor(item : BlockTag){
+    constructor(item: BlockTag) {
         super(item);
         console.log(item);
-        this.tags = findBlockTag(this.item.data.block,this.item.data.action,this.item.data.tag);
-        this.tag = findBlockTagOption(this.item.data.block,this.item.data.action,this.item.data.tag,this.item.data.option);
+        this.tags = findBlockTag(this.item.data.block, this.item.data.action, this.item.data.tag)!;
+        this.tag = findBlockTagOption(this.item.data.block, this.item.data.action, this.item.data.tag, this.item.data.option)!;
     }
 
-    contextMenu(Block: number, _Slot: number): ContextMenu {
-        const options : HTMLElement[] = this.tags.options.map(tag => {
+    contextMenu(block: number, _: number): ContextMenu {
+
+        const tags = findBlockTag(this.item.data.block, this.item.data.action, this.item.data.tag);
+        if (!tags) return new ContextMenu("Block Tag", []);
+        const options = tags.options.map(tag => {
             const option = document.createElement('button');
             option.innerText = tag.name;
             option.onclick = () => {
                 this.item.data.option = tag.name;
-                chestMenu(Block);
+                chestMenu(block);
                 valueCtx.close();
             }
             return option;
         });
 
         const updateVarTag = () => {
-            if(input.value != '') {
-                const tag : Variable = {
+            if (input.value != '') {
+                const tag: Variable = {
                     id: 'var',
                     data: {
                         name: input.value,
@@ -1077,7 +1064,7 @@ export class Bltag extends ChestItem {
             }
         }
         const variableRow = document.createElement('div');
-        
+
         const select = document.createElement('select');
         select.innerHTML = `
         <option value="unsaved">G</option>
@@ -1085,22 +1072,22 @@ export class Bltag extends ChestItem {
         <option value="local">L</option>
         `;
         select.value = this.item.data.variable?.data?.scope ?? 'unsaved';
-        select.onchange = () => {updateVarTag()}
+        select.onchange = () => { updateVarTag() }
         const input = document.createElement('input');
         input.value = this.item.data.variable?.data?.name ?? '';
-        input.onchange = () => {updateVarTag()}
+        input.onchange = () => { updateVarTag() }
         input.onkeydown = e => {
             updateVarTag();
-            if(e.key == 'Enter') valueCtx.close();
+            if (e.key == 'Enter') valueCtx.close();
         }
-        variableRow.append(input,select);
+        variableRow.append(input, select);
         const varTag = [
             variableRow,
             document.createElement('hr'),
         ];
 
 
-        const valueCtx = new ContextMenu('Block Tag',[...varTag,...options]);
+        const valueCtx = new ContextMenu('Block Tag', [...varTag, ...options]);
         return valueCtx;
     }
 
@@ -1113,26 +1100,27 @@ export class Bltag extends ChestItem {
         const name = document.createElement('span');
         name.innerText = this.item.data.tag;
         name.style.color = 'yellow';
+        icon.append(name, document.createElement('br'), document.createElement('br'));
 
-        
-        icon.append(name,document.createElement('br'));
-
-        icon.append(document.createElement('br'));
-
-        this.tags.options.forEach(tag => {
+        const tags = findBlockTag(this.item.data.block, this.item.data.action, this.item.data.tag);
+        if (!tags) {
+            icon.append(document.createElement('br'));
+            return icon;
+        }
+        tags.options.forEach(tag => {
             const option = document.createElement('span');
             option.innerText = tag.name;
-            if(this.item.data.option === tag.name) option.style.color = 'aqua';
-            icon.append(option,document.createElement('br'));
+            if (this.item.data.option === tag.name) option.style.color = 'aqua';
+            icon.append(option, document.createElement('br'));
         });
 
-        if(this.item.data.variable != null) {
+        if (this.item.data.variable != null) {
             const description = document.createElement('span');
             description.innerText = 'Var Tag:'
             const variable = document.createElement('span');
             variable.innerText = `[${VarScopeEnum[this.item.data.variable.data.scope][0]}] ${this.item.data.variable.data.name}`;
             variable.style.color = VarScopeColor[this.item.data.variable.data.scope];
-            icon.append(document.createElement('br'),description,document.createElement('br'),variable);
+            icon.append(document.createElement('br'), description, document.createElement('br'), variable);
         };
 
         return icon;
@@ -1143,10 +1131,13 @@ export class Bltag extends ChestItem {
     }
 }
 
+function iconPropToMCHTML(obj?: Record<string, any> & { icon: Icon }) {
+    return minecraftColorHTML(obj?.icon?.name || "");
+}
 
-
-function getItem(item : Item) : ChestItem {
-    switch(item.id){
+export function getItem(item: Item): ChestItem<Item> {
+    if (!isDefinedItem(item)) return new UnknownItem(item);
+    switch (item.id) {
         case 'num': return new Num(item);
         case 'txt': return new Txt(item);
         case 'var': return new Var(item);
@@ -1157,7 +1148,18 @@ function getItem(item : Item) : ChestItem {
         case 'part': return new Part(item);
         case 'g_val': return new Gval(item);
         case 'item': return new MCItem(item);
-        case 'bl_tag': return new Bltag(item);
-        default: return new UnknownItem(item);
+        case 'bl_tag': return new BlTag(item);
+        default: throw new TypeError(`Item identity type lost during flow of execution. Unable to handle item: ${JSON.stringify(item)}`); // theoretically would never occur according to typescript.
     }
+}
+
+export function isDefinedItem(item: { id: unknown }): item is DefinedItems {
+    if (typeof item.id !== "string") return false;
+    if (
+        item.id != "num" && item.id != "txt" && item.id != "var" &&
+        item.id != "loc" && item.id != "vec" && item.id != "pot" &&
+        item.id != "snd" && item.id != "part" && item.id != "g_val" &&
+        item.id != "item" && item.id != "bl_tag"
+    ) return false;
+    return true;
 }

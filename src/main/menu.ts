@@ -1,18 +1,18 @@
-let menusDiv : HTMLDivElement;
+let menusDiv: HTMLDivElement;
 
 /**
  * A modal like menu
  */
 export default class Menu {
-    title : string;
-    content : HTMLElement;
-    isOpen : boolean;
+    title: string;
+    content: HTMLElement;
+    isOpen: boolean;
 
-    private background : HTMLDivElement;
-    private modal : HTMLDivElement;
-    private titleElement : HTMLHeadingElement;
+    private background: HTMLDivElement;
+    private modal: HTMLDivElement;
+    private titleElement: HTMLHeadingElement;
 
-    constructor(title : string, content : HTMLElement = document.createElement('span')) {
+    constructor(title: string, content: HTMLElement = document.createElement('span')) {
         this.title = title;
         this.content = content;
         this.isOpen = false;
@@ -36,8 +36,8 @@ export default class Menu {
     /**
      * Opens the menu. Can only be done once, if you want another create a seperate instance of the object.
      */
-    open(){
-        if(!this.isOpen){
+    open() {
+        if (!this.isOpen) {
             this.isOpen = true;
             menusDiv.appendChild(this.background);
         }
@@ -47,34 +47,34 @@ export default class Menu {
      * Close the menu.
      * @param instant If the closing animation should be played instantly.
      */
-    close(instant = false){
-        if(instant){
+    close(instant = false) {
+        if (instant) {
             this.background.remove();
             this.isOpen = false;
         }
-        else{
-            if(!this.background.classList.contains('fade')){
+        else {
+            if (!this.background.classList.contains('fade')) {
                 this.background.classList.add('fade');
             }
             this.background.addEventListener('animationend', () => {
                 this.isOpen = false;
                 this.background.remove();
                 this.background.classList.remove('fade');
-            }, {once: true});
+            }, { once: true });
         }
     }
 
     /**
      * Makes sure the elements are in the document and variables are set up.
      */
-    static setup(){
-        if(document.querySelector('html body div#menus') === null){
+    static setup() {
+        if (document.querySelector('html body div#menus') === null) {
             menusDiv = document.createElement('div');
             menusDiv.id = 'menus';
             document.body.appendChild(menusDiv);
         }
         else {
-            menusDiv = document.querySelector('html body div#menus');
+            menusDiv = document.querySelector('html body div#menus')!;
         }
     }
 }

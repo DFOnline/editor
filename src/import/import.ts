@@ -8,16 +8,16 @@ const WIDTHS = {
     t: 4,
 }
 
-const LINES = 14;
-const ROW_LENGTH = 18 * WIDTHS.default;
+// const LINES = 14;
+// const ROW_LENGTH = 18 * WIDTHS.default;
 
-export function book(text : string) : string[] {
+export function book(text: string): string[] {
     const out = ['']
     let width = 0;
     text.split('').forEach(t => {
         const length = Object.keys(WIDTHS).includes(t) ? WIDTHS[t as 'default'] : WIDTHS.default;
         width += length;
-        if(width >= 1560){
+        if (width >= 1560) {
             out.push('');
             width = length;
         }

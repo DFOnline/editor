@@ -1,7 +1,9 @@
-export default class { // a class for this lmfao
-    private readyFunctions : Function[] = [];
-    private data : Record<string, string>;
-    
+type CallbackFunction = () => void;
+
+export default class Names { // a class for this lmfao
+    private readyFunctions: CallbackFunction[] = [];
+    private data: Record<string, string> = {};
+
     constructor() {
         fetch(sessionStorage.getItem('apiEndpoint') + 'names').then(res => res.json()).then(json => {
             this.data = json;
@@ -9,19 +11,13 @@ export default class { // a class for this lmfao
         })
     }
 
-    get onready() {
-        return (callback : Function) => {
-            this.readyFunctions.push(callback);
-    }}
-    set onready(callback : Function) {
-        this.onready(callback);
+    onready(callback: CallbackFunction) {
+        this.readyFunctions.push(callback);
     }
 
-    get(id : string) : string | 'Unkown'{
-        let name = this.data[`item.minecraft.${id.toLowerCase().replace('minecraft','').replace(':','')}`];
-        if(name === undefined) {
-            name = 'Unkown';
-        }
+    get(id: string): string | `%${typeof id}%` {
+        let name = this.data[`item.minecraft.${id.toLowerCase().replace('minecraft:', '')}`];
+        if (!name) name = `%${id}%`;
         return name;
     }
 }
