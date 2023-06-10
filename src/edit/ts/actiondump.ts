@@ -2,7 +2,7 @@ import { snackbar } from "../../main/main";
 import type { BlockID } from "../template";
 
 const ActDB = await fetch(`${sessionStorage.getItem('apiEndpoint')}db`).then(r => r.json()).catch(e => {
-    snackbar('An error occured whilst loading required data.', 'error');
+    snackbar('An error occured whilst loading required data. Try reloading, this usually fixes itself.', 'error');
     console.error(e);
 }) as ActionDump;
 export default ActDB;
@@ -54,6 +54,7 @@ export interface Tag {
     }[]
     defaultOption: string;
     aliases: unknown[];
+    slot: number;
 }
 
 
