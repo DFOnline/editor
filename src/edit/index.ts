@@ -13,7 +13,7 @@ try {
     ContextMenu.setup();
 }
 catch (e) {
-    snackbar('An error occured whilst setting up the editor. Check the console for more info.');
+    snackbar('An error occured whilst setting up the editor. Check the console for more info.',"error");
     console.error(e);
 }
 
@@ -30,7 +30,7 @@ try {
     oncode(code, compareTemplate);
 }
 catch (e) {
-    snackbar('An error occured whilst loading the template. Check the console for more info.');
+    snackbar('An error occured whilst loading the template. Check the console for more info.',"error");
     throw new Error(`${e}`);
 }
 rendBlocks();
@@ -49,7 +49,7 @@ menuBar();
 if (userMeta.canEdit) {
     try { rendBlocks(); }
     catch (e) {
-        snackbar('An error occurred whilst displaying the blocks. For more info check console.');
+        snackbar('An error occurred whilst displaying the blocks. For more info check console.',"error");
         console.error(e);
     }
     const blockPicker = document.getElementById('blocks')!;

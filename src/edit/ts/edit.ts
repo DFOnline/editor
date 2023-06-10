@@ -72,9 +72,9 @@ export function populateBlockTags(index: number, action: Action) {
     if (block.id !== 'block') throw TypeError(`Block at ${index} is not a codeblock`);
     // Clear previous tags
     block.args.items = block.args.items.filter(i => !((i.item.id === 'bl_tag') || (i.slot > 26 - action.tags.length)));
-    action.tags.forEach((tag, i) => {
+    action.tags.forEach(tag => {
         const newTag: Argument<BlockTag> = {
-            slot: (26 - i),
+            slot: (tag.slot),
             item: {
                 id: 'bl_tag',
                 data: { action: action.name, block: CodeBlockNameType[action.codeblockName], option: tag.defaultOption, tag: tag.name }
