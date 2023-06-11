@@ -121,14 +121,14 @@ export function getCodeAction(actionName: string, types: subActionBlocks) {
  * @param code Stringified version of a template to compile
  * @returns data: contains the gzip template data, author: Who created the template, name: the name of the template
  */
-export function exportTemplate(code: string): { data: string, author: string, name: string; } {
+export function exportTemplate(code: string): { code: string, author: string, name: string; } {
     let name: string;
     if (user && user.name) name = user.name;
     else name = 'DFOnline';
     return ({
-        data: encodeTemplate(code), // lmao what I probably rename some variables and never saw this happen
         author: name,
         name: 'DFOnline Template', // proper name system planned later
+        code: encodeTemplate(code), // lmao what I probably rename some variables and never saw this happen
     })
 }
 
