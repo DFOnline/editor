@@ -1,4 +1,4 @@
-# [Diamond Fire Online](https://dfonline.dev "DFOnline 0.0.1")
+# [DFOnline editor](https://dfonline.dev "DFOnline 0.0.1")
 
 Create, edit and share templates online, even on your phone.
 
