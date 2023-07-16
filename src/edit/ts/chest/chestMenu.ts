@@ -74,6 +74,10 @@ export default function chestMenu(BlockIndex: number) {
 
                 itemElement.ondragstart = e => {
                     e.stopPropagation();
+                    if(!userMeta.canEdit) {
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
                     if (!e.dataTransfer) throw new Error("Error whilst managing data transfer.");
                     e.dataTransfer.clearData();
                     e.dataTransfer.setData('application/x.dfitem', JSON.stringify(item));
@@ -90,6 +94,7 @@ export default function chestMenu(BlockIndex: number) {
                     document.body.appendChild(div);
 
                     mouseInfo.style.display = 'none';
+                    return true;
                 }
                 itemElement.ondragend = () => {
                     document.querySelectorAll('body > div#drag-icon').forEach(i => i.remove());

@@ -33,7 +33,6 @@ catch (e) {
     snackbar('An error occured whilst loading the template. Check the console for more info.',"error");
     throw new Error(`${e}`);
 }
-rendBlocks();
 contextMenu.onclick = () => {
     contextMenu.style.display = 'none';
     contextMenu.innerHTML = '';
@@ -43,10 +42,14 @@ contextMenu.onclick = () => {
 }
 contextMenu.oncontextmenu = e => { (e.target! as HTMLElement).click(); e.preventDefault(); };
 
+if(typeof urlParams.get('noedit') == 'string' || typeof urlParams.get('noEdit') == 'string') userMeta.canEdit = false;
+if(typeof urlParams.get('nopalette') == 'string' || typeof urlParams.get('noPalette') == 'string') userMeta.showPalette = false;
+if(typeof urlParams.get('notitlebar') == 'string' || typeof urlParams.get('noTitlebar') == 'string') userMeta.showTitlebar = false;
+rendBlocks();
 menuBar();
 
 // console.log(ActDB.codeblocks.map(x => `${x.identifier} = "${x.name}"`).join(', '))
-if (userMeta.canEdit) {
+if (userMeta.canEdit && userMeta.showPalette) {
     try { rendBlocks(); }
     catch (e) {
         snackbar('An error occurred whilst displaying the blocks. For more info check console.',"error");
