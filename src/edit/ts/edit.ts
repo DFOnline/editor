@@ -11,6 +11,7 @@ export interface UserMetaObject {
     type?: 'block' | 'item' | 'newBlock' | undefined, value?: any | undefined,
     ctxKeys: Record<string, HTMLButtonElement>, search: { index: number, value: undefined | any[] },
     canDragMove: boolean, context: boolean, canEdit: boolean
+    showPalette: boolean, showTitlebar: boolean
 }
 
 export let Sounds: TreeStructure
@@ -19,7 +20,8 @@ export let code: Template = { blocks: [] };
 export let userMeta: UserMetaObject = {
     type: undefined, value: undefined,
     ctxKeys: {}, search: { index: 0, value: undefined },
-    canDragMove: true, context: false, canEdit: true
+    canDragMove: true, context: false, canEdit: true,
+    showPalette: true, showTitlebar: true,
 };
 
 /**
