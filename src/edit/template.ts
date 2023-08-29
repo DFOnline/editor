@@ -106,7 +106,7 @@ export interface Argument<i extends Item> {
 
 // Item Code ========================================================
 
-export type DefinedItems = NumberVal | Text | Component | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
+export type DefinedItems = NumberVal | Text | Component | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem | Parameter
 export type Item = UndefinedItem | DefinedItems;
 
 export interface NumberVal {
@@ -228,6 +228,17 @@ export interface ChestItem {
     id: 'item';
     data: {
         item: string;
+    }
+}
+
+export interface Parameter {
+    id: 'pn_el';
+    data: {
+        name: string;
+        type: string;
+        plural: boolean;
+        optional: boolean;
+        default_value?: DefinedItems;
     }
 }
 
