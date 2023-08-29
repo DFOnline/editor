@@ -1,7 +1,7 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum, Component } from "../../../template";
+import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum, Component, Parameter } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import ActDB from "../../../ts/actiondump";
+import ActDB, { ItemTypeColors } from "../../../ts/actiondump";
 import { code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, mcTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
@@ -59,7 +59,7 @@ export default abstract class ChestItem<ItemType extends Item> {
         return getItem(item);
     }
 }
-abstract class NamedItem extends ChestItem<Text | NumberVal | Variable | Component> {
+abstract class NamedItem extends ChestItem<Text | NumberVal | Variable | Component | Parameter> {
 
     contextMenu(Block: number, Slot: number, name: string, values: HTMLElement[] = []): ContextMenu {
         const value = document.createElement('input');
@@ -1151,6 +1151,55 @@ export class BlTag extends ChestItem<BlockTag> {
     }
 }
 
+export class Param extends NamedItem {
+    movable = true;
+    backgroundUrl = 'https://dfonline.dev/public/images/ENDER_EYE.png';
+    declare item: Parameter;
+    
+    constructor(item: Parameter) {
+        super(item);
+    }
+        
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        const name = document.createElement('span');
+        name.innerText = this.item.data.name;
+        name.style.color = ItemTypeColors.comp;
+        tooltip.append(name,document.createElement('br'));
+        const type = document.createElement('span');
+        const typeName = document.createElement('span');
+        typeName.innerText = `${this.item.data.type}${this.item.data.plural ? '(s)' : ''}`;
+        typeName.style.color = ItemTypeColors[this.item.data.type as 'pn_el'];
+        type.append(typeName)
+        if(this.item.data.optional) type.append('*');
+        tooltip.append(type);
+        if(this.item.data.default_value != null) {
+            const defaultText = document.createElement('span');
+            const arrowLmao = document.createElement('span');
+            arrowLmao.innerText = '\n⏵ ';
+            arrowLmao.style.color = '#55F';
+            defaultText.append(arrowLmao);
+            const defaultLiteral = document.createElement('span');
+            defaultLiteral.innerText = 'Default = ';
+            defaultLiteral.style.color = '#AAA';
+            const theActualDefaultValue = document.createElement('span');
+            try {
+                theActualDefaultValue.innerText = ChestItem.getItem(this.item.data.default_value).repr();
+                theActualDefaultValue.style.color = ItemTypeColors[this.item.data.default_value.id]
+            }
+            catch {
+                theActualDefaultValue.innerText = 'An error happened.'
+            }
+            defaultText.append(arrowLmao,defaultLiteral,theActualDefaultValue)
+            tooltip.append(defaultText);
+        }
+        return tooltip;
+    }
+    repr(): string {
+        throw new Error("Method not implemented.");
+    }
+}
+
 function iconPropToMCHTML(obj?: Record<string, any> & { icon: Icon }) {
     return minecraftColorHTML(obj?.icon?.name || "");
 }
@@ -1170,6 +1219,7 @@ export function getItem(item: Item): ChestItem<Item> {
         case 'g_val': return new Gval(item);
         case 'item': return new MCItem(item);
         case 'bl_tag': return new BlTag(item);
+        case 'pn_el': return new Param(item);
         default: throw new TypeError(`Item identity type lost during flow of execution. Unable to handle item: ${JSON.stringify(item)}`); // theoretically would never occur according to typescript.
     }
 }
@@ -1180,7 +1230,8 @@ export function isDefinedItem(item: { id: unknown }): item is DefinedItems {
         item.id != "num" && item.id != "txt" && item.id != "var" &&
         item.id != "loc" && item.id != "vec" && item.id != "pot" &&
         item.id != "snd" && item.id != "part" && item.id != "g_val" &&
-        item.id != "item" && item.id != "bl_tag" && item.id != 'comp'
+        item.id != "item" && item.id != "bl_tag" && item.id != 'comp' &&
+        item.id != 'pn_el'
     ) return false;
     return true;
 }

@@ -117,6 +117,7 @@ export enum ItemTypeColors {
     'g_val' = '#ffd47f',
     'item' = '#fba800',
     'bl_tag' = '#fbfb54',
+    'pn_el' = '#aaffaa',
 }
 
 export type CodeBlockIdentifier = BlockID;
