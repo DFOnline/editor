@@ -106,7 +106,7 @@ export interface Argument<i extends Item> {
 
 // Item Code ========================================================
 
-export type DefinedItems = NumberVal | Text | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
+export type DefinedItems = NumberVal | Text | Component | Variable | Location | Vector | Potion | Sound | GameValue | Particle | BlockTag | ChestItem
 export type Item = UndefinedItem | DefinedItems;
 
 export interface NumberVal {
@@ -118,6 +118,16 @@ export interface NumberVal {
 
 export interface Text {
     id: 'txt';
+    data: {
+        name: string;
+    }
+}
+
+/**
+ * Rich Text/Styled Text
+ */
+export interface Component {
+    id: 'comp';
     data: {
         name: string;
     }
