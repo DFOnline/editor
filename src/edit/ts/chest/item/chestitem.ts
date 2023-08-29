@@ -1,5 +1,5 @@
 import chestMenu from "../chestMenu";
-import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum } from "../../../template";
+import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum, Component } from "../../../template";
 import ContextMenu from "../../../../main/context";
 import ActDB from "../../../ts/actiondump";
 import { code, findBlockTag, findBlockTagOption, names } from "../../edit";
@@ -59,7 +59,7 @@ export default abstract class ChestItem<ItemType extends Item> {
         return getItem(item);
     }
 }
-abstract class NamedItem extends ChestItem<Text | NumberVal | Variable> {
+abstract class NamedItem extends ChestItem<Text | NumberVal | Variable | Component> {
 
     contextMenu(Block: number, Slot: number, name: string, values: HTMLElement[] = []): ContextMenu {
         const value = document.createElement('input');
@@ -201,6 +201,26 @@ export class Txt extends NamedItem {
     repr(): string {
         return `${this.item.data.name.replace('\n', '\\n')}`;
     }
+}
+
+export class Comp extends NamedItem {
+    backgroundUrl = 'https://dfonline.dev/public/images/SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE.png'; // pop off
+    declare item: Component;
+    
+    movable = true;
+
+    constructor(item: Component) {
+        super(item)
+    }
+    tooltip(): HTMLDivElement {
+        const tooltip = document.createElement('div');
+        tooltip.innerText = this.item.data.name;
+        return tooltip;
+    }
+    repr(): string {
+        throw this.item.data.name;
+    }
+    
 }
 
 export class Var extends NamedItem {
@@ -1140,6 +1160,7 @@ export function getItem(item: Item): ChestItem<Item> {
     switch (item.id) {
         case 'num': return new Num(item);
         case 'txt': return new Txt(item);
+        case 'comp': return new Comp(item);
         case 'var': return new Var(item);
         case 'loc': return new Loc(item);
         case 'vec': return new Vec(item);
@@ -1159,7 +1180,7 @@ export function isDefinedItem(item: { id: unknown }): item is DefinedItems {
         item.id != "num" && item.id != "txt" && item.id != "var" &&
         item.id != "loc" && item.id != "vec" && item.id != "pot" &&
         item.id != "snd" && item.id != "part" && item.id != "g_val" &&
-        item.id != "item" && item.id != "bl_tag"
+        item.id != "item" && item.id != "bl_tag" && item.id != 'comp'
     ) return false;
     return true;
 }

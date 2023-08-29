@@ -106,6 +106,7 @@ export interface Particle {
 
 export enum ItemTypeColors {
     'txt' = '#54fcfc',
+    'comp' = '#7fd42a',
     'num' = '#fb5454',
     'loc' = '#54fb54',
     'vec' = '#2affaa',
