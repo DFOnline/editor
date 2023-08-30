@@ -1,4 +1,5 @@
 import { decodeTemplate } from "../main/main"
+import { ParameterTypesType } from "./ts/actiondump";
 
 export interface Template {
     blocks: Block[]
@@ -235,7 +236,7 @@ export interface Parameter {
     id: 'pn_el';
     data: {
         name: string;
-        type: string;
+        type: ParameterTypesType;
         plural: boolean;
         optional: boolean;
         default_value?: DefinedItems;

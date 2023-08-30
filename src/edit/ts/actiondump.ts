@@ -104,21 +104,43 @@ export interface Particle {
     fields: particleField[];
 }
 
-export enum ItemTypeColors {
-    'txt' = '#54fcfc',
-    'comp' = '#7fd42a',
-    'num' = '#fb5454',
-    'loc' = '#54fb54',
-    'vec' = '#2affaa',
-    'snd' = '#54fb54',
-    'part' = '#aa55ff',
-    'pot' = '#ff557f',
-    'var' = '#fbfb54',
-    'g_val' = '#ffd47f',
-    'item' = '#fba800',
-    'bl_tag' = '#fbfb54',
-    'pn_el' = '#aaffaa',
-}
+export const ItemTypeColors = {
+    txt: '#54fcfc',
+    comp: '#7fd42a',
+    num: '#fb5454',
+    loc: '#54fb54',
+    vec: '#2affaa',
+    snd: '#54fb54',
+    part: '#aa55ff',
+    pot: '#ff557f',
+    item: '#ffaa00',
+    any: '#ffd47f',
+    var: '#fbfb54',
+    list: '#00aa00',
+    dict: '#55aaff',
+    g_val: '#ffd47f',
+    bl_tag: '#fbfb54',
+    pn_el: '#aaffaa',
+} as const
+export const ItemTypeNames = {
+    txt: 'String',
+    comp: 'Text',
+    num: 'Number',
+    loc: 'Location',
+    vec: 'Vector',
+    snd: 'Sound',
+    part: 'Particle',
+    pot: 'Potion',
+    item: 'Item',
+    any: 'Any Value',
+    var: 'Variable',
+    list: 'List',
+    dict: 'Dictionary',
+    g_val: 'Game Value',
+    pn_el: 'Parameter'
+} as const
+export const ParameterTypes = ['txt','comp','num','loc','vec','snd','part','pot','item', 'any','var','list','dict'] as const
+export type ParameterTypesType = typeof ParameterTypes[number];
 
 export type CodeBlockIdentifier = BlockID;
 export type CodeBlockName = "PLAYER ACTION" | "IF PLAYER" | "START PROCESS" | "CALL FUNCTION" | "CONTROL" | "SET VARIABLE" | "ENTITY EVENT" | "PLAYER EVENT" | "FUNCTION" | "IF ENTITY" | "ENTITY ACTION" | "IF VARIABLE" | "SELECT OBJECT" | "GAME ACTION" | "ELSE" | "PROCESS" | "REPEAT" | "IF GAME";
