@@ -1169,10 +1169,17 @@ export class Param extends NamedItem {
         const type = document.createElement('span');
         const typeName = document.createElement('span');
         typeName.innerText = `${ItemTypeNames[this.item.data.type]}${this.item.data.plural ? '(s)' : ''}`;
-        typeName.style.color = ItemTypeColors[this.item.data.type as 'pn_el'];
+        typeName.style.color = ItemTypeColors[this.item.data.type];
         type.append(typeName)
         if(this.item.data.optional) type.append('*');
         tooltip.append(type);
+        const description = document.createElement('span');
+        const dash = document.createElement('span');
+        dash.innerText = ' - ';
+        dash.style.color = '#555';
+        description.append(dash,this.item.data.description ?? this.item.data.name);
+        // description.style.color = '#aaa';
+        tooltip.append(description);
         if(this.item.data.default_value != null) {
             const defaultText = document.createElement('span');
             const arrowLmao = document.createElement('span');
@@ -1192,6 +1199,14 @@ export class Param extends NamedItem {
             }
             defaultText.append(arrowLmao,defaultLiteral,theActualDefaultValue)
             tooltip.append(defaultText);
+        }
+        if(this.item.data.note != null) {
+            const note = document.createElement('note');
+            const arrowLmao = document.createElement('span');
+            arrowLmao.innerText = '\n⏵ ';
+            arrowLmao.style.color = '#55F';
+            note.append(arrowLmao,this.item.data.note);
+            tooltip.append(note);
         }
         return tooltip;
     }
@@ -1213,7 +1228,41 @@ export class Param extends NamedItem {
             this.item.data.type = types.value as ParameterTypeType;
             chestMenu(Block);
         }
-        return super.contextMenu(Block,Slot, 'Parameter',[types])
+        const count = document.createElement('label');
+        count.innerText = 'Is Plural? ';
+        const countTick = document.createElement('input');
+        countTick.type = 'checkbox';
+        countTick.checked = this.item.data.plural;
+        countTick.onchange = () => {
+            this.item.data.plural = countTick.checked;
+            chestMenu(Block);
+        }
+        count.append(countTick);
+        const optional = document.createElement('label');
+        optional.innerText = 'Optional? ';
+        const optionalTick = document.createElement('input');
+        optionalTick.type = 'checkbox';
+        optionalTick.checked = this.item.data.optional;
+        optionalTick.onchange = () => {
+            this.item.data.optional = optionalTick.checked;
+            chestMenu(Block);
+        };
+        optional.append(optionalTick);
+        const description = document.createElement('textarea');
+        description.placeholder = 'Description';
+        description.value = this.item.data.description ?? '';
+        description.onkeydown = description.onkeyup = description.onchange = () => {
+            this.item.data.description = description.value == '' ? undefined : description.value;
+            chestMenu(Block)
+        }
+        const note = document.createElement('textarea');
+        note.placeholder = 'Note';
+        note.value = this.item.data.note ?? '';
+        note.onkeydown = note.onkeyup = note.onchange = () => {
+            this.item.data.note = note.value == '' ? undefined : note.value;
+            chestMenu(Block);
+        }
+        return super.contextMenu(Block,Slot, 'Parameter',[types,count,optional,description,note]);
     }
 }
 
