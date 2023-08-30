@@ -236,6 +236,8 @@ export interface Parameter {
     id: 'pn_el';
     data: {
         name: string;
+        description?: string;
+        note?: string;
         type: ParameterTypesType;
         plural: boolean;
         optional: boolean;
