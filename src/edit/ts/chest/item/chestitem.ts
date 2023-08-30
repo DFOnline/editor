@@ -1,11 +1,11 @@
 import chestMenu from "../chestMenu";
 import { ArgumentBlock, Item, NumberVal, SCOPE_TO_NAME_MAP, Text, Variable, VarScope, Location, Vector, Potion, Sound, GameValue, ChestItem as MinecraftItem, BlockTag, GvalSelection, SELECTION_VALUES, ParsedItem, Particle, ScopeName, UndefinedItem, DefinedItems, VarScopeEnum, Component, Parameter } from "../../../template";
 import ContextMenu from "../../../../main/context";
-import ActDB, { ItemTypeColors } from "../../../ts/actiondump";
+import ActDB, { ItemTypeColors, ItemTypeNames, ParameterTypes } from "../../../ts/actiondump";
 import { code, findBlockTag, findBlockTagOption, names } from "../../edit";
 import { minecraftColorHTML, mcTextCompToCodes, stripColors } from "../../../../main/main";
 import { parse } from 'nbt-ts';
-import type { Icon, Tag } from "../../../ts/actiondump";
+import type { Icon, ParameterTypesType as ParameterTypeType, Tag } from "../../../ts/actiondump";
 import { VarScopeColor } from '../../../template';
 import SelectionContext from "../../../../main/SelectionContext";
 
@@ -183,7 +183,7 @@ export class Num extends NamedItem {
 }
 
 export class Txt extends NamedItem {
-    backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
+    backgroundUrl = 'https://dfonline.dev/public/images/STRING.png';
     declare item: Text;
 
     movable = true;
@@ -204,7 +204,7 @@ export class Txt extends NamedItem {
 }
 
 export class Comp extends NamedItem {
-    backgroundUrl = 'https://dfonline.dev/public/images/SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE.png'; // pop off
+    backgroundUrl = 'https://dfonline.dev/public/images/BOOK.png';
     declare item: Component;
     
     movable = true;
@@ -1168,7 +1168,7 @@ export class Param extends NamedItem {
         tooltip.append(name,document.createElement('br'));
         const type = document.createElement('span');
         const typeName = document.createElement('span');
-        typeName.innerText = `${this.item.data.type}${this.item.data.plural ? '(s)' : ''}`;
+        typeName.innerText = `${ItemTypeNames[this.item.data.type]}${this.item.data.plural ? '(s)' : ''}`;
         typeName.style.color = ItemTypeColors[this.item.data.type as 'pn_el'];
         type.append(typeName)
         if(this.item.data.optional) type.append('*');
@@ -1195,8 +1195,25 @@ export class Param extends NamedItem {
         }
         return tooltip;
     }
+
     repr(): string {
         throw new Error("Method not implemented.");
+    }
+
+    contextMenu(Block: number, Slot: number): ContextMenu {
+        const types = document.createElement('select');
+        ParameterTypes.forEach(type => {
+            const button = document.createElement('option');
+            button.value = type;
+            button.innerText = ItemTypeNames[type];
+            types.append(button);
+        });
+        types.value = this.item.data.type;
+        types.onchange = () => {
+            this.item.data.type = types.value as ParameterTypeType;
+            chestMenu(Block);
+        }
+        return super.contextMenu(Block,Slot, 'Parameter',[types])
     }
 }
 
