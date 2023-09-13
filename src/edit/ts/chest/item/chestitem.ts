@@ -218,7 +218,7 @@ export class Comp extends NamedItem {
         return tooltip;
     }
     repr(): string {
-        throw this.item.data.name;
+        return this.item.data.name;
     }
     
 }
@@ -1214,7 +1214,7 @@ export class Param extends NamedItem {
     }
 
     repr(): string {
-        throw new Error("Method not implemented.");
+        return `${this.item.data.type} ${this.item.data.name}${this.item.data.plural ? '(s)' : ''}${this.item.data.optional ? '*' : ''} - ${this.item.data.description ?? this.item.data.name}`
     }
 
     contextMenu(Block: number, Slot: number): ContextMenu {
