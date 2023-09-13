@@ -241,6 +241,7 @@ export class Var extends NamedItem {
         <option value="unsaved">GAME</option>
         <option value="saved">SAVED</option>
         <option value="local">LOCAL</option>
+        <option value="line">LINE</option>
         `;
         scope.value = this.item.data.scope;
 
@@ -1090,6 +1091,7 @@ export class BlTag extends ChestItem<BlockTag> {
         <option value="unsaved">G</option>
         <option value="saved">S</option>
         <option value="local">L</option>
+        <option value="line">I</option>
         `;
         select.value = this.item.data.variable?.data?.scope ?? 'unsaved';
         select.onchange = () => { updateVarTag() }
