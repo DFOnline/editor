@@ -26,4 +26,4 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. Google Chrome, Firefox]
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here, for example a link with a broken template.
