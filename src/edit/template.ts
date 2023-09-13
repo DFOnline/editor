@@ -7,11 +7,12 @@ export interface Template {
 
 export type ItemType = 'txt' | 'num' | 'loc' | 'vec' | 'snd' | 'part' | 'pot' | 'var' | 'g_val'
 export type VarScope = keyof typeof SCOPE_TO_NAME_MAP;
-export const SCOPE_TO_NAME_MAP = { saved: "SAVED", unsaved: "GAME", local: "LOCAL" } as const;
+export const SCOPE_TO_NAME_MAP = { saved: "SAVED", unsaved: "GAME", local: "LOCAL", line: "LINE" } as const;
 export enum ScopeName {
     saved = "SAVED",
     unsaved = "GAME",
-    local = "LOCAL"
+    local = "LOCAL",
+    line = "LINE",
 
 }
 export type GvalSelection = "Selection" | "Default" | "Victim" | "Killer" | "Damager" | "Shooter" | "Projectile" | "LastEntity"
@@ -50,12 +51,14 @@ export type PhysicalBlock = PlacedBlock | Bracket
 
 export enum VarScopeEnum {
     local = "LOCAL",
+    line = "LINE",
     saved = "SAVED",
     unsaved = "GAME",
 }
 
 export enum VarScopeColor {
     local = '#55FF55',
+    line = '#55AAFF',
     saved = '#FFFF55',
     unsaved = '#AAAAAA',
 }
