@@ -193,7 +193,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
         const blockElement = document.createElement('div');
 
         if (block.id === "block") {
-            const chest = ['player_action', 'if_player', 'process', 'start_process', 'func', 'entity_action', 'if_entity', 'repeat', 'set_var', 'if_var', 'control', 'select_obj', 'game_action', 'if_game'].includes(block.block);
+            const chest = ['player_action', 'if_player', 'process', 'start_process', 'func', 'call_func', 'entity_action', 'if_entity', 'repeat', 'set_var', 'if_var', 'control', 'select_obj', 'game_action', 'if_game'].includes(block.block);
             topper.classList.add(chest ? 'chest' : 'air');
             if (chest) {
                 topper.onclick = () => { chestMenu(this.index) }
