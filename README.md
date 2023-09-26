@@ -7,7 +7,7 @@ Create, edit and share templates online, even on your phone.
 ## What does DFOnline have?
 
 DFOnline is in a very Beta version, so few features exist currently, but the current ones are as follow:
-- Edit templates, and import them with [Recode](https://github.com/homchom/recode/).
+- Edit templates, and import them with [recode](https://github.com/homchom/recode/).
 - View templates, and verify your minecraft account.
 - Load templates from URLs.
 
