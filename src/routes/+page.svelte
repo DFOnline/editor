@@ -19,13 +19,32 @@ import Button from "$lib/Button.svelte";
         margin: 0;
         padding: 0;
         display: flex;
-        background-color: #555;
+        background-color: var(--toolbar-color);
     }
 
     @media (max-width: 500px) {
         menu {
             display: grid;
             grid-auto-flow: column;
+        }
+    }
+
+    main {
+        background-color: var(--bg-color);
+    }
+    
+    :global(:root) {
+        --text-color: #000;
+        --bg-color: #fff;
+        --toolbar-color: #ccc;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        :global(:root) {
+            --text-color: #fff;
+            --bg-color: #181a1b;
+            --toolbar-color: #313536;
+            color-scheme: dark;
         }
     }
 </style>
