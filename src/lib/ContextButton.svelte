@@ -1,5 +1,6 @@
 <script>
-    import Context from "./ContextMenu.svelte";
+    import Button from "./Button.svelte";
+import Context from "./ContextMenu.svelte";
 
     /**
      * @type {string}
@@ -19,11 +20,11 @@
         isOpen = '';
     }
 </script>
-<div tabindex={tabIndex} role="button" class="context-button" on:touchstart={open} on:touchend={close} on:focus={open} on:blur={close} on:mouseover={open} on:mouseenter={open} on:mouseleave={close} on:mouseout={close}>
-    <button tabindex="-1">
+<div tabindex={Number(tabIndex)} role="button" class="context-button" on:touchstart={open} on:touchend={close} on:focus={open} on:blur={close} on:mouseover={open} on:mouseenter={open} on:mouseleave={close} on:mouseout={close}>
+    <Button tabindex={-1} fullWidth>
         {name}
-    </button>
-    <div class={"popout" + isOpen}>
+    </Button>
+    <div class={"pop-out " + isOpen}>
         <Context>
             <slot />
         </Context>
@@ -33,16 +34,32 @@
 <style>
     .context-button {
         width: fit-content;
+        position: relative;
     }
 
-    .popout.open {
+    @media (max-width: 500px) {
+        .context-button {
+            width: 100%;
+        }
+    }
+
+    @media (pointer:coarse) {
+        .context-button {
+            position: static;
+        }
+        .pop-out {
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+        }
+    }
+
+    .pop-out.open {
         display: block;
-        position: absolute; /* it doesn't work */
-        top: 0px;
-        left: 0px;
     }
     
-    .popout {
+    .pop-out {
         display: none;
+        position: absolute;
     }
 </style>

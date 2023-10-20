@@ -1,14 +1,16 @@
 <script>
 import ContextRuler from "$lib/ContextRuler.svelte";
 import ContextButton from "$lib/ContextButton.svelte";
-
+import Button from "$lib/Button.svelte";
 </script>
+
 <menu role="toolbar">
-    <ContextButton tabIndex=1 name="File"><button>New</button><button>Open</button><button>Close</button></ContextButton>
-    <ContextButton tabIndex=2 name="Edit"><button>Find</button><button>Replace</button><ContextRuler /><button>Cut</button><button>Copy</button><button>Paste</button></ContextButton>
-    <ContextButton tabIndex=3 name="Selection"><button>All</button><button>None</button><button>Invert</button></ContextButton>
-    <ContextButton tabIndex=4 name="View"><button>Stacking</button><button>Chest Preview</button></ContextButton>
+    <ContextButton tabIndex=1 name="File"><Button>New</Button><Button>Open</Button><Button>Close</Button></ContextButton>
+    <ContextButton tabIndex=2 name="Edit"><Button>Find</Button><Button>Replace</Button><ContextRuler /><Button>Cut</Button><Button>Copy</Button><Button>Paste</Button></ContextButton>
+    <ContextButton tabIndex=3 name="Selection"><Button>All</Button><Button>None</Button><Button>Invert</Button></ContextButton>
+    <ContextButton tabIndex=4 name="View"><Button>Stacking</Button><Button>Chest Preview</Button></ContextButton>
 </menu>
+
 <main>
 </main>
 
@@ -18,5 +20,12 @@ import ContextButton from "$lib/ContextButton.svelte";
         padding: 0;
         display: flex;
         background-color: #555;
+    }
+
+    @media (max-width: 500px) {
+        menu {
+            display: grid;
+            grid-auto-flow: column;
+        }
     }
 </style>
