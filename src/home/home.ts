@@ -42,7 +42,7 @@ export class ImportMenu extends Menu {
     constructor(code = '') {
         const content = document.createElement('div');
         const p = document.createElement('p');
-        p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
+        p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.\nAll templates are publicly accessible.`;
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = 'Template Data';
@@ -75,8 +75,8 @@ const createMenuContents = document.createElement('div');
 const createMenuParagraph = document.createElement('p');
 createMenuParagraph.innerHTML = `
 Create a new template here. <br>
-Use DFOnline to sketch up and view and/or share code. Coding soley using inpractical <br>
-Note that editing item values cannot be done yet. <br>
+Use DFOnline to sketch up and view and/or share code. <br>
+All templates are publicly accessible. <br>
 `;
 createMenuContents.append(createMenuParagraph);
 const createMenuButton = document.createElement('button');
