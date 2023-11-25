@@ -20,6 +20,6 @@
   },
   "type": "module",
   "dependencies": {
-    "template": "git+https://github.com/DFOnline/template"
+    "template": "github:DFOnline/template"
   }
 }
