@@ -33,33 +33,35 @@ import Context from "./ContextMenu.svelte";
 
 <style>
     .context-button {
-        width: fit-content;
+        /* width: fit-content; */
         position: relative;
     }
-
+    
     @media (max-width: 500px) {
         .context-button {
             width: 100%;
         }
     }
-
-    @media (pointer:coarse) {
-        .context-button {
-            position: static;
-        }
-        .pop-out {
-            top: 0px;
-            left: 0px;
-            width: 100vw;
-        }
-    }
-
+    
     .pop-out.open {
         display: block;
     }
     
     .pop-out {
+        height: 0;
         display: none;
         position: absolute;
+        top: 5px;
+        left: 0px;
+    }
+    
+    @media (pointer:coarse) {
+        .context-button {
+            position: static;
+        }
+        .pop-out {
+            width: 100vw;
+            top: 0px;
+        }
     }
 </style>
