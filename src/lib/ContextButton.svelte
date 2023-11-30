@@ -1,34 +1,26 @@
-<script>
+<script lang="ts">
     import Button from "./Button.svelte";
 import Context from "./ContextMenu.svelte";
 
-    /**
-     * @type {string}
-     */
-    export let name;
-    /**
-     * @type {string}
-     */
-    export let tabIndex;
+    export let name : string;
+    export let tabIndex : string;
 
-    let isOpen = "";
+    let ctx: Context;
 
     function open() {
-        isOpen = 'open';
+        ctx.open();
     }
     function close() {
-        isOpen = '';
+        ctx.close();
     }
 </script>
 <div tabindex={Number(tabIndex)} role="button" class="context-button" on:touchstart={open} on:touchend={close} on:focus={open} on:blur={close} on:mouseover={open} on:mouseenter={open} on:mouseleave={close} on:mouseout={close}>
     <Button tabindex={-1} fullWidth>
         {name}
     </Button>
-    <div class={"pop-out " + isOpen}>
-        <Context>
-            <slot />
-        </Context>
-    </div>
+    <Context bind:this={ctx}>
+        <slot />
+    </Context>
 </div>
 
 <style>

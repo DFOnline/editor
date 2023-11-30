@@ -1,12 +1,15 @@
 <script lang="ts">
 import ContextRuler from "$lib/ContextRuler.svelte";
 import ContextButton from "$lib/ContextButton.svelte";
+import Modal from "$lib/Modal.svelte";
 import Button from "$lib/Button.svelte";
 
-import TemplateComponent from 'template';
+import TemplateComponent, { Selection } from 'template';
 import { df } from 'template';
 
 import { dragscroll } from '@svelte-put/dragscroll'
+import ContextMenu from "$lib/ContextMenu.svelte";
+import type { Openable } from "template/dist/Types";
 
 /**
  * If the codespace should stack vertically with bracket depth.
@@ -30,15 +33,27 @@ const template = df.Template.parse({"blocks":[
 interface EditingTemplate {
     active: boolean;
     template: df.Template;
-    selection: unknown;
+    selection?: Selection.Selection;
     name?: string;
 }
 const EditingTemplates : EditingTemplate[] = [
-    {active: true, template, selection: null, name: 'Template'},
-    {active: true, template, selection: null, name: 'You can name them'},
-    {active: false, template, selection: null},
-    {active: false, template, selection: null},
+    {active: true, selection: new Selection.SelectionEmpty(), template, name: 'Template'},
+    {active: true, selection: new Selection.SelectionEmpty(), template, name: 'You can name them'},
+    {active: false, selection: new Selection.SelectionEmpty(), template},
+    {active: false, selection: new Selection.SelectionEmpty(), template},
 ];
+
+const contextMenu = ContextMenu as Openable;
+const modal = Modal as Openable;
+
+let templates : HTMLDivElement[] = [];
+let globalTemplateSelection = new Selection.Selection(0).updateRules({allowMulti:false,allowRange:false,direction:'vertical'});
+function select(selection: Selection.Selection | void) {
+    if(selection == null) return;
+    globalTemplateSelection = selection;
+    console.log(templates[selection.cursor].firstChild);
+    (templates[selection.cursor])?.focus();
+}
 
 </script>
 
@@ -46,20 +61,20 @@ const EditingTemplates : EditingTemplate[] = [
     <ContextButton tabIndex=1 name="File"><Button>New</Button><Button>Open</Button><Button>Close</Button></ContextButton>
     <ContextButton tabIndex=2 name="Edit"><Button>Find</Button><Button>Replace</Button><ContextRuler /><Button>Cut</Button><Button>Copy</Button><Button>Paste</Button></ContextButton>
     <ContextButton tabIndex=3 name="Selection"><Button>All</Button><Button>None</Button><Button>Invert</Button></ContextButton>
-    <ContextButton tabIndex=4 name="View"><Button onclick={() => {stacking = !stacking; console.log(stacking)}}>Stacking</Button><Button>Chest Preview</Button></ContextButton>
+    <ContextButton tabIndex=4 name="View"><Button on:click={() => {stacking = !stacking;}}>Stacking</Button><Button>Chest Preview</Button></ContextButton>
 </div>
 
 <main use:dragscroll={{axis: "y"}}>
     <ul>
         {#each EditingTemplates as template, i}
-            <li use:dragscroll class={template.active ? 'active' : 'inactive'}>
+            <div bind:this={templates[i]} role="button" use:dragscroll class="block" class:active={template.active} on:click={e => select(globalTemplateSelection.click(e,i))} on:keydown={e => select(globalTemplateSelection.keyPress(e,EditingTemplates.length))} tabindex="-1">
                 <span>
                     <input type="checkbox" name="Active" checked={template.active} on:change={(event) => template.active = event.target?.checked}>
                     <input value={template.name} class="name" />
                 </span>
                 <!-- TODO: Don't use active on openableChests, add proper editing -->
-                <div use:dragscroll><TemplateComponent openableChests={template.active} template={template.template} stack={stacking} --tooltip-scale=2 --block-size=10em --slot-size=50px /></div>
-            </li>
+                <div use:dragscroll><TemplateComponent modal={modal} context={contextMenu} editable={template.active} template={template.template} stack={stacking} --tooltip-scale=2 --block-size=10em --slot-size=50px /></div>
+            </div>
         {/each}
     </ul>
 </main>
@@ -81,21 +96,21 @@ const EditingTemplates : EditingTemplate[] = [
     main ul {
         padding: 0px;
     }
-    main li {
+    main .block {
         width: 100%;
         overflow-x: none;
         user-select: none;
         display: flex;
     }
-    main li span {
+    main .block span {
         margin: auto;
         margin-inline: 1em;
     }
-    main li span input.name {
+    main .block span input.name {
         writing-mode: vertical-lr;
         text-orientation: sideways;
     }
-    main li div {
+    main .block div {
         overflow-x: scroll;
         color: #000;
     }

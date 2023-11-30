@@ -8,14 +8,9 @@
      * @type {boolean}
      */
     export let fullWidth = false;
-
-    /**
-     * @type {((event: MouseEvent) => void)|(() => void)|undefined}
-    */
-    export let onclick = () => {};
 </script>
 
-<button tabindex={tabindex} class={fullWidth ? 'full' : ''} on:click={onclick}>
+<button tabindex={tabindex} class={fullWidth ? 'full' : ''} on:click>
     <slot />
 </button>
 
