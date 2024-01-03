@@ -1,10 +1,16 @@
 import { snackbar } from "../../main/main";
 import type { BlockID } from "../template";
 
-const ActDB = await fetch(`${sessionStorage.getItem('apiEndpoint')}db`).then(r => r.json()).catch(e => {
-    snackbar('An error occured whilst loading required data. Try reloading, this usually fixes itself.', 'error');
-    console.error(e);
-}) as ActionDump;
+async function loadActDB(): Promise<ActionDump> {
+    const local = localStorage.getItem('actiondump');
+    if(local != null) return JSON.parse(local);
+    return await fetch(`https://dfonline.dev/public/dbc.json`).then(r => r.json()).catch(e => {
+        snackbar('An error occured whilst loading required data. Try reloading, this usually fixes itself.', 'error');
+        console.error(e);
+    });
+}
+
+const ActDB = await loadActDB();
 export default ActDB;
 
 export interface ActionDump {

@@ -1,4 +1,5 @@
-import { snackbar, decodeTemplate, timelessTemplateLike } from "../../../main/main";
+import { Template } from "edit/template";
+import { snackbar, decodeTemplate, timelessTemplateLike, downloadDFT } from "../../../main/main";
 
 const stepCount = document.querySelectorAll('div.step.v').length;
 let activeStep = 1;
@@ -50,18 +51,34 @@ enter.onclick = e => {
     if (!timelessTemplateLike.test(input.value)) { snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
     const data = (input.value.match(timelessTemplateLike) || [])[0]!;
     // check it can be decompressed
-    const template = decodeTemplate(data);
-    if (!template.blocks) { snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
-    setActivePage(0);
-    fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { 'body': data, 'method': 'POST' }).then(f => f.json()).then(json => {
-        document.querySelector('div#invalid')!.classList.add('hidden');
-        document.querySelector('div#valid')!.classList.remove('hidden');
-        link.value = 'https://dfonline.dev/edit/?template=' + json.id;
-        // link.value = 'https://dfonline.dev/edit/?template=dfo:' + json.id;
-        setActivePage(4);
-        link.focus();
-    });
+    let template: Template
+    try{
+        template = decodeTemplate(data);
+        if (!template.blocks) { snackbar("Looks like that data isn't valid."); e.stopPropagation(); e.preventDefault(); return; }
+        // setActivePage(0);
+        // fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { 'body': data, 'method': 'POST' }).then(f => f.json()).then(json => {
+            // document.querySelector('div#invalid')!.classList.add('hidden');
+            // document.querySelector('div#valid')!.classList.remove('hidden');
+            //     link.value = 'https://dfonline.dev/edit/?template=' + json.id;
+            //     // link.value = 'https://dfonline.dev/edit/?template=dfo:' + json.id;
+            //     setActivePage(4);
+            //     link.focus();
+            // });
+            setActivePage(4);
+            document.querySelector('div#invalid')!.classList.add('hidden');
+            document.querySelector('div#valid')!.classList.remove('hidden');
+            link.onclick = () => {
+                downloadDFT(data,'template.dft');
+            }
+            link.focus();
+        }
+    catch (e) {
+        console.error(e);
+        snackbar("An an occurred whilst loading your data, it's likely not valid.");
+    }
 }
+
+
 
 const input = document.querySelector<HTMLInputElement>('#input')!;
 input.onkeyup = e => {

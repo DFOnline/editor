@@ -1,6 +1,7 @@
 import Menu from "../../main/menu";
 import { code, exportTemplate } from "./edit";
-import { codeutilities, cuopen, snackbar } from "../../main/main";
+import { codeutilities, cuopen, downloadDFT, snackbar } from "../../main/main";
+import { compileFunction } from "vm";
 
 const exportDiv = document.createElement('div');
 
@@ -60,13 +61,18 @@ CopyLinkButton.onclick = async () => { // this code is for copying the link to t
 options.append(CopyLinkButton);
 
 const CopyShortLinkButton = document.createElement('button');
-CopyShortLinkButton.innerText = 'Copy Short Link';
-CopyShortLinkButton.onclick = async e => {
-    const href = !e.shiftKey ? 'https://dfonline.dev/edit/' : 'https://diamondfire.gitlab.io/template/';
-    let searchParams = new URLSearchParams(location.search);
-    let exportData: string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { body: exportTemplate(JSON.stringify(code)).code, method: 'POST' }).then(res => res.json())).id;
-    searchParams.set(e.shiftKey ? 't' : 'template', e.shiftKey ? 'dfo:' + exportData : exportData);
-    navigator.clipboard.writeText(href + '?' + searchParams.toString());
+// CopyShortLinkButton.innerText = 'Download File';
+// CopyShortLinkButton.onclick = async e => {
+//     const href = !e.shiftKey ? 'https://dfonline.dev/edit/' : 'https://diamondfire.gitlab.io/template/';
+//     let searchParams = new URLSearchParams(location.search);
+//     let exportData: string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { body: exportTemplate(JSON.stringify(code)).code, method: 'POST' }).then(res => res.json())).id;
+//     searchParams.set(e.shiftKey ? 't' : 'template', e.shiftKey ? 'dfo:' + exportData : exportData);
+//     navigator.clipboard.writeText(href + '?' + searchParams.toString());
+// }
+CopyShortLinkButton.innerText = 'Download File'
+CopyShortLinkButton.onclick = () => {
+    const exportData = exportTemplate(JSON.stringify(code)).code;
+    downloadDFT(exportData,"template.dft")
 }
 options.append(CopyShortLinkButton);
 
