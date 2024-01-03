@@ -117,6 +117,38 @@ export function encodeTemplate(codedata: string) {
     return btoa(data2);
 }
 
+/**
+ * Downloads a base64 file as a .dft file
+ * @argument fileName The filename, the function doesn't add .dft so you need to.
+ */
+export function downloadDFT(base64GzipString: string, fileName: string) {
+    // Convert base64 string to binary data
+    const binaryData = atob(base64GzipString);
+
+    // Create Uint8Array from binary data
+    const arrayBuffer = new ArrayBuffer(binaryData.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < binaryData.length; i++) {
+        uint8Array[i] = binaryData.charCodeAt(i);
+    }
+
+    // Create Blob with MIME type application/gzip
+    const blob = new Blob([uint8Array], { type: 'application/gzip' });
+
+    // Create download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = fileName;
+
+    // Append the download link to the document and trigger a click
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    // Remove the download link from the document
+    document.body.removeChild(downloadLink);
+}
+
+
 export function stripColors(text: string) {
     return text.replace(/[&§][\dA-FK-ORX]/gi, '');
 }

@@ -1,3 +1,4 @@
+import { snackbar } from "./main";
 import Menu from "./menu";
 
 const menuDiv = document.createElement('div');
@@ -65,5 +66,31 @@ showItems.onchange = () => {
 }
 showItemsLabel.append(showItems);
 
-menuDiv.append(p, stackBracketsLabel, document.createElement('br'), showItemsLabel);
 
+const customActiondumpLabel = document.createElement('label');
+customActiondumpLabel.innerText = "Custom Action Dump (don't use unless you understand) ";
+const customActiondump = document.createElement('input');
+customActiondump.type = 'file';
+customActiondump.accept = 'application/json';
+customActiondump.onchange = async () => {
+    const file = await customActiondump.files?.item(0)?.text();
+    if(file == null) localStorage.removeItem("actiondump");
+    else {
+        try {
+            localStorage.setItem("actiondump",file);
+            clearButton.style.display = '';
+        } catch (e) {
+            snackbar(`Couldn't save the actionbar:\n${e}`)
+        }
+    }
+}
+customActiondumpLabel.append(customActiondump);
+const clearButton = document.createElement('button');
+clearButton.innerText = 'Clear Actiondump';
+clearButton.style.display = localStorage.getItem('actiondump') == null ? 'none' : '';
+clearButton.onclick = () => {
+    localStorage.removeItem('actiondump');
+    clearButton.style.display = 'none';
+}
+
+menuDiv.append(p, stackBracketsLabel, document.createElement('br'), showItemsLabel, document.createElement('br'), customActiondumpLabel, clearButton);

@@ -1,5 +1,5 @@
 import Menu from "../main/menu";
-import { templateLike } from "../main/main"
+import { snackbar, templateLike } from "../main/main"
 
 Menu.setup();
 
@@ -42,7 +42,7 @@ export class ImportMenu extends Menu {
     constructor(code = '') {
         const content = document.createElement('div');
         const p = document.createElement('p');
-        p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.\nAll templates are publicly accessible.`;
+        p.innerText = `If you have your code template data, just paste it in. Press the import button, and start editing.`;
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = 'Template Data';
@@ -56,27 +56,57 @@ export class ImportMenu extends Menu {
                 sessionStorage.setItem('import', data[0]); window.open("../edit/", "_self");
             }
         }
-        const a = document.createElement('a');
-        a.innerText = 'ⓘ Help';
-        a.href = '../edit/how/';
-        a.style.display = 'inline-block';
+        const fileLabel = document.createElement('label');
+        fileLabel.innerText = `Or, if you have a .dft file, import that instead:`
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.dft,.gz';
+        fileInput.onchange = async () => {
+            const file = fileInput.files?.item(0);
+            if(file == null) {
+                snackbar("Couldn't load the file",'error');
+                fileInput.value = '';
+                return;
+            }
+            const data = await fileToBase64(file);
+            if (data !== null) {
+                console.log(data)
+                sessionStorage.setItem('import', data as string); window.open("../edit/", "_self");
+            }
+        }
+        fileLabel.append(fileInput);
+        const help = document.createElement('a');
+        help.innerText = 'ⓘ Help';
+        help.href = '../edit/how/';
+        help.style.display = 'inline-block';
         // a.style.textDecoration = 'none';
         // a.style.fontSize = '1.5em';
-        a.style.width = '100%'
-        a.style.textAlign = 'end';
-        a.title = 'Help';
-        content.append(p, input, activateImport, a);
+        help.style.width = '100%'
+        help.style.textAlign = 'end';
+        help.title = 'Help';
+        content.append(p, input, activateImport, document.createElement('br'), fileLabel, help);
         super('Import', content);
     }
-
 }
+
+async function fileToBase64(file: File): Promise<string> {
+    return new Promise<string>(resolve => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          resolve((reader.result as string).replace(/data:.+;base64,/,''));
+        };
+        reader.onerror = function (error) {
+            throw error;
+        };
+    });
+ }
 
 const createMenuContents = document.createElement('div');
 const createMenuParagraph = document.createElement('p');
 createMenuParagraph.innerHTML = `
 Create a new template here. <br>
 Use DFOnline to sketch up and view and/or share code. <br>
-All templates are publicly accessible. <br>
 `;
 createMenuContents.append(createMenuParagraph);
 const createMenuButton = document.createElement('button');
