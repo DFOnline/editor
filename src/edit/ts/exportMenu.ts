@@ -1,7 +1,6 @@
 import Menu from "../../main/menu";
 import { code, exportTemplate } from "./edit";
 import { codeutilities, cuopen, downloadDFT, snackbar } from "../../main/main";
-import { compileFunction } from "vm";
 
 const exportDiv = document.createElement('div');
 
