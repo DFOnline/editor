@@ -8,3 +8,4 @@ dist-ssr
 public
 .vscode
 bin
+package-lock.json
