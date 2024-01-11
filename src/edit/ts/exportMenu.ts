@@ -59,8 +59,8 @@ CopyLinkButton.onclick = async () => { // this code is for copying the link to t
 }
 options.append(CopyLinkButton);
 
-const CopyShortLinkButton = document.createElement('button');
-// CopyShortLinkButton.innerText = 'Download File';
+// const CopyShortLinkButton = document.createElement('button');
+// CopyShortLinkButton.innerText = 'Copy Short Link';
 // CopyShortLinkButton.onclick = async e => {
 //     const href = !e.shiftKey ? 'https://dfonline.dev/edit/' : 'https://diamondfire.gitlab.io/template/';
 //     let searchParams = new URLSearchParams(location.search);
@@ -68,12 +68,16 @@ const CopyShortLinkButton = document.createElement('button');
 //     searchParams.set(e.shiftKey ? 't' : 'template', e.shiftKey ? 'dfo:' + exportData : exportData);
 //     navigator.clipboard.writeText(href + '?' + searchParams.toString());
 // }
-CopyShortLinkButton.innerText = 'Download File'
-CopyShortLinkButton.onclick = () => {
+// options.append(CopyShortLinkButton);
+
+const CopyFileButton = document.createElement('button');
+
+CopyFileButton.innerText = 'Download File'
+CopyFileButton.onclick = () => {
     const exportData = exportTemplate(JSON.stringify(code)).code;
     downloadDFT(exportData,"template.dft")
 }
-options.append(CopyShortLinkButton);
+options.append(CopyFileButton);
 
 exportDiv.append(options);
 export default new Menu('Export', exportDiv);
