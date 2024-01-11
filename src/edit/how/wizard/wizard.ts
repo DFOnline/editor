@@ -40,11 +40,13 @@ function setActivePage(index: number) {
 }
 
 const link = document.querySelector<HTMLInputElement>('#link')!;
-link.onchange = () => { link.value = 'but why?' }
 link.onclick = () => {
-    navigator.clipboard.writeText(link.value);
-    snackbar('Copied!');
+    navigator.clipboard.writeText(file.value);
+    snackbar('Copied your link!');
 }
+
+const file = document.querySelector<HTMLButtonElement>('#file')!;
+
 
 const enter = document.querySelector<HTMLAnchorElement>('a#enter')!;
 enter.onclick = e => {
@@ -64,13 +66,19 @@ enter.onclick = e => {
             //     setActivePage(4);
             //     link.focus();
             // });
+            link.onchange = () => {
+                link.value = `https://dfonline.dev/edit/?template=${data}`;
+            }
             setActivePage(4);
+            link.onclick!(e);
             document.querySelector('div#invalid')!.classList.add('hidden');
             document.querySelector('div#valid')!.classList.remove('hidden');
-            link.onclick = () => {
+            link.value = `https://dfonline.dev/edit/?template=${data}`;
+            link.focus();
+            file.onclick = () => {
                 downloadDFT(data,'template.dft');
             }
-            link.focus();
+            // file.focus();
         }
     catch (e) {
         console.error(e);
