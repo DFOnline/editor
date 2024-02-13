@@ -78,7 +78,7 @@ export interface SelectionBlock {
     block: BlockActionID
     action: string;
     target: Target;
-    inverted: Inverted;
+    inverted?: Inverted;
     attribute: Attribute;
     args: { items: Argument<Item>[] }
 }

@@ -12,7 +12,7 @@ window.onkeydown = event => {
 }
 
 function generateTheComment() {
-    const code: Template = { blocks: [{ id: "block", block: "control", args: { "items": [] }, action: "", target: "", inverted: "" }] };
+    const code: Template = { blocks: [{ id: "block", block: "control", args: { "items": [] }, action: "", target: "", inverted: "", attribute: "" }] };
     const b = code['blocks'][0];
     if ("action" in b) b.action = (document.getElementById('action') as HTMLInputElement).value;
     if ("target" in b) b.target = (document.getElementById('target') as HTMLInputElement).value as Target;
