@@ -19,7 +19,11 @@ export type GvalSelection = "Selection" | "Default" | "Victim" | "Killer" | "Dam
 export const SELECTION_VALUES = ["", "AllPlayers", "Selection", "Default", "Victim", "Killer", "Damager", "Shooter", "Projectile", "LastEntity"] as const;
 
 export type ID = "block" | "bracket" | "killable"
+/**
+ * @deprecated DF Now used attribute.
+ */
 export type Inverted = "" | "NOT" // funny
+export type Attribute = "" | "NOT" | "LS-CANCEL";
 export type Target = "" | "AllPlayers" | "Victim" | "Shooter" | "Damager" | "Killer" | "Default" | "Selection" | "Projectile" | "LastEntity"
 export type Direction = "open" | "close"
 export type BracketType = "norm" | "repeat"
@@ -75,6 +79,7 @@ export interface SelectionBlock {
     action: string;
     target: Target;
     inverted: Inverted;
+    attribute: Attribute;
     args: { items: Argument<Item>[] }
 }
 
@@ -84,6 +89,7 @@ export interface SubActionBlock {
     action: string;
     subAction: string;
     inverted: Inverted;
+    attribute: Attribute;
     args: { items: Argument<Item>[] }
 }
 

@@ -167,11 +167,24 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                         let not = document.createElement('button');
                         not.innerHTML = '<u>N</u>OT';
                         not.onclick = () => {
-                            (block as SelectionBlock).inverted = (block as SelectionBlock).inverted === 'NOT' ? '' : 'NOT';
+                            const b = block as SelectionBlock;
+                            b.attribute = (b.attribute == 'NOT' || b.inverted == 'NOT') ? '' : 'NOT';
+                            b.inverted = b.attribute;
                             rendBlocks();
                         }
                         userMeta.ctxKeys['n'] = not;
                         contextMenu.append(not);
+                    }
+                    if (block.block.includes('event')) {
+                        let lagslayerCancel = document.createElement('button');
+                        if(lagslayerCancel.innerHTML = 'Lagslayer <u>C</u>ancel')
+                        lagslayerCancel.onclick = () => {
+                            const b = block as SelectionBlock;
+                            b.attribute = b.attribute == 'LS-CANCEL' ? '' : 'LS-CANCEL';
+                            rendBlocks();
+                        }
+                        userMeta.ctxKeys['c'] = lagslayerCancel;
+                        contextMenu.append(lagslayerCancel);
                     }
                     contextMenu.append(document.createElement('hr'));
                 }
@@ -251,7 +264,7 @@ export default class HTMLCodeBlockElement extends HTMLDivElement {
                 }
                 sign.append(SelectionLine);
                 let not = document.createElement('span');
-                not.innerText = (block as SelectionBlock).inverted ? (block as SelectionBlock).inverted : "";
+                not.innerText = (block as SelectionBlock).attribute ?? '';
                 sign.append(not);
                 blockElement.append(sign);
             }
