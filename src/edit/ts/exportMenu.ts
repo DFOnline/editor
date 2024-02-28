@@ -59,16 +59,17 @@ CopyLinkButton.onclick = async () => { // this code is for copying the link to t
 }
 options.append(CopyLinkButton);
 
-// const CopyShortLinkButton = document.createElement('button');
-// CopyShortLinkButton.innerText = 'Copy Short Link';
-// CopyShortLinkButton.onclick = async e => {
-//     const href = !e.shiftKey ? 'https://dfonline.dev/edit/' : 'https://diamondfire.gitlab.io/template/';
-//     let searchParams = new URLSearchParams(location.search);
-//     let exportData: string = (await fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { body: exportTemplate(JSON.stringify(code)).code, method: 'POST' }).then(res => res.json())).id;
-//     searchParams.set(e.shiftKey ? 't' : 'template', e.shiftKey ? 'dfo:' + exportData : exportData);
-//     navigator.clipboard.writeText(href + '?' + searchParams.toString());
-// }
-// options.append(CopyShortLinkButton);
+const CopyShortLinkButton = document.createElement('button');
+CopyShortLinkButton.innerText = 'Copy Short Link (for Discord)';
+CopyShortLinkButton.onclick = async () => {
+    let href = 'https://dfonline.dev/edit/';
+    let searchParams = new URLSearchParams(location.search);
+    let exportData = exportTemplate(JSON.stringify(code)).code;
+    searchParams.set('template', exportData);
+    let url = href + '?' + searchParams.toString();
+    navigator.clipboard.writeText(`[code template](${url})`);
+}
+options.append(CopyShortLinkButton);
 
 const CopyFileButton = document.createElement('button');
 
