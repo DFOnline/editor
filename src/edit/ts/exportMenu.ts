@@ -1,6 +1,6 @@
 import Menu from "../../main/menu";
 import { code, exportTemplate } from "./edit";
-import { codeutilities, cuopen, downloadDFT, snackbar } from "../../main/main";
+import { codeutilities, cuopen, downloadDFT, snackbar, writeToClipboard } from "../../main/main";
 
 const exportDiv = document.createElement('div');
 
@@ -15,10 +15,13 @@ options.style.width = 'fit-content'
 const copyTemplate = document.createElement('button');
 copyTemplate.innerText = "Copy Data";
 copyTemplate.onclick = e => {
-    let data = exportTemplate(JSON.stringify(code));
-    let altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
-    if (e.shiftKey || e.ctrlKey) navigator.clipboard.writeText(`/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}} 1`);
-    else navigator.clipboard.writeText(data.code);
+    const data = exportTemplate(JSON.stringify(code));
+    const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
+    let copyData = "";
+    if (e.shiftKey || e.ctrlKey) copyData = `/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}} 1`;
+    else copyData = data.code;
+
+    writeToClipboard(copyData, "Successfully copied data to clipboard.");
 }
 options.append(copyTemplate);
 
@@ -34,7 +37,7 @@ CodeUtilsSend.onclick = () => { // the code for sending :D
         }
     ));
     codeutilities.onmessage = e => {
-        if (JSON.parse(e.data).status === 'success') snackbar('Recieved confirmation for sent template');
+        if (JSON.parse(e.data).status === 'success') snackbar('Received confirmation for sent template');
     }
 }
 options.append(CodeUtilsSend);
@@ -42,43 +45,42 @@ options.append(CodeUtilsSend);
 const CopyGiveCommandButton = document.createElement('button');
 CopyGiveCommandButton.innerText = 'Copy Give Command';
 CopyGiveCommandButton.onclick = () => {
-    navigator.clipboard.writeText(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'${JSON.stringify(
-        exportTemplate(JSON.stringify(code))
-    )}'}}`)
+    const data = exportTemplate(JSON.stringify(code));
+    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'${data}'}}`, "Successfully copied Give Command to clipboard.");
 }
-options.append(CopyGiveCommandButton)
+options.append(CopyGiveCommandButton);
 
 const CopyLinkButton = document.createElement('button');
 CopyLinkButton.innerText = 'Copy Link';
 CopyLinkButton.onclick = async () => { // this code is for copying the link to the template, so you can share the template with others.
-    let href = 'https://dfonline.dev/edit/';
-    let searchParams = new URLSearchParams(location.search);
-    let exportData = exportTemplate(JSON.stringify(code)).code;
+    const href = 'https://dfonline.dev/edit/';
+    const searchParams = new URLSearchParams(location.search);
+    const exportData = exportTemplate(JSON.stringify(code)).code;
     searchParams.set('template', exportData);
-    navigator.clipboard.writeText(href + '?' + searchParams.toString());
+    writeToClipboard(`${href}?${searchParams.toString()}`, "Successfully copied link to clipboard.");
 }
 options.append(CopyLinkButton);
 
 const CopyShortLinkButton = document.createElement('button');
 CopyShortLinkButton.innerText = 'Copy Short Link (for Discord)';
 CopyShortLinkButton.onclick = async () => {
-    let href = 'https://dfonline.dev/edit/';
-    let searchParams = new URLSearchParams(location.search);
-    let exportData = exportTemplate(JSON.stringify(code)).code;
+    const href = 'https://dfonline.dev/edit/';
+    const searchParams = new URLSearchParams(location.search);
+    const exportData = exportTemplate(JSON.stringify(code)).code;
     searchParams.set('template', exportData);
-    let url = href + '?' + searchParams.toString();
-    navigator.clipboard.writeText(`[code template](${url})`);
+    const url = href + '?' + searchParams.toString();
+    writeToClipboard(`[code template](${url})`, "Successfully copied Discord Link to clipboard.");
 }
 options.append(CopyShortLinkButton);
 
-const CopyFileButton = document.createElement('button');
+const DownloadFileButton = document.createElement('button');
 
-CopyFileButton.innerText = 'Download File'
-CopyFileButton.onclick = () => {
+DownloadFileButton.innerText = 'Download File'
+DownloadFileButton.onclick = () => {
     const exportData = exportTemplate(JSON.stringify(code)).code;
-    downloadDFT(exportData,"template.dft")
+    downloadDFT(exportData, "template.dft");
 }
-options.append(CopyFileButton);
+options.append(DownloadFileButton);
 
 exportDiv.append(options);
 export default new Menu('Export', exportDiv);
