@@ -25,6 +25,21 @@ export function snackbar(message: string, type: 'error' | 'development' | '' = '
     setTimeout(() => { if (!bar.classList.contains('snackbarout')) { bar.classList.add('snackbartime') } }, 4000);
 }
 
+export async function writeToClipboard(text: string, notificationMessage?: string) {
+    try{
+        await navigator.clipboard.writeText(text);
+        snackbar((notificationMessage === undefined) ? "Successfully copied text to clipboard." : notificationMessage);
+    } catch(error) {
+        if(!(error instanceof Error)) {
+            console.error("Couldn't write to Clipboard: Unknown Reason.");
+            snackbar("Couldn't write to Clipboard: Unknown Reason.", "error");
+        } else {
+            console.error(error.message);
+            snackbar(error.message, "error");
+        }
+    }
+}
+
 /**
  * Opens a menu such as the one seen as the login, import and items menu.
  * @param title The title of the menu
