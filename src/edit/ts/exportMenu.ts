@@ -18,7 +18,7 @@ copyTemplate.onclick = e => {
     const data = exportTemplate(JSON.stringify(code));
     const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
     let copyData = "";
-    if (e.shiftKey || e.ctrlKey) copyData = `/dfgive minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}} 1`;
+    if (e.shiftKey || e.ctrlKey) copyData = `/give minecraft:ender_chest{display:{Name:'{"text":"${altName}"}'},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}} 1`;
     else copyData = data.code;
 
     writeToClipboard(copyData, "Successfully copied data to clipboard.");
@@ -46,7 +46,8 @@ const CopyGiveCommandButton = document.createElement('button');
 CopyGiveCommandButton.innerText = 'Copy Give Command';
 CopyGiveCommandButton.onclick = () => {
     const data = exportTemplate(JSON.stringify(code));
-    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'${data}'}}`, "Successfully copied Give Command to clipboard.");
+    const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
+    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}`, "Successfully copied Give Command to clipboard.");
 }
 options.append(CopyGiveCommandButton);
 
