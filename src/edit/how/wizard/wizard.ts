@@ -67,13 +67,13 @@ enter.onclick = e => {
             //     link.focus();
             // });
             link.onchange = () => {
-                link.value = `https://dfonline.dev/edit/?template=${data}`;
+                link.value = `[code template](https://dfonline.dev/edit/?template=${data})`;
             }
             setActivePage(4);
             link.onclick!(e);
             document.querySelector('div#invalid')!.classList.add('hidden');
             document.querySelector('div#valid')!.classList.remove('hidden');
-            link.value = `https://dfonline.dev/edit/?template=${data}`;
+            link.value = `[code template](https://dfonline.dev/edit/?template=${data})`;
             link.focus();
             file.onclick = () => {
                 downloadDFT(data,'template.dft');
