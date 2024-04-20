@@ -2,6 +2,95 @@ import type { Template } from "../edit/template";
 import { inflate, gzip } from "pako";
 import { developerMenu } from "./developers";
 
+const theDate = new Date();
+export const trolling = (theDate.getMonth() === 3 && theDate.getDate() === 1)// || true;
+if (trolling) {
+    console.log("hi!!");
+    const aprilFoolsStyle = document.createElement("style");
+    aprilFoolsStyle.innerHTML = `
+      * {
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+      }
+      
+      #chest, .slot {
+        border-radius: 0px !important;
+      }
+      .template, button, .background > div, #contexts > div, #context, #newblocks, input, #snackbars > span {
+        border: #444 outset 2pt !important;
+        outline: none !important;
+        border-radius: 0px !important;
+      }
+      #toggle {
+        display: none !important;
+      }
+      #newblocks #blocks div {
+        border: 1px solid #888;
+      }
+      #newblocks #blocks div:not(:first-child) {
+        border-left: none;
+      }
+      
+      #header, header#menu {
+        box-shadow: none !important;
+        border-bottom: solid 2pt #333 !important;
+        height: min-content;
+      }
+      #header img {
+        height: 2em !important;
+        width: 2em !important;
+      }
+      #header h1 {
+        font-size: 1.5em !important;
+      }
+      
+      .background {
+        background: #3337 !important;
+      }
+      .background > div > h1 {
+        background: #444;
+        padding-bottom: 4pt;
+        margin: 0px !important;
+      }
+      
+      .template, .background > div, #snackbars > span {
+        box-shadow: 5pt 5pt 0 black !important;
+      }
+      .background > div {
+        padding: 0px !important;
+      }
+      .background > div > div {
+        padding: 3pt !important;
+        
+      }
+      .template {
+        padding-top: 1em !important;
+      }
+      
+      button:not(.newValue) {
+        background: #666 !important;
+      }
+      button, input, select {
+        box-shadow: 0px 0px 0px black !important;
+        color: white !important;
+      }
+      input {
+        border: #444 2pt inset !important;
+        background: #000 !important;
+      }
+      hr {
+        border: dashed 1pt;
+      }
+      #mouseinfo {
+        border-radius: 0px !important;
+        outline: none !important;
+        border: solid 3px !important;
+        border-image: linear-gradient(#5000FF50, #28007f50) !important;
+        background: #100010f0 !important;
+      }`;
+    document.head.append(aprilFoolsStyle);
+}
+
 export let cuopen = false;
 
 /**
