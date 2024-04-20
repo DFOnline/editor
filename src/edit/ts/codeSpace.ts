@@ -10,7 +10,7 @@ export function rendBlocks() {
     if (isDeveloperMode()) console.groupCollapsed('REND BLOCKS');
 
     const codeSpace = document.getElementById('codeBlocks') as HTMLDivElement;
-    const messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.", "The Moss.", "Procrastination.", "Typing Error", "oven was here", "[object Object]"];
+    const messages = ["Boo.", "Boo, again!", "Hello.", "Hello!", "Call me bob the comment?", "Nice to meet you.", "GeorgeRNG :D", "What did the farmer say when he lost his tractor? Where's my tractor?", "Beyond that.", "Maybe it's gold.", "Au-.", "The Moss.", "Procrastination.", "Typing Error", "oven was here"];
     codeSpace.innerHTML = `<!-- ${messages[Math.floor(Math.random() * messages.length)]} -->`; // hi
 
     /** How many brackets you have gone into */
