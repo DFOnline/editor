@@ -1,6 +1,6 @@
 import Menu from "../../main/menu";
 import { code, exportTemplate } from "./edit";
-import { codeutilities, cuopen, downloadDFT, snackbar, writeToClipboard } from "../../main/main";
+import { codeutilities, cuopen, downloadDFT, encodeTemplate, snackbar, writeToClipboard } from "../../main/main";
 
 const exportDiv = document.createElement('div');
 
@@ -32,7 +32,7 @@ CodeUtilsSend.onclick = () => { // the code for sending :D
     codeutilities.send(JSON.stringify(
         {
             type: 'template',
-            data: JSON.stringify(exportTemplate(JSON.stringify(code))),
+            data: JSON.stringify({ name: "Template from DFOnline", data: encodeTemplate(JSON.stringify(code)) }),
             source: 'DFOnline'
         }
     ));
