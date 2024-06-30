@@ -1,3 +1,5 @@
+import { SESSION_STORE } from "../../main/constants";
+
 type CallbackFunction = () => void;
 
 export default class Names { // a class for this lmfao
@@ -5,7 +7,7 @@ export default class Names { // a class for this lmfao
     private data: Record<string, string> = {};
 
     constructor() {
-        fetch(sessionStorage.getItem('apiEndpoint') + 'names').then(res => res.json()).then(json => {
+        fetch(sessionStorage.getItem(SESSION_STORE.API_ENDPOINT) + 'names').then(res => res.json()).then(json => {
             this.data = json;
             this.readyFunctions.forEach(f => f());
         })

@@ -1,6 +1,7 @@
 import Menu from "../../main/menu";
 import { code, exportTemplate } from "./edit";
 import { codeutilities, cuopen, downloadDFT, encodeTemplate, snackbar, writeToClipboard } from "../../main/main";
+import { uploadTemplate } from "../template";
 
 const exportDiv = document.createElement('div');
 
@@ -91,7 +92,7 @@ CopyGiveCommandButton.innerText = 'Copy Give Command';
 CopyGiveCommandButton.onclick = () => {
     const data = exportTemplate(JSON.stringify(code));
     const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
-    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}`, "Successfully copied Give Command to clipboard.");
+    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}}`, "Successfully copied Give Command to clipboard.");
 }
 options.append(CopyGiveCommandButton);
 
@@ -108,10 +109,18 @@ options.append(CopyLinkButton);
 
 const CopyShortLinkButton = document.createElement('button');
 CopyShortLinkButton.innerText = 'Copy Short Link (for Discord)';
-CopyShortLinkButton.onclick = async () => {
+CopyShortLinkButton.onclick = async (e) => {
     const href = 'https://dfonline.dev/edit/';
     const searchParams = new URLSearchParams(location.search);
-    const exportData = exportTemplate(JSON.stringify(code)).code;
+    let exportData = exportTemplate(JSON.stringify(code)).code;
+    if(!e.shiftKey) {   
+        try {
+            exportData = (await uploadTemplate(exportData)).id;
+        }
+        catch (e) {
+            console.warn(e);
+        }
+    }
     searchParams.set('template', exportData);
     const url = href + '?' + searchParams.toString();
     writeToClipboard(`[code template](${url})`, "Successfully copied Discord Link to clipboard.");

@@ -1,5 +1,6 @@
 import Menu from "../main/menu";
 import { snackbar, templateLike } from "../main/main"
+import { fetchTemplate, loadTemplate } from "../edit/template";
 
 Menu.setup();
 
@@ -50,10 +51,11 @@ export class ImportMenu extends Menu {
         input.value = code;
         const activateImport = document.createElement('button');
         activateImport.innerText = 'Import';
-        activateImport.onclick = () => {
+        activateImport.onclick = async () => {
+            loadTemplate(input.value);
             const data = input.value.match(templateLike);
             if (data !== null) {
-                sessionStorage.setItem('import', data[0]); window.open("../edit/", "_self");
+                sessionStorage.setItem('import', (await fetchTemplate(input.value))!); window.open("../edit/", "_self");
             }
         }
         const fileLabel = document.createElement('label');

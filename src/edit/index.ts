@@ -6,6 +6,7 @@ import { contextMenu, oncode, userMeta } from "./ts/edit";
 import { BlockActionID, BlockDataID, Bracket, DATA_BLOCKS, DEFAULT_DATA_BLOCKS_TAGS, DataBlock, PhysicalBlock, SelectionBlock, loadTemplate } from "./template";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from "./ts/menubar/menubar";
+import { SESSION_STORE } from "./../main/constants";
 
 // when everything loads - this function is pretty hard to find lol.
 try {
@@ -22,8 +23,8 @@ const urlParams = new URLSearchParams(location.search);
 try {
     const templateParam = urlParams.get('template');
     const compareParam = urlParams.get('compare');
-    if (templateParam) sessionStorage.setItem('import', templateParam.replace(/ /g, '+'));
-    const templateImport = sessionStorage.getItem('import')!;
+    if (templateParam) sessionStorage.setItem(SESSION_STORE.TEMPLATE_IMPORT, templateParam.replace(/ /g, '+'));
+    const templateImport = sessionStorage.getItem(SESSION_STORE.TEMPLATE_IMPORT)!;
     const code = await loadTemplate(templateImport);
     const compareTemplate = compareParam ? await loadTemplate(compareParam.replace(/ /g, '+')) : undefined;
     if (compareParam) userMeta.canEdit = false;

@@ -1,4 +1,4 @@
-import { Template } from "edit/template";
+import { Template, uploadTemplate } from "../../../edit/template";
 import { snackbar, decodeTemplate, timelessTemplateLike, downloadDFT } from "../../../main/main";
 
 const stepCount = document.querySelectorAll('div.step.v').length;
@@ -49,37 +49,40 @@ const file = document.querySelector<HTMLButtonElement>('#file')!;
 
 
 const enter = document.querySelector<HTMLAnchorElement>('a#enter')!;
-enter.onclick = e => {
+enter.onclick = async e => {
     if (!timelessTemplateLike.test(input.value)) { snackbar("Looks like that data isn't valid"); e.stopPropagation(); e.preventDefault(); return; }
     const data = (input.value.match(timelessTemplateLike) || [])[0]!;
     // check it can be decompressed
     let template: Template
-    try{
+    try {
         template = decodeTemplate(data);
         if (!template.blocks) { snackbar("Looks like that data isn't valid."); e.stopPropagation(); e.preventDefault(); return; }
-        // setActivePage(0);
-        // fetch(`${window.sessionStorage.getItem('apiEndpoint')}save`, { 'body': data, 'method': 'POST' }).then(f => f.json()).then(json => {
-            // document.querySelector('div#invalid')!.classList.add('hidden');
-            // document.querySelector('div#valid')!.classList.remove('hidden');
-            //     link.value = 'https://dfonline.dev/edit/?template=' + json.id;
-            //     // link.value = 'https://dfonline.dev/edit/?template=dfo:' + json.id;
-            //     setActivePage(4);
-            //     link.focus();
-            // });
+        setActivePage(0);
+
+        let id = null;
+        try {
+            const upload = await uploadTemplate(data);
+            id = upload.id;
+        }
+        finally {
+            if (id == null) id = data;
+            const url = `[code template](https://dfonline.dev/edit/?template=${id})`
+            link.value = url;
             link.onchange = () => {
-                link.value = `[code template](https://dfonline.dev/edit/?template=${data})`;
+                link.value = url;
             }
+
+            link.focus();
             setActivePage(4);
-            link.onclick!(e);
+
+            file.onclick = () => {
+                downloadDFT(data, 'template.dft');
+            }
+
             document.querySelector('div#invalid')!.classList.add('hidden');
             document.querySelector('div#valid')!.classList.remove('hidden');
-            link.value = `[code template](https://dfonline.dev/edit/?template=${data})`;
-            link.focus();
-            file.onclick = () => {
-                downloadDFT(data,'template.dft');
-            }
-            // file.focus();
         }
+    }
     catch (e) {
         console.error(e);
         snackbar("An an occurred whilst loading your data, it's likely not valid.");
