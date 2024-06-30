@@ -1,7 +1,7 @@
 import type { Template } from "../edit/template";
 import { inflate, gzip } from "pako";
 import { makeDevMenu } from "./developers";
-import { SESSION_STORE } from "./constants";
+import { DEFAULT_API_URL, SESSION_STORE } from "./constants";
 import Menu from "./menu";
 
 const theDate = new Date();
@@ -400,7 +400,7 @@ export function dfNumber(num: number | string, accuray = 3) {
 
 // if apiEndpoint is not set, it will use the default one
 if (sessionStorage.getItem(SESSION_STORE.API_ENDPOINT) == null) 
-    sessionStorage.setItem(SESSION_STORE.API_ENDPOINT, 'https://dfonline-backend.georgerng.repl.co/api/'); // if you don't want IP logging I will run the backend on replit so you can know that "I am not running different code" then on the repo. // Next up is a another repl which is a static server so you can't think that the main website is logging you (it's a static in it self) and create a domain record to lead to that instead of the static set up by the host.
+    sessionStorage.setItem(SESSION_STORE.API_ENDPOINT, DEFAULT_API_URL);
 if (sessionStorage.getItem(SESSION_STORE.API_VERSION) == null)
     sessionStorage.setItem(SESSION_STORE.API_VERSION, '1');
 
