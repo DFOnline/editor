@@ -95,7 +95,7 @@ CopyGiveCommandButton.innerText = 'Copy Give Command';
 CopyGiveCommandButton.onclick = () => {
     const data = exportTemplate(JSON.stringify(code));
     const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
-    writeToClipboard(`/give @p ender_chest{display:{Name:"\\"DFOnline Template\\""},PublicBukkitValues:{"hypercube:codetemplatedata":'{name:"${altName}",code:"${data.code}",version:1,author:"${data.author}"}'}}`, "Successfully copied Give Command to clipboard.");
+    writeToClipboard(`/give @p ender_chest[minecraft:custom_name='{"italic":false,"text":"DFOnline Template"}',minecraft:custom_data={PublicBukkitValues: {"hypercube:codetemplatedata": ${JSON.stringify(JSON.stringify({author:'DFOnline',name:'DFOnline Template',version:1,code:encodeTemplate(JSON.stringify(code))}))}}}]`, "Successfully copied Give Command to clipboard.");
 }
 options.append(CopyGiveCommandButton);
 
