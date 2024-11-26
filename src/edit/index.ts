@@ -3,7 +3,7 @@ import { snackbar } from "../main/main";
 import Menu from "../main/menu";
 import ActDB from "./ts/actiondump";
 import { contextMenu, oncode, userMeta } from "./ts/edit";
-import { BlockActionID, BlockDataID, Bracket, DATA_BLOCKS, DEFAULT_DATA_BLOCKS_TAGS, DataBlock, PhysicalBlock, SelectionBlock, loadTemplate } from "./template";
+import { BlockActionID, BlockDataID, Bracket, DATA_BLOCKS, DEFAULT_DATA_BLOCKS_TAGS, DataBlock, Else, PhysicalBlock, SelectionBlock, loadTemplate } from "./template";
 import { rendBlocks } from "./ts/codeSpace";
 import menuBar from "./ts/menubar/menubar";
 import { SESSION_STORE } from "./../main/constants";
@@ -82,6 +82,9 @@ if (userMeta.canEdit && userMeta.showPalette) {
                     }
                     newBlocks.push(newBlock);
                 }
+            } else {
+                const newBlock: Else = { id: "block", block: "else" }
+                newBlocks.push(newBlock);
             }
             if (block.identifier.includes('if') || block.identifier === 'else' || block.identifier === 'repeat') {
                 // create and append a pair of brackets
