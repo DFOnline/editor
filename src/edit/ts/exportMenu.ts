@@ -6,7 +6,8 @@ import { uploadTemplate } from "../template";
 const exportDiv = document.createElement('div');
 
 const p = document.createElement('p');
-p.innerText = `Get the template data${cuopen ? ', or send it to recode,' : ', or connect to recode to use the Item API,'} with the template you are currently working on.`;
+// p.innerText = `Get the template data${cuopen ? ', or send it to recode,' : ', or connect to recode to use the Item API,'} with the template you are currently working on.`;
+p.innerText = `Get the template data with the the template you are currently working on.`;
 exportDiv.append(p);
 
 const options = document.createElement('div');
@@ -28,6 +29,8 @@ options.append(copyTemplate);
 
 const CodeUtilsSend = document.createElement('button');
 CodeUtilsSend.innerText = 'Send to Recode';
+CodeUtilsSend.classList.add('send-to-rc')
+CodeUtilsSend.style.display = 'none';
 CodeUtilsSend.disabled = !cuopen;
 CodeUtilsSend.onclick = () => { // the code for sending :D
     codeutilities.send(JSON.stringify(

@@ -93,6 +93,10 @@ if (trolling) {
     document.head.append(aprilFoolsStyle);
 }
 
+/**
+ * @deprecated CodeUtilities now dead, replaced with recode, now dead, leaves this API dead.  
+ *             CodeClient has an API to serve a similar purpose. (unless MilloMod or LessUtilities implements it)
+ */
 export let cuopen = false;
 
 /**
@@ -204,8 +208,8 @@ export function startup() {
 }
 
 export const codeutilities = new WebSocket('ws://localhost:31371/codeutilities/item');
-codeutilities.onopen = () => { snackbar('Connected to Recode'); cuopen = true; }
-codeutilities.onerror = () => { snackbar("Didn't connect to Recode"); cuopen = false; }
+codeutilities.onopen = () => { /*snackbar('Connected to Recode');*/ cuopen = true; }
+codeutilities.onerror = () => { /* snackbar("Didn't connect to Recode");*/ cuopen = false; }
 
 export function decodeTemplate(base64data: string): Template {
     const compressData = atob(base64data);
