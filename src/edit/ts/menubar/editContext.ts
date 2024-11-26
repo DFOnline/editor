@@ -26,6 +26,7 @@ renameVars.onclick = () => {
     opt = document.createElement('option'); opt.value = 'local'; opt.text = 'LOCAL';
     scopeValue.append(opt);
     opt = document.createElement('option'); opt.value = 'line'; opt.text = 'LINE';
+    scopeValue.append(opt);
     menuDiv.append(scopeValue);
     menuDiv.append(document.createElement('br'));
 
