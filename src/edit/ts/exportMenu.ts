@@ -71,8 +71,6 @@ options.append(CodeClientSend);
 const CopyGiveCommandButton = document.createElement('button');
 CopyGiveCommandButton.innerText = 'Copy Give Command';
 CopyGiveCommandButton.onclick = () => {
-    const data = exportTemplate(JSON.stringify(code));
-    const altName = data.name.replace('"', '\\"').replace('\\', '\\\\').replace("'", "\\'");
     writeToClipboard(`/give @p ender_chest[minecraft:custom_name='{"italic":false,"text":"DFOnline Template"}',minecraft:custom_data={PublicBukkitValues: {"hypercube:codetemplatedata": ${JSON.stringify(JSON.stringify({author:'DFOnline',name:'DFOnline Template',version:1,code:encodeTemplate(JSON.stringify(code))}))}}}]`, "Successfully copied Give Command to clipboard.");
 }
 options.append(CopyGiveCommandButton);
