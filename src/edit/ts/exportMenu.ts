@@ -47,45 +47,23 @@ CodeUtilsSend.onclick = () => { // the code for sending :D
 options.append(CodeUtilsSend);
 
 const CodeClientSend = document.createElement('button');
-CodeClientSend.innerText = 'Connect to CodeClient';
-const defaultEvent = CodeClientSend.onclick = () => {
-    CodeClientSend.disabled = true;
+CodeClientSend.innerText = 'Send to CodeClient';
+CodeClientSend.onclick = () => {
     const ws = new WebSocket('ws://localhost:31375');
     ws.onopen = () => {
-        snackbar('Connected. Run /auth in Minecraft.')
-        CodeClientSend.innerText = 'Run /auth';
-        ws.onmessage = (message) => {
-            function send() {
-                snackbar('Sent!');
-                ws.send(`give 
-                    {Count:1b,id:"minecraft:ender_chest",tag:{display:{Name:'{"italic":false,"text":"DFOnline Template"}'},PublicBukkitValues:{"hypercube:codetemplatedata": ${JSON.stringify(JSON.stringify({author:'DFOnline',name:'DFOnline Template',version:1,code:encodeTemplate(JSON.stringify(code))}))}}}}`);
-                ws.onmessage = message => {
-                    if(message.data == 'not creative mode') {
-                        snackbar("Could not give item, you aren't in creative mode.","error");
-                    }
-                    if(message.data == 'noauth') {
-                        snackbar("Not authorized, maybe you removed authorization manually.")
-                    }
+        // ws.send(`give {Count:1b,id:"minecraft:ender_chest,components:{"minecraft:custom_name"}}`)
+        ws.send(`give {Count:1b,id:"minecraft:ender_chest",
+            components:{
+                "minecraft:custom_name":'{"italic":false,"text":"DFOnline Template"}',
+                "minecraft:custom_data":{
+                    PublicBukkitValues: {"hypercube:codetemplatedata": ${JSON.stringify(JSON.stringify({author:'DFOnline',name:'DFOnline Template',version:1,code:encodeTemplate(JSON.stringify(code))}))}}
                 }
-            }
-            if(message.data == 'auth') {
-                CodeClientSend.innerText = 'Resend to CodeClient';
-                CodeClientSend.disabled = false;
-                send()
-            }
-            CodeClientSend.onclick = () => send();
-        }
+        }}`);
+        ws.onmessage = console.log
+        ws.close();
     }
     ws.onerror = () => {
-        CodeClientSend.disabled = true;
-        CodeClientSend.onclick = () => {};
         snackbar("Could not connect to CodeClient.",'error');
-    }
-    ws.onclose = () => {
-        CodeClientSend.disabled = false;
-        CodeClientSend.onclick = defaultEvent;
-        CodeClientSend.innerText = 'Connect to CodeClient';
-        snackbar("Connection to CodeClient closed.",'error');
     }
 }
 options.append(CodeClientSend);
