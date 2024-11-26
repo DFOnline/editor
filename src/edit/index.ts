@@ -77,7 +77,8 @@ if (userMeta.canEdit && userMeta.showPalette) {
                     const newBlock: SelectionBlock = { id: "block", action: "", args: { items: [] }, block: block.identifier as BlockActionID, inverted: "", attribute: "", target: "" };
                     switch (block.identifier) {
                         case "control": newBlock.action = "Wait"; break;
-                        case "set_var": newBlock.action = "="; break;
+                        case "set_var":
+                        case  "if_var": newBlock.action = "="; break;
                         default: newBlock.action = "";
                     }
                     newBlocks.push(newBlock);
