@@ -998,8 +998,8 @@ export class MCItem extends ChestItem<MinecraftItem> {
         console.log(this.parsedItem.tag);
         icon.style.backgroundImage = `url(https://dfonline.dev/public/images/${this.parsedItem.id.replace('minecraft:', '').toUpperCase()}.png)`;
         const count = document.createElement('span');
-        count.innerText = `${this.parsedItem.Count.value}`
-        if (this.parsedItem.Count.value !== 1) icon.append(count);
+        count.innerText = `${this.parsedItem.count.value}`
+        if (this.parsedItem.count.value !== 1) icon.append(count);
         return icon;
     }
 
@@ -1025,7 +1025,7 @@ export class MCItem extends ChestItem<MinecraftItem> {
     }
 
     repr(): string {
-        return `${this.parsedItem.id}${JSON.stringify(this.parsedItem.tag ? this.parsedItem.tag : {})} ${this.parsedItem.Count.value}`;
+        return `${this.parsedItem.id}${JSON.stringify(this.parsedItem.tag ? this.parsedItem.tag : {})} ${this.parsedItem.count.value}`;
     }
 
     minecraftName(): HTMLSpanElement {

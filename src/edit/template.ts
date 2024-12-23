@@ -263,7 +263,7 @@ export interface UndefinedItem {
 // copilot just generating minecraft stuff.
 export interface ParsedItem {
     id: string;
-    Count: NbtValue<number>;
+    count: NbtValue<number>;
     tag: {
         display?: {
             Name: string;
