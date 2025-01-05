@@ -314,6 +314,7 @@ export async function uploadTemplate(data: string): Promise<{
     id: string,
     delete_key?: string,
 }> {
+    return {id: data}
     const endPoint = sessionStorage.getItem(SESSION_STORE.API_ENDPOINT);
     if (endPoint == null) throw new Error('The API endpoint is missing.');
     if ((sessionStorage.getItem(SESSION_STORE.API_VERSION) ?? '0') != '1') throw new Error('Only API version 1 is supported.');
