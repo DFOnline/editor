@@ -30,7 +30,7 @@ export type Direction = "open" | "close"
 export type BracketType = "norm" | "repeat"
 
 export type BlockID = BlockActionID | BlockSubActionID | BlockDataID | "else";
-export type BlockActionID = "event" | "player_action" | "entity_event" | "entity_action" | "set_var" | "game_action" | "if_game" | "control" | "if_entity" | "if_player" | "if_var";
+export type BlockActionID = "event" | "player_action" | "entity_event" | "entity_action" | "set_var" | "game_event" | "game_action" | "if_game" | "control" | "if_entity" | "if_player" | "if_var";
 export type BlockSubActionID = (typeof SUBACTION_BLOCKS)[number];
 export type BlockDataID = (typeof DATA_BLOCKS)[number];
 
